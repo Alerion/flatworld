@@ -10,7 +10,19 @@
                "name": "frontend",
                "roles": [
                   {
-                     "name": "anonymous",
+                     "name": "user",
+                     "permissions": [
+                        {
+                           "uri": "*",
+                           "publish": true,
+                           "subscribe": true,
+                           "call": true,
+                           "register": false
+                        }
+                     ]
+                  },
+                  {
+                     "name": "server",
                      "permissions": [
                         {
                            "uri": "*",
@@ -26,18 +38,35 @@
          ],
          "transports": [
             {
-               "type": "web",
+               "type": "websocket",
                "endpoint": {
                   "type": "tcp",
-                  "port": 8080
+                  "port": 8080,
+                  "interface": "127.0.0.1"
                },
-               "paths": {
-                  "/": {
+               "auth": {
+                  "wampcra": {
+                     "type": "dynamic",
+                     "authenticator": "authenticate"
+                  }
+               }
+            },
+            {
+               "type": "websocket",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 9000,
+                  "interface": "127.0.0.1"
+               },
+               "auth": {
+                  "wampcra": {
                      "type": "static",
-                     "directory": "../index.html"
-                  },
-                  "ws": {
-                     "type": "websocket"
+                     "users": {
+                        "server": {
+                           "secret": "password",
+                           "role": "server"
+                        }
+                     }
                   }
                }
             }
