@@ -1,9 +1,8 @@
 function onchallenge (session, method, extra) {
-    var KEY = 'user';
-    //console.log("onchallenge", method, extra);
+    var SECRET = 'user';
     if (method === "wampcra") {
         console.log("onchallenge: authenticating via '" + method + "' and challenge '" + extra.challenge + "'");
-        return autobahn.auth_cra.sign(KEY, extra.challenge);
+        return autobahn.auth_cra.sign(SECRET, extra.challenge);
     } else {
         throw "don't know how to authenticate using '" + method + "'";
     }

@@ -1,35 +1,12 @@
 import asyncio
 
-
+from pprint import pprint
 from os import environ
 import datetime
 
 from autobahn.asyncio.wamp import ApplicationSession, ApplicationRunner
 from autobahn.wamp import auth, register
 from autobahn.wamp.exception import ApplicationError
-
-
-class AuthService(object):
-
-    USERDB = {
-        'user':  {
-            # 'authid': 'ID09125',  # assign a different auth ID during authentication
-            'secret': 'user',
-            'role': 'user'
-        }
-    }
-
-    @register('authenticate')
-    def authenticate(self, realm, authid, details):
-        print("authenticate called: realm = '{}', authid = '{}'".format(realm, authid))
-
-        if authid in self.USERDB:
-            # return a dictionary with authentication information ...
-            return self.USERDB[authid]
-        else:
-            raise ApplicationError(
-                ApplicationError.AUTHORIZATION_FAILED,
-                "could not authenticate session - no such user {}".format(authid))
 
 
 class TimeService(object):
@@ -49,6 +26,7 @@ class TimeService(object):
 
 
 class Component(ApplicationSession):
+    # TODO: Run like crossbar.io component when it supports Python 3
     # See https://github.com/crossbario/crossbarexamples/blob/master/authenticate/wampcra/client.py
     USER = "server"
     PASSWORD = "password"
@@ -66,7 +44,6 @@ class Component(ApplicationSession):
 
     @asyncio.coroutine
     def onJoin(self, details):
-        yield from self.register(AuthService())
         yield from self.register(TimeService())
 
 

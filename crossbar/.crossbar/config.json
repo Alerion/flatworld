@@ -32,6 +32,15 @@
                            "register": true
                         }
                      ]
+                  },
+                  {
+                     "name": "authenticator",
+                     "permissions": [
+                        {
+                           "uri": "authenticate",
+                           "register": true
+                        }
+                     ]
                   }
                ]
             }
@@ -65,6 +74,10 @@
                         "server": {
                            "secret": "password",
                            "role": "server"
+                        },
+                        "authenticator": {
+                           "secret": "password",
+                           "role": "authenticator"
                         }
                      }
                   }
