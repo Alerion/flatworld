@@ -1,53 +1,46 @@
 import asyncio
+from autobahn.asyncio.websocket import WebSocketServerFactory
 
-from pprint import pprint
-from os import environ
-import datetime
-
-from autobahn.asyncio.wamp import ApplicationSession, ApplicationRunner
-from autobahn.wamp import auth, register
-from autobahn.wamp.exception import ApplicationError
+from rpc import BaseRpcProtocol, register
 
 
-class TimeService(object):
+class RpcProtocol(BaseRpcProtocol):
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.value = 1
+        self.register('count', self.count)
+        self.register('ping', self.ping)
 
-    @register('count')
     def count(self):
         self.value += 1
         return self.value
 
-    @register('utcnow')
-    def utcnow(self):
-        now = datetime.datetime.utcnow()
-        return now.strftime("%Y-%m-%dT%H:%M:%SZ")
-
-
-class Component(ApplicationSession):
-    # TODO: Run like crossbar.io component when it supports Python 3
-    # See https://github.com/crossbario/crossbarexamples/blob/master/authenticate/wampcra/client.py
-    USER = "server"
-    PASSWORD = "password"
-
-    def onConnect(self):
-        self.join(self.config.realm, ["wampcra"], self.USER)
-
-    def onChallenge(self, challenge):
-        if challenge.method == "wampcra":
-            signature = auth.compute_wcs(self.PASSWORD.encode('utf8'),
-                                         challenge.extra['challenge'].encode('utf8'))
-            return signature.decode('ascii')
-        else:
-            raise Exception("don't know how to handle authmethod {}".format(challenge.method))
-
     @asyncio.coroutine
-    def onJoin(self, details):
-        yield from self.register(TimeService())
+    def ping(self, *args):
+        yield from asyncio.sleep(5)
+        return args
 
 
 if __name__ == '__main__':
-    runner = ApplicationRunner('ws://localhost:9000/ws', realm='frontend',
-                               debug=True, debug_wamp=False, debug_app=True)
-    runner.run(Component)
+
+    try:
+        import asyncio
+    except ImportError:
+        # Trollius >= 0.3 was renamed
+        import trollius as asyncio
+
+    factory = WebSocketServerFactory("ws://127.0.0.1:9000", debug=True)
+    factory.protocol = RpcProtocol
+
+    loop = asyncio.get_event_loop()
+    coro = loop.create_server(factory, '0.0.0.0', 9000)
+    server = loop.run_until_complete(coro)
+
+    try:
+        loop.run_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.close()
+        loop.close()
