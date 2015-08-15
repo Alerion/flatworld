@@ -30,7 +30,7 @@ export class Rpc {
     }
 
     onClose() {
-
+        console.log(arguments);
     }
 
     call(method, ...args) {

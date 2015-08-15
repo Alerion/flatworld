@@ -15,6 +15,10 @@ rpc.connect().then(function () {
     rpc.call('count').then(function(vaue) {
         console.log(vaue);
     });
+
+    rpc.call('get_user').then(function(vaue) {
+        console.log(vaue);
+    });
 });
 
 window.rpc = rpc;

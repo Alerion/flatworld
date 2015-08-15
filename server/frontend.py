@@ -11,6 +11,7 @@ class RpcProtocol(BaseRpcProtocol):
         self.value = 1
         self.register('count', self.count)
         self.register('ping', self.ping)
+        self.register('get_user', self.get_user)
 
     def count(self):
         self.value += 1
@@ -18,18 +19,14 @@ class RpcProtocol(BaseRpcProtocol):
 
     @asyncio.coroutine
     def ping(self, *args):
-        yield from asyncio.sleep(5)
+        yield from asyncio.sleep(3)
         return args
+
+    def get_user(self):
+        return self._user
 
 
 if __name__ == '__main__':
-
-    try:
-        import asyncio
-    except ImportError:
-        # Trollius >= 0.3 was renamed
-        import trollius as asyncio
-
     factory = WebSocketServerFactory("ws://127.0.0.1:9000", debug=True)
     factory.protocol = RpcProtocol
 
