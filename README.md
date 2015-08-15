@@ -2,7 +2,8 @@
 
 Install Python 3.4:
 
-    $ sudo apt-get install build-essential libssl-dev libffi-dev python3.4 python3.4-dev
+    $ sudo apt-get install build-essential libssl-dev libffi-dev python3.4 python3.4-dev nodejs
+    $ sudo npm install --global bower gulp
 
 Clone repo.
 
