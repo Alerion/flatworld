@@ -1,3 +1,4 @@
+import aiozmq.rpc
 import asyncio
 import random
 
@@ -14,8 +15,13 @@ class RpcProtocol(BaseRpcProtocol):
         self.register('count', self.count)
         self.register('ping', self.ping)
         self.register('get_user', self.get_user)
+        self._client = None
 
     def onOpen(self):
+        self._client = yield from aiozmq.rpc.connect_rpc(
+            connect='tcp://127.0.0.1:5555',
+            timeout=5)
+
         topics = ['events', 'messages', 'other']
         i = 0
         while True:
@@ -23,6 +29,9 @@ class RpcProtocol(BaseRpcProtocol):
             i += 1
             topic = random.choice(topics)
             self.publish(topic, i)
+            # call RPC
+            ret = yield from self._client.call.remote_func(1, i)
+            print(ret)
 
     def count(self):
         self.value += 1

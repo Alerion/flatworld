@@ -9,6 +9,7 @@ export class Rpc {
     }
 
     connect() {
+        console.log('Connecting to', this.url);
         return new Promise((resolve, reject) => {
             this._socket = new WebSocket(this.url);
             this._socket.onopen = resolve;
@@ -42,7 +43,7 @@ export class Rpc {
     }
 
     onClose() {
-        console.log(arguments);
+        setTimeout(this.connect.bind(this), 1000);
     }
 
     call(method, ...args) {
