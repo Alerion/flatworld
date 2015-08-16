@@ -1,0 +1,62 @@
+{
+    "debug": false,
+    "delay": 0.25,
+    "error_color": "D02000",
+    "gutter_theme": "Packages/SublimeLinter/gutter-themes/Default/Default.gutter-theme",
+    "gutter_theme_excludes": [],
+    "lint_mode": "background",
+    "@python": 3,
+    "linters": {
+        "pep8": {
+            "@disable": false,
+            "args": [],
+            "excludes": [],
+            "ignore": "",
+            "max-line-length": 100,
+            "select": ""
+        },
+        "pyflakes": {
+            "@disable": false,
+            "args": [],
+            "excludes": []
+        },
+        "pylint": {
+            "@disable": false,
+            "args": [
+                "--max-line-length=100"
+            ],
+            "disable": "C0111,C1001,R0903,F0401,C0111,R0201,E1101,W0232,W0141,C0103,R0915,W0613,R0914,R0912",
+            "enable": "",
+            "excludes": [],
+            "paths": [],
+            "rcfile": "",
+            "show-codes": true
+        }
+    },
+    "mark_style": "outline",
+    "no_column_highlights_line": false,
+    "passive_warnings": false,
+    "paths": {
+        "linux": [],
+        "osx": [],
+        "windows": []
+    },
+    "python_paths": {
+        "linux": [],
+        "osx": [],
+        "windows": []
+    },
+    "rc_search_limit": 3,
+    "shell_timeout": 10,
+    "show_errors_on_save": false,
+    "show_marks_in_minimap": true,
+    "syntax_map": {
+        "html (django)": "html",
+        "html (rails)": "html",
+        "html 5": "html",
+        "php": "html",
+        "python django": "python"
+    },
+    "warning_color": "DDB700",
+    "wrap_find": true
+}

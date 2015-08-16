@@ -19,6 +19,9 @@ from django.contrib.auth import get_user
 
 from pprint import pprint
 
+RPC = 'rpc'
+EVENT = 'event'
+
 
 class BaseRpcProtocol(WebSocketServerProtocol):
 
@@ -28,7 +31,7 @@ class BaseRpcProtocol(WebSocketServerProtocol):
         self._user = None
 
     def onConnect(self, request):
-        # TODO: move this to other server and call with async
+        # TODO: move this to other server or thread and call with async
         cookie = cookies.SimpleCookie()
         cookie.load(request.headers.get('cookie', ''))
         session_cookie = cookie.get(settings.SESSION_COOKIE_NAME)
@@ -63,25 +66,26 @@ class BaseRpcProtocol(WebSocketServerProtocol):
         if not isBinary:
             data = ujson.loads(payload)
 
-            if data.get('method') not in self._methods:
-                self.send_error(data, 'Method does not exist')
-            else:
-                method = self._methods[data.get('method')]
-
-            if 'args' in data and data['args']:
-                args = data['args']
-            else:
-                args = []
-
-            # TODO: add async call
-            try:
-                if (asyncio.iscoroutinefunction(method)):
-                    value = yield from method(*args)
-                    self.send_success(data, value)
+            if data.get('type') == RPC:
+                if data.get('method') not in self._methods:
+                    self.send_error(data, 'Method does not exist')
                 else:
-                    self.send_success(data, method(*args))
-            except TypeError:
-                self.send_error(data, 'Invalid method call. Check arguments.')
+                    method = self._methods[data.get('method')]
+
+                if 'args' in data and data['args']:
+                    args = data['args']
+                else:
+                    args = []
+
+                # TODO: add async call
+                try:
+                    if asyncio.iscoroutinefunction(method):
+                        value = yield from method(*args)
+                        self.send_success(data, value)
+                    else:
+                        self.send_success(data, method(*args))
+                except TypeError:
+                    self.send_error(data, 'Invalid method call. Check arguments.')
 
     def authentication_failed(self):
         self.sendClose()
@@ -90,24 +94,33 @@ class BaseRpcProtocol(WebSocketServerProtocol):
         self._methods[name] = func
 
     def send_success(self, data, value):
-        response = {
+        msg = {
             'id': data['id'],
             'type': data['type'],
             'event': 'success',
             'value': value
         }
-        self.sendMessage(ujson.dumps(response).encode('utf8'), isBinary=False)
-
+        self._send(msg)
 
     def send_error(self, data, message):
-        response = {
+        msg = {
             'id': data['id'],
             'type': data['type'],
             'event': 'error',
             'message': message
         }
-        self.sendMessage(ujson.dumps(response).encode('utf8'), isBinary=False)
+        self._send(msg)
 
+    def publish(self, topic, message):
+        msg = {
+            'type': EVENT,
+            'topic': topic,
+            'message': message
+        }
+        self._send(msg)
+
+    def _send(self, msg):
+        self.sendMessage(ujson.dumps(msg).encode('utf8'), isBinary=False)
 
 
 def register(name):

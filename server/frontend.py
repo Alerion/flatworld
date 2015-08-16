@@ -1,7 +1,9 @@
 import asyncio
+import random
+
 from autobahn.asyncio.websocket import WebSocketServerFactory
 
-from rpc import BaseRpcProtocol, register
+from rpc import BaseRpcProtocol
 
 
 class RpcProtocol(BaseRpcProtocol):
@@ -12,6 +14,15 @@ class RpcProtocol(BaseRpcProtocol):
         self.register('count', self.count)
         self.register('ping', self.ping)
         self.register('get_user', self.get_user)
+
+    def onOpen(self):
+        topics = ['events', 'messages', 'other']
+        i = 0
+        while True:
+            yield from asyncio.sleep(2)
+            i += 1
+            topic = random.choice(topics)
+            self.publish(topic, i)
 
     def count(self):
         self.value += 1
