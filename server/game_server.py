@@ -12,13 +12,12 @@ class ServerHandler(aiozmq.rpc.AttrHandler):
 
     @asyncio.coroutine
     def start(self):
-        publisher = yield from aiozmq.create_zmq_stream(zmq.PUB, connect='tcp://localhost:5549')
+        client = yield from aiozmq.rpc.connect_pubsub(connect='tcp://127.0.0.1:5549')
 
         while True:
             self.value += 1
             print(self.value)
-            msg = (str(self.value).encode('utf-8'),)
-            publisher.write(msg)
+            client.publish('events:admin').set_value(self.value)
             yield from asyncio.sleep(5)
 
     @aiozmq.rpc.method
