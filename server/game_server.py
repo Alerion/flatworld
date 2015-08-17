@@ -1,5 +1,6 @@
 import asyncio
 import aiozmq.rpc
+import zmq
 
 
 class ServerHandler(aiozmq.rpc.AttrHandler):
@@ -11,9 +12,13 @@ class ServerHandler(aiozmq.rpc.AttrHandler):
 
     @asyncio.coroutine
     def start(self):
-        print(1)
+        publisher = yield from aiozmq.create_zmq_stream(zmq.PUB, connect='tcp://localhost:5549')
+
         while True:
             self.value += 1
+            print(self.value)
+            msg = (str(self.value).encode('utf-8'),)
+            publisher.write(msg)
             yield from asyncio.sleep(5)
 
     @aiozmq.rpc.method

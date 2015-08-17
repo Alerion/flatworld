@@ -1,6 +1,7 @@
 import aiozmq.rpc
 import asyncio
 import random
+import zmq
 
 from autobahn.asyncio.websocket import WebSocketServerFactory
 
@@ -12,6 +13,7 @@ class RpcProtocol(BaseRpcProtocol):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.value = 1
+        self.game_value = None
         self.register('count', self.count)
         self.register('ping', self.ping)
         self.register('get_user', self.get_user)
@@ -21,6 +23,10 @@ class RpcProtocol(BaseRpcProtocol):
         self._client = yield from aiozmq.rpc.connect_rpc(
             connect='tcp://127.0.0.1:5555',
             timeout=5)
+
+        self._subscriber = yield from aiozmq.create_zmq_stream(zmq.SUB, connect='tcp://127.0.0.1:5550')
+        self._subscriber.transport.subscribe(b'')
+        asyncio.async(self.listen_events())
 
         topics = ['events', 'messages', 'other']
         i = 0
@@ -32,6 +38,18 @@ class RpcProtocol(BaseRpcProtocol):
             # call RPC
             ret = yield from self._client.call.remote_func(1, i)
             print(ret)
+
+    @asyncio.coroutine
+    def listen_events(self):
+        print('start listen_events')
+        while True:
+            event = yield from self._subscriber.read()
+            print('EVENT', event)
+
+    # @aiozmq.rpc.method
+    # def set_value(self, value):
+    #     self.game_value = value
+    #     print('set_value', self.game_value)
 
     def count(self):
         self.value += 1
@@ -46,7 +64,7 @@ class RpcProtocol(BaseRpcProtocol):
         return self._user
 
 
-if __name__ == '__main__':
+def main():
     factory = WebSocketServerFactory("ws://127.0.0.1:9000", debug=True)
     factory.protocol = RpcProtocol
 
@@ -61,3 +79,6 @@ if __name__ == '__main__':
     finally:
         server.close()
         loop.close()
+
+if __name__ == '__main__':
+    main()

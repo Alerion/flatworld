@@ -12,3 +12,7 @@ help:
 # target: start_frontend - Start frontend server.
 start_frontend:
 	python frontend.py
+
+# target: start_game_server - Start game server.
+start_game_server:
+	python game_server.py
