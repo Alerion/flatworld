@@ -36,26 +36,27 @@ class Biome(models.Model):
     ocean = models.BooleanField()
     water = models.BooleanField()
     river = models.BooleanField()
-    lat = models.FloatField()
-    lng = models.FloatField()
     biome = models.CharField(max_length=50, choices=BIOMES)
+    center = models.PointField(srid=4326)
     elevation = models.FloatField()
     geom = models.MultiPolygonField(srid=4326)
     moisture = models.FloatField()
     neighbors = models.ManyToManyField('self')
-    region = models.ForeignKey('Region')
+    region = models.ForeignKey('Region', blank=True, null=True)
+    world = models.ForeignKey(World)
 
 
 class River(models.Model):
     geom = models.MultiLineStringField()
     width = models.PositiveIntegerField()
+    world = models.ForeignKey(World)
 
 
 class Region(models.Model):
     geom = models.MultiPolygonField(srid=4326)
     name = models.CharField(max_length=100)
     neighbors = models.ManyToManyField('self')
-    capital = models.OneToOneField('City', related_name='capital_of')
+    world = models.ForeignKey(World)
 
     def __str__(self):
         return self.name
@@ -63,10 +64,11 @@ class Region(models.Model):
 
 class City(models.Model):
     biome = models.ForeignKey(Biome)
+    capital = models.BooleanField(default=False)
     name = models.CharField(max_length=100)
     region = models.ForeignKey(Region)
-    lat = models.FloatField()
-    lng = models.FloatField()
+    coords = models.PointField(srid=4326)
+    world = models.ForeignKey(World)
 
     def __str__(self):
         return self.name

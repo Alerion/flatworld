@@ -15,6 +15,9 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Map settings
+HEIGHT_CACHE_DIR = os.path.join(BASE_DIR, '../cache/height_map')
+HILLSHADES_DIR = os.path.join(BASE_DIR, '../cache/hillshade')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -41,6 +44,7 @@ INSTALLED_APPS = (
 
     'accounts',
     'main',
+    'map',
     'world',
 )
 

@@ -4,3 +4,4 @@ __pycache__
 crossbar/.crossbar/node.pid
 env/
 local_settings.py
+webapp/map
