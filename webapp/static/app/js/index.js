@@ -1,31 +1,17 @@
-import {Rpc} from "./rpc";
+var React = require('react');
+var Marty = require('marty');
+var Application = require('./application');
+var ApplicationContainer = Marty.ApplicationContainer;
 
-var rpc = new Rpc('ws://127.0.0.1:9000');
+window.React = React; // For React Developer Tools
+window.Marty = Marty; // For Marty Developer Tools
 
-rpc.connect().then(function () {
-    rpc.call('count').then(function(vaue) {
-        console.log(vaue);
-    });
+var app = new Application();
 
-    rpc.call('ping', 'hello').then(function(vaue) {
-        console.log(vaue);
-    });
-
-    rpc.call('count').then(function(vaue) {
-        console.log(vaue);
-    });
-
-    rpc.call('get_user').then(function(vaue) {
-        console.log(vaue);
-    });
-
-    rpc.subscribe('events', function (message, topic) {
-        console.log(topic, message);
-    });
-
-    rpc.subscribe('messages', function (message, topic) {
-        console.log(topic, message);
-    });
+app.router.run(function (Handler, state) {
+    React.render((
+        <ApplicationContainer app={app}>
+            <Handler {...state.params} />
+        </ApplicationContainer>
+    ), document.getElementById('app'));
 });
-
-window.rpc = rpc;
