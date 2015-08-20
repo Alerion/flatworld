@@ -1,5 +1,5 @@
 var React = require('react');
-var Marty = require('marty');
+
 
 class Home extends React.Component {
 
@@ -14,4 +14,4 @@ class Home extends React.Component {
     }
 }
 
-module.exports = Marty.createContainer(Home, {});
+module.exports = Home;
