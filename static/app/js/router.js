@@ -3,16 +3,10 @@ var React = require('react');
 var Router = require('react-router');
 
 var routes = [
-  <Router.Route name="home" path="/" handler={require('./components/home')} />
+    <Router.Route name="home" path="/world/:world_id/" handler={require('./components/home')} />
 ]
 
 module.exports = Router.create({
-  routes: routes,
-  location: location()
+    routes: routes,
+    location: Router.HistoryLocation
 });
-
-function location() {
-  if (typeof window !== 'undefined') {
-    return Router.HistoryLocation;
-  }
-}

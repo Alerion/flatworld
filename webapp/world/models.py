@@ -1,4 +1,5 @@
 from django.contrib.gis.db import models
+from django.core.urlresolvers import reverse
 
 
 class World(models.Model):
@@ -6,6 +7,12 @@ class World(models.Model):
     seed = models.DecimalField(max_digits=20, decimal_places=0)
     points = models.PositiveIntegerField()
     created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('main:world', args=(self.pk,))
 
 
 BIOMES = (
