@@ -1,0 +1,21 @@
+db:
+    restart: always
+    image: mdillon/postgis:9.4
+    volumes:
+        - ./postgres_data:/var/lib/postgresql
+    ports:
+        - "9999:5432"
+webapp:
+    restart: always
+    build: .
+    command: make startwebapp
+    working_dir: /flatworld
+    volumes:
+        - .:/flatworld
+    ports:
+        - "8000:8000"
+    links:
+        - db:db
+    env_file: .env
+    expose:
+        - "8000"

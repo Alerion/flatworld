@@ -4,7 +4,8 @@ django==1.8.3
 msgpack-python==0.4.6
 ujson==1.33
 psycopg2==2.6.1
-numpy==1.9.2
-scipy==0.16.0
+numpy
+scipy
 shapely==1.5.9
 noise==1.2.2
+-e git+https://github.com/Alerion/fantasy_map.git#egg=fantasy_map

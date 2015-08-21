@@ -1,48 +1,36 @@
 # Installation
 
-## Install system packages:
+Build docker images:
 
-    $ sudo apt-get install build-essential libssl-dev libffi-dev python3.4 python3.4-dev nodejs
-    $ sudo npm install --global bower gulp
+    $ docker-compose build
 
-## Clone repo.
+## Create DB
 
-## Create virtual environment:
+Start DB:
 
-    $ virtualenv-3.4 env --system-site-packages
-    $ . env/bin/activate
+    $ docker-compose up db
 
-## Install GeoDjango, PostGIS, GDAL and other
+In other terminal connect and create DB(without password):
 
-https://docs.djangoproject.com/en/1.8/ref/contrib/gis/install/
+    $ psql -h localhost -U postgres -p 9999
 
-## Install PostgreSQL
-
-    $ sudo apt-get install postgresql-9.4 postgresql-contrib-9.4 libpq-dev
-
-If packages are not available follow [this instruction](<http://www.postgresql.org/download/linux/ubuntu/>)
-how to add repository. (Check Ubuntu version ``lsb_release -a``)
-
-## Create database
-
-    $ sudo su - postgres
-    $ createdb fantasy_map
-    $ createuser -P fantasy_map
-
-        Enter password for new role: fantasy_map
-        Enter it again: fantasy_map
-
-    $ psql
-
-        postgres=# GRANT ALL PRIVILEGES ON DATABASE fantasy_map TO fantasy_map;
-
-    $ psql flatworld
-
+        postgres=# CREATE DATABASE flatworld;
+        postgres=# \connect flatworld;
         flatworld=# CREATE EXTENSION postgis;
 
-    $ ./manage.py migrate
-    $ ./manage.py import_map
+## Prepare data
 
-## Install dependency:
+Run bash:
 
-    (env)$ pip install -r requirements.txt
+    $ docker-compose run webapp make createsuperuser
+    $ docker-compose run webapp make generateworld
+
+Start docker images:
+
+    $ docker-compose up
+
+## Working with Dockerfile
+
+After changes run:
+
+    $ docker-compose build

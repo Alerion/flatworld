@@ -82,13 +82,14 @@ WSGI_APPLICATION = 'webapp.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'HOST': 'localhost',
-        'NAME': 'flatworld',
-        'USER': 'flatworld',
+        'NAME': os.environ['DB_NAME'],
+        'USER': os.environ['DB_USER'],
+        'PASSWORD': os.environ['DB_PASS'],
+        'HOST': os.environ['DB_PORT_5432_TCP_ADDR'],
+        'PORT': os.environ['DB_PORT_5432_TCP_PORT']
     }
 }
 
@@ -111,6 +112,7 @@ STATICFILES_DIRS = (
 )
 
 AUTH_USER_MODEL = 'accounts.User'
+LOGIN_URL = '/admin/login/'
 
 try:
     from .local_settings import *
