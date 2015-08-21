@@ -16,10 +16,11 @@ class RpcProtocol(BaseRpcProtocol, aiozmq.rpc.AttrHandler):
         self.game_value = None
         self.register('count', self.count)
         self.register('ping', self.ping)
-        self.register('get_user', self.get_user)
+        self.register('get_world', self.get_world)
         self._client = None
 
     def onOpen(self):
+        return
         self._client = yield from aiozmq.rpc.connect_rpc(
             connect='tcp://127.0.0.1:5555',
             timeout=5)
@@ -50,11 +51,16 @@ class RpcProtocol(BaseRpcProtocol, aiozmq.rpc.AttrHandler):
 
     @asyncio.coroutine
     def ping(self, *args):
-        yield from asyncio.sleep(3)
+        yield from asyncio.sleep(1)
         return args
 
-    def get_user(self):
-        return self._user
+    @asyncio.coroutine
+    def get_world(self, world_id):
+        yield from asyncio.sleep(1)
+        return {
+            'id': world_id,
+            'name': 'World#{}'.format(world_id)
+        }
 
 
 def main():

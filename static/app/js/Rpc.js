@@ -1,4 +1,4 @@
-class Rpc {
+export default class Rpc {
 
     constructor(url) {
         this.url = url;
@@ -9,7 +9,6 @@ class Rpc {
     }
 
     connect() {
-        console.log('Connecting to', this.url);
         return new Promise((resolve, reject) => {
             this._socket = new WebSocket(this.url);
             this._socket.onopen = resolve;

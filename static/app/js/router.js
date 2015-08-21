@@ -1,11 +1,11 @@
-var React = require('react');
-var Router = require('react-router');
+import React from 'react';
+import Router from 'react-router';
 
 var routes = [
-    <Router.Route name="home" path="/world/:world_id/" handler={require('./components/home')} />
+    <Router.Route name="home" path="/world/:worldId/" handler={require('./components/App')} />
 ]
 
-module.exports = Router.create({
+export default Router.create({
     routes: routes,
     location: Router.HistoryLocation
 });
