@@ -11,3 +11,10 @@ RUN  apt-get install -y python3-numpy python3-scipy python3-gdal
 ADD requirements.txt /flatworld/requirements.txt
 WORKDIR /flatworld
 RUN pip3.4 install -r requirements.txt
+
+RUN apt-get install -y curl
+RUN curl --silent --location https://deb.nodesource.com/setup_0.12 | sudo bash -
+RUN apt-get install -y nodejs
+RUN apt-get install -y build-essential
+RUN npm install -g npm
+RUN npm install -g gulp

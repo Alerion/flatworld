@@ -24,3 +24,11 @@ generateworld: migrate
 # target: createsuperuser - Create superuser.
 createsuperuser: migrate
 	python3 ./webapp/manage.py createsuperuser
+
+# target: updatenodemodules - Update node modules.
+updatenodemodules:
+	cd static && npm install
+
+# target: watchstatic - Watch static and build.
+watchstatic: updatenodemodules
+	cd static && gulp

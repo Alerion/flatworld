@@ -1,12 +1,4 @@
-db:
-    restart: always
-    image: mdillon/postgis:9.4
-    volumes:
-        - ./postgres_data:/var/lib/postgresql
-    ports:
-        - "9999:5432"
 webapp:
-    restart: always
     build: .
     command: make startwebapp
     working_dir: /flatworld
@@ -19,3 +11,18 @@ webapp:
     env_file: .env
     expose:
         - "8000"
+
+db:
+    image: mdillon/postgis:9.4
+    volumes:
+        - ./postgres_data:/var/lib/postgresql
+    ports:
+        - "9999:5432"
+    volumes_from:
+        - data
+
+data:
+    image: mdillon/postgis:9.4
+    volumes:
+        - /var/lib/postgresql
+    command: "true"
