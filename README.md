@@ -26,6 +26,8 @@ Run bash:
     $ docker-compose run webapp make createsuperuser
     $ docker-compose run webapp make generateworld
 
+## Run
+
 Start docker images:
 
     $ docker-compose up
@@ -34,7 +36,7 @@ Start static watch:
 
     $ docker-compose run webapp make watchstatic
 
-Now you can visit
+Now you can visit http://127.0.0.1:8000/
 
 ## Working with Dockerfile
 

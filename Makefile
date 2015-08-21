@@ -17,6 +17,10 @@ migrate:
 startwebapp: migrate
 	python3 ./webapp/manage.py runserver 0.0.0.0:8000
 
+# target: startfrontend - Start frontend-server.
+startfrontend: migrate
+	python3 ./server/frontend.py
+
 # target: generateworld - Generate new World.
 generateworld: migrate
 	python3 ./webapp/manage.py generate_world

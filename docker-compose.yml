@@ -8,9 +8,24 @@ webapp:
         - "8000:8000"
     links:
         - db:db
+        - frontend:frontend
     env_file: .env
     expose:
         - "8000"
+
+frontend:
+    build: .
+    command: make startfrontend
+    working_dir: /flatworld
+    volumes:
+        - .:/flatworld
+    ports:
+        - "9000:9000"
+    links:
+        - db:db
+    env_file: .env
+    expose:
+        - "9000"
 
 db:
     image: mdillon/postgis:9.4
