@@ -11,6 +11,7 @@ Start DB:
     $ docker-compose up db
 
 //FIXME: Move to some initial script
+
 In other terminal connect and create DB(without password):
 
     $ psql -h localhost -U postgres -p 9999
