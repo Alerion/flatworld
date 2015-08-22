@@ -14,6 +14,11 @@ RUN curl --silent --location https://deb.nodesource.com/setup_0.12 | sudo bash -
 RUN apt-get install -y nodejs
 RUN npm install -g npm gulp
 
+# Install Tile Stache dependency
+RUN apt-get install -y python2.7 python-dev python-pip python-mapnik2
+ADD tilestache/requirements.txt /flatworld/tilestache/requirements.txt
+RUN pip2 install -r flatworld/tilestache/requirements.txt
+
 # ENV REFRESHED_AT 2014-06-01
 WORKDIR /flatworld
 # If requirements.txt is changed, all next steps will be invalidated

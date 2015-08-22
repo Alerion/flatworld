@@ -16,8 +16,13 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Map settings
-HEIGHT_CACHE_DIR = os.path.join(BASE_DIR, '../cache/height_map')
-HILLSHADES_DIR = os.path.join(BASE_DIR, '../cache/hillshade')
+HEIGHT_CACHE_DIR = os.path.normpath(os.path.join(BASE_DIR, '../cache/height_map'))
+HILLSHADES_DIR = os.path.normpath(os.path.join(BASE_DIR, '../tilestache/hillshade'))
+MAPNIK_STYLES_DIR = os.path.normpath(os.path.join(BASE_DIR, '../tilestache/mapnik'))
+MAPNIK_STYLE_TEMPLATE = 'mapnik_template.xml'
+TILESTACHE_CONF_TEMPLATE = 'tilestache_template.json'
+TILESTACHE_CONF_PATH = os.path.normpath(os.path.join(BASE_DIR, '../tilestache/tilestache.json'))
+TILE_SERVER = 'http://127.0.0.1:8080/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -64,7 +69,9 @@ ROOT_URLCONF = 'webapp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

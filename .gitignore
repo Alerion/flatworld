@@ -4,5 +4,6 @@ __pycache__
 crossbar/.crossbar/node.pid
 env/
 local_settings.py
-webapp/map
 src/
+tilestache/tilestache.json
+webapp/map

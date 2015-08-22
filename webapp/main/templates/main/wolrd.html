@@ -6,10 +6,19 @@
         <title>Flat World</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
     </head>
     <body>
         <div id="app"></div>
+        <a href="/">Home</a>
+        <div id="map" style="width: 1000px; height: 800px;"></div>
 
+        <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+        <script>
+        var Leaflet = L.noConflict();
+        var map = Leaflet.map('map').setView([0, 0], 3);
+        Leaflet.tileLayer('{{ TILE_SERVER }}map_{{ world.pk }}/{z}/{x}/{y}.png').addTo(map);
+        </script>
         <script src="{% static 'build/build.js' %}"></script>
     </body>
 </html>

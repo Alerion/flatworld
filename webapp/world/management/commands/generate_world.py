@@ -1,8 +1,9 @@
 import random
 import os
 
-from django.core.management.base import BaseCommand
 from django.conf import settings
+from django.core.management import call_command
+from django.core.management.base import BaseCommand
 
 from map import generators, exports
 from map.map import Map
@@ -32,8 +33,6 @@ class Command(BaseCommand):
         world = World(seed=seed, name='World#{}'.format(seed), points=points)
         world.save()
 
-        hillshade_path = os.path.join(settings.HILLSHADES_DIR, 'map_{}.tif'.format(world.pk))
-
         map_obj = Map(seed, [
             generators.points.RelaxedPoints(points_number=points).generate,
             generators.graph.VoronoiGraph().generate,
@@ -46,10 +45,12 @@ class Command(BaseCommand):
             Exporter(
                 world, Biome, River, Region, City, max_lat=max_lat, max_lng=max_lng).export,
             exports.GeoTiffExporter(
-                max_lat, max_lng, heights_map_width, hill_noise, hillshade_path).export,
+                max_lat, max_lng, heights_map_width, hill_noise, world.hillshade_path).export,
         ])
 
         map_obj.generate()
+        call_command('generate_mapnik_style', world=world.pk)
+        call_command('generate_tilestache_conf')
 
 
 class Exporter(exports.ModelExporter):

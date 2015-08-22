@@ -1,0 +1,14 @@
+{
+    "cache": {
+        "name": "Test",
+        "verbose": true
+    },
+    "layers": {{% for world in worlds %}
+        "map_{{ world.pk }}": {
+            "provider": {
+                "name": "mapnik",
+                "mapfile": "{{ world.mapnik_style_path }}"
+            }
+        }{% if not forloop.last %},{% endif %}{% endfor %}
+    }
+}

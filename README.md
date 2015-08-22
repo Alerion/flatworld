@@ -27,20 +27,38 @@ Create user and world:
 
 ## Run
 
-Start docker images:
+Create and start containers:
 
-    $ docker-compose build
-    $ docker-compose start
+    $ docker-compose up
 
 Now you can visit http://127.0.0.1:8000/
 
-To stop run:
+Stop services:
 
     $ docker-compose stop
+
+Start services:
+
+    $ $ docker-compose start
 
 Check status:
 
     $ docker-compose ps
+
+Watch service logs:
+
+    $ docker-compose logs staticwatch
+
+Run terminal in service:
+
+    $ docker-compose run --rm webapp /bin/bash
+
+## Update containers
+
+    $ docker-compose stop
+    $ docker-compose build
+    $ docker-compose up
+    $ docker-compose start
 
 ## Working with Dockerfile
 

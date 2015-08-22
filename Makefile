@@ -1,5 +1,5 @@
 .PHONY: all help startwebapp startfrontend generateworld createsuperuser updatenodemodules
-	watchstatic migrate
+	watchstatic migrate generatemapnikstyle generatetilestacheconf starttilestache
 
 # target: all - Default target. Does nothing.
 all:
@@ -37,3 +37,15 @@ updatenodemodules:
 # target: watchstatic - Watch static and build.
 watchstatic: updatenodemodules
 	cd static && gulp
+
+# target: generatemapnikstyle - Generate Mapnik styles for all worlds.
+generatemapnikstyle: migrate
+	python3 ./webapp/manage.py generate_mapnik_style
+
+# target: updatetilestacheconf - Update Tile Stache config.
+generatetilestacheconf: migrate
+	python3 ./webapp/manage.py generate_tilestache_conf
+
+# target: starttilestache - Run Tile Stache server.
+starttilestache: generatemapnikstyle generatetilestacheconf
+	tilestache-server.py --ip 0.0.0.0 -c tilestache/tilestache.json

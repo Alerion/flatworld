@@ -1,5 +1,8 @@
+import os
+
 from django.contrib.gis.db import models
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 
 class World(models.Model):
@@ -14,6 +17,13 @@ class World(models.Model):
     def get_absolute_url(self):
         return reverse('main:world', args=(self.pk,))
 
+    @property
+    def mapnik_style_path(self):
+        return os.path.join(settings.MAPNIK_STYLES_DIR, 'map_{}.xml'.format(self.pk))
+
+    @property
+    def hillshade_path(self):
+        return os.path.join(settings.HILLSHADES_DIR, 'map_{}.tif'.format(self.pk))
 
 BIOMES = (
     ('BARE', 'Bare'),

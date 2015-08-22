@@ -1,0 +1,174 @@
+<Map background-color="#c3d4ed" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+
+  <Style name="biomes">
+    <Rule>
+      <PolygonSymbolizer fill="#abceff"/>
+      <LineSymbolizer stroke="#abceff" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'OCEAN'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#a4c4a8"/>
+      <LineSymbolizer stroke="#a4c4a8" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'TEMPERATE_RAIN_FOREST'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#e4e8ca" />
+      <LineSymbolizer stroke="#e4e8ca" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'TEMPERATE_DESERT'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#fff" />
+      <LineSymbolizer stroke="#fff" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'SNOW'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#c1b5a2" />
+      <LineSymbolizer stroke="#c1b5a2" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'SUBTROPICAL_DESERT'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#b4c9a9" />
+      <LineSymbolizer stroke="#b4c9a9" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'TEMPERATE_DECIDUOUS_FOREST'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#ccd4bb" />
+      <LineSymbolizer stroke="#ccd4bb" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'TAIGA'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#9cbba9" />
+      <LineSymbolizer stroke="#9cbba9" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'TROPICAL_RAIN_FOREST'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#abceff" />
+      <LineSymbolizer stroke="#abceff" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'LAKE'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#bbbbbb" />
+      <LineSymbolizer stroke="#bbbbbb" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'BARE'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#777777" />
+      <LineSymbolizer stroke="#777777" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'TUNDRA'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#c4d4aa" />
+      <LineSymbolizer stroke="#c4d4aa" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'GRASSLAND'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#a9cca4" />
+      <LineSymbolizer stroke="#a9cca4" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'TROPICAL_SEASONAL_FOREST'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#c4ccbb" />
+      <LineSymbolizer stroke="#c4ccbb" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'SHRUBLAND'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#e9ddc7" />
+      <LineSymbolizer stroke="#e9ddc7" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'BEACH'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#999999" />
+      <LineSymbolizer stroke="#999999" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'SCORCHED'</Filter>
+    </Rule>
+
+    <Rule>
+      <PolygonSymbolizer fill="#666666" />
+      <LineSymbolizer stroke="#666666" stroke-width="1"  stroke-linejoin="round"/>
+      <Filter>[biome] = 'MARSH'</Filter>
+    </Rule>
+  </Style>
+
+  <Style name="hillshade">
+    <Rule>
+      <RasterSymbolizer opacity="0.5" />
+    </Rule>
+  </Style>
+
+  <Style name="rivers">
+    <Rule>
+      <LineSymbolizer stroke="#6ea3f2" stroke-width="3" />
+      <Filter>[width] = 1</Filter>
+    </Rule>
+
+    <Rule>
+      <LineSymbolizer stroke="#6ea3f2" stroke-width="5" />
+      <Filter>[width] = 2</Filter>
+    </Rule>
+
+    <Rule>
+      <LineSymbolizer stroke="#6ea3f2" stroke-width="7" />
+      <Filter>[width] = 3</Filter>
+    </Rule>
+
+    <Rule>
+      <LineSymbolizer stroke="#6ea3f2" stroke-width="9" />
+      <Filter>[width] = 4</Filter>
+    </Rule>
+
+    <Rule>
+      <LineSymbolizer stroke="#6ea3f2" stroke-width="11" />
+      <Filter>[width] = 5</Filter>
+    </Rule>
+  </Style>
+
+  <Layer name="world" status="on" srs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs">
+    <StyleName>biomes</StyleName>
+    <Datasource>
+      <Parameter name="type">postgis</Parameter>
+      <Parameter name="dbname">{{ DB.NAME }}</Parameter>
+      <Parameter name="host">{{ DB.HOST }}</Parameter>
+      <Parameter name="password">{{ DB.PASSWORD }}</Parameter>
+      <Parameter name="port">{{ DB.PORT }}</Parameter>
+      <Parameter name="user">{{ DB.USER }}</Parameter>
+      <Parameter name="geometry_field">geom</Parameter>
+      <Parameter name="table">(SELECT * FROM world_biome WHERE world_id = {{ world.pk }}) as data</Parameter>
+    </Datasource>
+  </Layer>
+
+  <Layer name="rivers" status="on" srs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs">
+    <StyleName>rivers</StyleName>
+    <Datasource>
+      <Parameter name="type">postgis</Parameter>
+      <Parameter name="dbname">{{ DB.NAME }}</Parameter>
+      <Parameter name="host">{{ DB.HOST }}</Parameter>
+      <Parameter name="password">{{ DB.PASSWORD }}</Parameter>
+      <Parameter name="port">{{ DB.PORT }}</Parameter>
+      <Parameter name="user">{{ DB.USER }}</Parameter>
+      <Parameter name="table">(SELECT * FROM world_river WHERE world_id = {{ world.pk }}) as data</Parameter>
+    </Datasource>
+  </Layer>
+
+  <Layer name="hillshade" status="on">
+    <StyleName>hillshade</StyleName>
+    <Datasource>
+      <Parameter name="type">gdal</Parameter>
+      <Parameter name="file">{{ world.hillshade_path }}</Parameter>
+    </Datasource>
+  </Layer>
+</Map>
