@@ -1,43 +1,53 @@
 webapp:
     build: .
     command: make startwebapp
-    working_dir: /flatworld
-    volumes:
-        - .:/flatworld
-    ports:
-        - "8000:8000"
-    links:
-        - db:db
-        - frontend:frontend
     env_file: .env
     expose:
         - "8000"
+    links:
+        - db
+        - frontend
+        - staticwatch
+    ports:
+        - "8000:8000"
+    restart: always
+    volumes:
+        - .:/flatworld
 
 frontend:
     build: .
     command: make startfrontend
-    working_dir: /flatworld
-    volumes:
-        - .:/flatworld
-    ports:
-        - "9000:9000"
-    links:
-        - db:db
     env_file: .env
     expose:
         - "9000"
+    links:
+        - db
+    ports:
+        - "9000:9000"
+    restart: always
+    volumes:
+        - .:/flatworld
+
+staticwatch:
+    build: .
+    command: make watchstatic
+    restart: always
+    volumes:
+        - .:/flatworld
 
 db:
     image: mdillon/postgis:9.4
-    volumes:
-        - ./postgres_data:/var/lib/postgresql
     ports:
         - "9999:5432"
+    restart: always
     volumes_from:
         - data
 
 data:
+    command: "true"
     image: mdillon/postgis:9.4
     volumes:
         - /var/lib/postgresql
-    command: "true"
+        - /etc/postgresql
+        - /var/log/postgresql
+    restart: always

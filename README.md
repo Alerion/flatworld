@@ -6,41 +6,49 @@ Build docker images:
 
 ## Create DB
 
-Start DB:
+Open terminal in webapp container:
 
-    $ docker-compose up db
+    $ docker-compose run --rm webapp /bin/bash
+    root@50c6583102fd:/flatworld# psql -h $(DB_PORT_5432_TCP_ADDR) -U postgres -p $(DB_PORT_5432_TCP_PORT)
 
-//FIXME: Move to some initial script
+    postgres=# CREATE DATABASE flatworld;
+    postgres=# \connect flatworld;
+    flatworld=# CREATE EXTENSION postgis;
+    flatworld=# \q
 
-In other terminal connect and create DB(without password):
-
-    $ psql -h localhost -U postgres -p 9999
-
-        postgres=# CREATE DATABASE flatworld;
-        postgres=# \connect flatworld;
-        flatworld=# CREATE EXTENSION postgis;
+    root@50c6583102fd:/flatworld# exit
 
 ## Prepare data
 
-Run bash:
+Create user and world:
 
-    $ docker-compose run webapp make createsuperuser
-    $ docker-compose run webapp make generateworld
+    $ docker-compose run --rm webapp make createsuperuser
+    $ docker-compose run --rm webapp make generateworld
 
 ## Run
 
 Start docker images:
 
-    $ docker-compose up
-
-Start static watch:
-
-    $ docker-compose run webapp make watchstatic
+    $ docker-compose build
+    $ docker-compose start
 
 Now you can visit http://127.0.0.1:8000/
+
+To stop run:
+
+    $ docker-compose stop
+
+Check status:
+
+    $ docker-compose ps
 
 ## Working with Dockerfile
 
 After changes run:
 
     $ docker-compose build
+
+Stop all containers and remove:
+
+    $ docker stop $(docker ps -a -q)
+    $ docker rm $(docker ps -a -q)

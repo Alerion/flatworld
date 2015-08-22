@@ -1,4 +1,5 @@
-.PHONY: all help webapp migrate
+.PHONY: all help startwebapp startfrontend generateworld createsuperuser updatenodemodules
+	watchstatic migrate
 
 # target: all - Default target. Does nothing.
 all:
