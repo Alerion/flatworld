@@ -20,6 +20,7 @@ HEIGHT_CACHE_DIR = os.path.normpath(os.path.join(BASE_DIR, '../cache/height_map'
 HILLSHADES_DIR = os.path.normpath(os.path.join(BASE_DIR, '../tilestache/hillshade'))
 MAPNIK_STYLES_DIR = os.path.normpath(os.path.join(BASE_DIR, '../tilestache/mapnik'))
 MAPNIK_STYLE_TEMPLATE = 'mapnik_template.xml'
+TILESTACHE_CACHE = os.path.normpath(os.path.join(BASE_DIR, '../tilestache/cache/'))
 TILESTACHE_CONF_TEMPLATE = 'tilestache_template.json'
 TILESTACHE_CONF_PATH = os.path.normpath(os.path.join(BASE_DIR, '../tilestache/tilestache.json'))
 TILE_SERVER = 'http://127.0.0.1:8080/'

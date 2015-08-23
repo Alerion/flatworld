@@ -10,7 +10,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         context = {
-            'worlds': World.objects.all()
+            'worlds': World.objects.all(),
+            'TILESTACHE_CACHE': settings.TILESTACHE_CACHE
         }
         with open(settings.TILESTACHE_CONF_PATH, 'w') as conf:
             conf.write(render_to_string(settings.TILESTACHE_CONF_TEMPLATE, context))

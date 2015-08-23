@@ -1,7 +1,10 @@
 {
     "cache": {
-        "name": "Test",
-        "verbose": true
+        "name": "Disk",
+        "path": "{{ TILESTACHE_CACHE }}",
+        "umask": "0000",
+        "dirs": "portable",
+        "gzip": ["xml", "json"]
     },
     "layers": {{% for world in worlds %}
         "map_{{ world.pk }}": {
