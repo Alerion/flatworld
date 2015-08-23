@@ -12,7 +12,10 @@ RUN apt-get install -y python3-numpy python3-scipy python3-gdal
 # Install JS packages
 RUN curl --silent --location https://deb.nodesource.com/setup_0.12 | sudo bash -
 RUN apt-get install -y nodejs
-RUN npm install -g npm gulp
+RUN npm install -g npm
+RUN npm install -g gulp bower
+ADD static/bower.json /flatworld/static/bower.json
+RUN cd /flatworld/static && bower --allow-root install
 
 # Install Tile Stache dependency
 RUN apt-get install -y python2.7 python-dev python-pip python-mapnik2

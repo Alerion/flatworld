@@ -30,7 +30,7 @@ frontend:
 
 staticwatch:
     build: .
-    command: make watchstatic
+    command: make staticwatch
     restart: always
     volumes:
         - .:/flatworld

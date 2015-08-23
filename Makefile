@@ -1,5 +1,6 @@
-.PHONY: all help startwebapp startfrontend generateworld createsuperuser updatenodemodules
-	watchstatic migrate generatemapnikstyle generatetilestacheconf starttilestache
+.PHONY: all help startwebapp startfrontend generateworld createsuperuser updatejsmodules
+	staticwatch migrate generatemapnikstyle generatetilestacheconf starttilestache
+	staticclean staticbuild
 
 # target: all - Default target. Does nothing.
 all:
@@ -30,14 +31,6 @@ generateworld: migrate
 createsuperuser: migrate
 	python3 ./webapp/manage.py createsuperuser
 
-# target: updatenodemodules - Update node modules.
-updatenodemodules:
-	cd static && npm install
-
-# target: watchstatic - Watch static and build.
-watchstatic: updatenodemodules
-	cd static && gulp
-
 # target: generatemapnikstyle - Generate Mapnik styles for all worlds.
 generatemapnikstyle: migrate
 	python3 ./webapp/manage.py generate_mapnik_style
@@ -49,3 +42,19 @@ generatetilestacheconf: migrate
 # target: starttilestache - Run Tile Stache server.
 starttilestache: generatemapnikstyle generatetilestacheconf
 	tilestache-server.py --ip 0.0.0.0 -c tilestache/tilestache.json
+
+# target: updatejsmodules - Update node modules.
+updatejsmodules:
+	cd static && npm install && bower install --allow-root
+
+# target: staticclean - Clean ./static/build.
+staticclean:
+	cd static && gulp clean
+
+# target: staticbuild - Build static.
+staticbuild: staticclean
+	cd static && gulp build
+
+# target: staticwatch - Watch static and build.
+staticwatch: updatejsmodules staticbuild
+	cd static && gulp

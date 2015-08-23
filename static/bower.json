@@ -1,0 +1,31 @@
+{
+  "name": "flatworld",
+  "version": "0.0.0",
+  "homepage": "https://github.com/Alerion/flatworld",
+  "authors": [
+    "Dmitriy Kostochko <alerion.um@gmail.com>"
+  ],
+  "moduleType": [
+    "es6",
+    "globals"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "material-design-iconic-font": "~2.1.2",
+    "bootstrap": "~3.3.5",
+    "weather-icons": "~2.0.4",
+    "material-shadows": "~2.0.1",
+    "waves": "~0.7.2",
+    "bootstrap-sweetalert": "~0.4.5",
+    "animate.css": "~3.4.0",
+    "moment": "~2.10.6",
+    "jquery.nicescroll": "~3.6.0",
+    "bootstrap-growl": "~1.1.0"
+  }
+}
