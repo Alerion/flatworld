@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 var less = require('gulp-less');
 var sourcemaps = require('gulp-sourcemaps');
-var clean = require('gulp-clean');
+var del = require('del');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var browserify = require('browserify');
@@ -12,15 +12,16 @@ var path = require('path');
 var NpmImportPlugin = require("less-plugin-npm-import");
 
 function compile(watch) {
-    var bundler = watchify(
+    var bundler =
         browserify('./app/js/index.js', { debug: true })
         .transform(
             babelify.configure({
                 optional: ["runtime", "es7.asyncFunctions"]
             })
-          )
-    );
-    // FIXME: Add JS hint
+          );
+
+    bundller =  watch ? watchify(bundler) : bundler;
+
     function rebundle() {
         bundler.bundle()
             .on('error', function(err) { console.error(err); this.emit('end'); })
@@ -76,9 +77,8 @@ gulp.task('imgbuild', function() {
         .pipe(gulp.dest('./build/img'));
 });
 
-gulp.task('clean', function () {
-    return gulp.src('./build', {read: false})
-        .pipe(clean());
+gulp.task('clean', function (cb) {
+    del(['build'], cb)
 });
 
 gulp.task('bower', function() {
