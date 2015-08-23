@@ -1,5 +1,6 @@
 import aiozmq.rpc
 import asyncio
+import os
 import random
 import zmq
 
@@ -64,7 +65,9 @@ class RpcProtocol(BaseRpcProtocol, aiozmq.rpc.AttrHandler):
 
 
 def main():
-    factory = WebSocketServerFactory("ws://127.0.0.1:9000", debug=True)
+    factory = WebSocketServerFactory(
+        "ws://{}:{}".format(os.environ['FRONTEND_ADDR'], os.environ['FRONTEND_PORT']),
+        debug=True)
     factory.protocol = RpcProtocol
 
     loop = asyncio.get_event_loop()

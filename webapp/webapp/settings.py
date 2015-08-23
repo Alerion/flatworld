@@ -12,18 +12,22 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-
+from pprint import pprint
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Map settings
+# Mapnik settings
 HEIGHT_CACHE_DIR = os.path.normpath(os.path.join(BASE_DIR, '../cache/height_map'))
 HILLSHADES_DIR = os.path.normpath(os.path.join(BASE_DIR, '../tilestache/hillshade'))
 MAPNIK_STYLES_DIR = os.path.normpath(os.path.join(BASE_DIR, '../tilestache/mapnik'))
 MAPNIK_STYLE_TEMPLATE = 'mapnik_template.xml'
+# TileStache settings
 TILESTACHE_CACHE = os.path.normpath(os.path.join(BASE_DIR, '../tilestache/cache/'))
 TILESTACHE_CONF_TEMPLATE = 'tilestache_template.json'
 TILESTACHE_CONF_PATH = os.path.normpath(os.path.join(BASE_DIR, '../tilestache/tilestache.json'))
-TILE_SERVER = 'http://127.0.0.1:8080/'
+TILE_SERVER = os.environ['TILE_SERVER']
+# Frontend server
+FRONTEND_ADDR = os.environ['FRONTEND_ADDR']
+FRONTEND_PORT = os.environ['FRONTEND_PORT']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/

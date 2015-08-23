@@ -18,6 +18,8 @@ def wolrd(request, world_id):
     world = get_object_or_404(World, pk=world_id)
     context = {
         'TILE_SERVER': settings.TILE_SERVER,
+        'FRONTEND_ADDR': settings.FRONTEND_ADDR,
+        'FRONTEND_PORT': settings.FRONTEND_PORT,
         'world': world
     }
     return render(request, 'main/wolrd.html', context)

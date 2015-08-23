@@ -9,7 +9,7 @@ window.React = React; // For React Developer Tools
 
 
 async function main() {
-    const url = 'ws://127.0.0.1:9000'
+    const url = `ws://${CONFIG.FRONTEND_ADDR}:${CONFIG.FRONTEND_PORT}`;
     console.log('Connectiong...', url);
     const rpc = new Rpc(url);
     await rpc.connect();
