@@ -1,5 +1,9 @@
 # Installation
 
+Create config with env variables from template:
+
+    $ cp .env.template .env
+
 Build docker images:
 
     $ docker-compose build
