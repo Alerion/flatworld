@@ -22,8 +22,23 @@ frontend:
         - "9000"
     links:
         - db
+        - dbserver
     ports:
         - "9000:9000"
+    restart: always
+    volumes:
+        - .:/flatworld
+
+dbserver:
+    build: .
+    command: make startdbserver
+    env_file: .env
+    ports:
+        - "5000:5000"
+    expose:
+        - "5000"
+    links:
+        - db
     restart: always
     volumes:
         - .:/flatworld

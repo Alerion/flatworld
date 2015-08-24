@@ -15,12 +15,14 @@ class RpcProtocol(BaseRpcProtocol, aiozmq.rpc.AttrHandler):
         super().__init__(*args, **kwargs)
         self.value = 1
         self.game_value = None
-        self.register('count', self.count)
-        self.register('ping', self.ping)
         self.register('get_world', self.get_world)
-        self._client = None
+        self._db = None
 
     def onOpen(self):
+        print('onOpen', os.environ['DBSERVER_PORT_5000_TCP'])
+        self._db = yield from aiozmq.rpc.connect_rpc(
+            connect=os.environ['DBSERVER_PORT_5000_TCP'],
+            timeout=5)
         return
         self._client = yield from aiozmq.rpc.connect_rpc(
             connect='tcp://127.0.0.1:5555',
@@ -45,23 +47,11 @@ class RpcProtocol(BaseRpcProtocol, aiozmq.rpc.AttrHandler):
         self.game_value = value
         print(self._user['username'], 'set_value', self.game_value)
 
-    # websocket RPC methods
-    def count(self):
-        self.value += 1
-        return self.value
-
-    @asyncio.coroutine
-    def ping(self, *args):
-        yield from asyncio.sleep(1)
-        return args
-
+    # web socker RPC
     @asyncio.coroutine
     def get_world(self, world_id):
-        yield from asyncio.sleep(1)
-        return {
-            'id': world_id,
-            'name': 'World#{}'.format(world_id)
-        }
+        result = yield from self._db.call.get_world(world_id)
+        return result
 
 
 def main():
@@ -71,7 +61,7 @@ def main():
     factory.protocol = RpcProtocol
 
     loop = asyncio.get_event_loop()
-    coro = loop.create_server(factory, '0.0.0.0', 9000)
+    coro = loop.create_server(factory, '0.0.0.0', os.environ['FRONTEND_PORT'])
     server = loop.run_until_complete(coro)
 
     try:

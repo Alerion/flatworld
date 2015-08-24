@@ -1,6 +1,6 @@
 .PHONY: all help startwebapp startfrontend generateworld createsuperuser updatejsmodules
 	staticwatch migrate generatemapnikstyle generatetilestacheconf starttilestache
-	staticclean staticbuild
+	staticclean staticbuild startdbserver
 
 # target: all - Default target. Does nothing.
 all:
@@ -17,11 +17,15 @@ migrate:
 
 # target: startwebapp - Start dev-server.
 startwebapp: migrate
-	python3 ./webapp/manage.py runserver 0.0.0.0:8000
+	python3 -u ./webapp/manage.py runserver 0.0.0.0:8000
 
 # target: startfrontend - Start frontend-server.
 startfrontend: migrate
-	python3 ./server/frontend.py
+	python3 -u ./server/frontend.py
+
+# target: startdbserver - Start DB-server.
+startdbserver: migrate
+	python3 -u ./server/db_server.py
 
 # target: generateworld - Generate new World.
 generateworld: migrate

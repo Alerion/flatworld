@@ -28,5 +28,7 @@ WORKDIR /flatworld
 ADD requirements.txt /flatworld/requirements.txt
 RUN pip3.4 install -r requirements.txt
 
+RUN apt-get install telnet
+
 USER ${USER}
 CMD ['make', 'help']
