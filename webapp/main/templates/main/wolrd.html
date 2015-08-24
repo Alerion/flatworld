@@ -31,7 +31,6 @@
                 <div class="container">
                     <div class="card">
                         <div class="card-body">
-                            <div id="map" style="height: 600px"></div>
                             <div id="app"></div>
                         </div>
                     </div>
@@ -60,12 +59,6 @@
         <script src="{% static 'vendors/waves/dist/waves.min.js' %}"></script>
         <script src="{% static 'vendors/bootstrap-growl/jquery.bootstrap-growl.min.js' %}"></script>
         <script src="{% static 'vendors/bootstrap-sweetalert/lib/sweet-alert.min.js' %}"></script>
-        <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-        <script>
-            var Leaflet = L.noConflict();
-            var map = Leaflet.map('map').setView([0, 0], 3);
-            Leaflet.tileLayer(CONFIG.TILE_LAYER_URL).addTo(map);
-        </script>
         <script src="{% static 'js/build.js' %}"></script>
         <script>
         /*

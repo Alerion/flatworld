@@ -20,7 +20,6 @@ class RpcProtocol(BaseRpcProtocol, aiozmq.rpc.AttrHandler):
         self._db = None
 
     def onOpen(self):
-        print('onOpen', os.environ['DBSERVER_PORT_5000_TCP'])
         self._db = yield from aiozmq.rpc.connect_rpc(
             connect=os.environ['DBSERVER_PORT_5000_TCP'],
             translation_table=translation_table,
@@ -50,10 +49,12 @@ class RpcProtocol(BaseRpcProtocol, aiozmq.rpc.AttrHandler):
         print(self._user['username'], 'set_value', self.game_value)
 
     # web socker RPC
+    # FIXME: Filter private fields
+    # FIXME: Add args validation
     @asyncio.coroutine
     def get_world(self, world_id):
-        result = yield from self._db.call.get_world(world_id)
-        return result
+        world = yield from self._db.call.get_world(world_id)
+        return world
 
 
 def main():

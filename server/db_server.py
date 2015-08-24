@@ -25,9 +25,11 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
     @asyncio.coroutine
     def get_world(self, world_id: int):
         with (yield from self._pool.cursor()) as cursor:
-            yield from cursor.execute('SELECT * FROM world_world')
-            result = yield from cursor.fetchone()
-            return result
+            yield from cursor.execute('SELECT * FROM world_world WHERE id=%s', (world_id,))
+            world = yield from cursor.fetchone()
+            yield from cursor.execute('SELECT name, world_id, ST_AsGeoJSON(geom) as geom FROM world_region WHERE world_id=%s', (world_id,))
+            world['regions'] = yield from cursor.fetchall()
+            return world
 
 
 def main():
