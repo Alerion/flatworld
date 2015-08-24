@@ -9,4 +9,5 @@ numpy
 scipy
 shapely==1.5.9
 noise==1.2.2
+ipython
 -e git+https://github.com/Alerion/fantasy_map.git#egg=fantasy_map

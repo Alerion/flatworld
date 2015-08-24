@@ -2,6 +2,8 @@ import aiopg
 import aiozmq.rpc
 import asyncio
 import os
+import psycopg2
+from zmqrpc.translation_table import translation_table
 
 if os.environ['DB_PASS']:
     dsn = '''dbname={DB_NAME} user={DB_USER} password={DB_PASS}
@@ -15,27 +17,27 @@ dsn = dsn.format(**os.environ)
 
 class DBServerHandler(aiozmq.rpc.AttrHandler):
 
-    def __init__(self):
+    def __init__(self, pool):
         super().__init__()
-        self._pool = None
-
-    def pool(self):
-        pass
+        self._pool = pool
 
     @aiozmq.rpc.method
+    @asyncio.coroutine
     def get_world(self, world_id: int):
-        with (yield from self._pool.cursor()) as cur:
-            yield from cur.execute('SELECT * FROM world_world')
-            result = yield from cur.fetchone()
-            print(result)
+        with (yield from self._pool.cursor()) as cursor:
+            yield from cursor.execute('SELECT * FROM world_world')
+            result = yield from cursor.fetchone()
             return result
 
 
 def main():
     loop = asyncio.get_event_loop()
+    pool = loop.run_until_complete(
+        aiopg.create_pool(dsn, cursor_factory=psycopg2.extras.RealDictCursor))
     server = aiozmq.rpc.serve_rpc(
-        DBServerHandler(),
+        DBServerHandler(pool),
         bind='tcp://0.0.0.0:5000',
+        translation_table=translation_table,
         loop=loop)
     loop.run_until_complete(server)
 

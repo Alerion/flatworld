@@ -7,6 +7,7 @@ import zmq
 from autobahn.asyncio.websocket import WebSocketServerFactory
 
 from rpc import BaseRpcProtocol
+from zmqrpc.translation_table import translation_table
 
 
 class RpcProtocol(BaseRpcProtocol, aiozmq.rpc.AttrHandler):
@@ -22,6 +23,7 @@ class RpcProtocol(BaseRpcProtocol, aiozmq.rpc.AttrHandler):
         print('onOpen', os.environ['DBSERVER_PORT_5000_TCP'])
         self._db = yield from aiozmq.rpc.connect_rpc(
             connect=os.environ['DBSERVER_PORT_5000_TCP'],
+            translation_table=translation_table,
             timeout=5)
         return
         self._client = yield from aiozmq.rpc.connect_rpc(
