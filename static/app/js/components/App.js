@@ -37,7 +37,7 @@ export default class App extends React.Component {
 
         this.infoPanel.update = function (props) {
             this._div.innerHTML = (props ?
-                '<b>' + props.name + '</b>'
+                '<b>' + props.name + '</b><br><b>Cities: </b> 3 <br><b>Population: </b>1000<br><b>Capital: </b> Kiev'
                 : 'Hover over a regions');
         };
 
@@ -48,12 +48,19 @@ export default class App extends React.Component {
             position: 'topleft',
             collapsed: false
         }).addTo(this.map);
+
+        // Set world bounds
+        // FIXME: Save them in DB for each world
+        var southWest = L.latLng(-30, -30),
+            northEast = L.latLng(30, 30),
+            bounds = L.latLngBounds(southWest, northEast);
+        this.map.setMaxBounds(bounds);
     }
 
     componentDidUpdate() {
-        // Executed when we get information about the world.
         var world = this.props.world;
 
+        // Render regions
         this.regionsLayer = L.geoJson(this.toGeoJSON(world.regions), {
             onEachFeature: (feature, layer) => {
                 layer.on({
@@ -74,12 +81,29 @@ export default class App extends React.Component {
         this.regionsLayer.addTo(this.map);
         this.layersControl.addOverlay(this.regionsLayer, 'Regions');
 
-        // Set world bounds
-        // FIXME: Save them in DB for each world
-        var southWest = L.latLng(-35, -35),
-            northEast = L.latLng(35, 35),
-            bounds = L.latLngBounds(southWest, northEast);
-        this.map.setMaxBounds(bounds);
+        // Render cities
+        // TODO: Add resize on zoom. On large zoom level they are too small.
+        var citiesLayer = L.geoJson(this.toGeoJSON(world.cities, 'coords', {withColor: false}), {
+            pointToLayer: function (feature, latlng) {
+                var style = {
+                    radius: 3,
+                    fillColor: "#9E9E9E",
+                    color: "#888",
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                };
+
+                if (feature.properties.capital) {
+                    style.fillColor = '#FF5722';
+                }
+
+                return L.circleMarker(latlng, style);
+            }
+        });
+
+        citiesLayer.addTo(this.map);
+        this.layersControl.addOverlay(citiesLayer, 'Cities');
     }
 
     highlightRegion(e) {
@@ -92,6 +116,7 @@ export default class App extends React.Component {
         if (!L.Browser.ie && !L.Browser.opera) {
             layer.bringToFront();
         }
+
         this.infoPanel.update(layer.feature.properties);
     }
 
@@ -100,14 +125,18 @@ export default class App extends React.Component {
         this.infoPanel.update();
     }
 
-    toGeoJSON(data, field='geom') {
+    toGeoJSON(data, field='geom', withColor=true) {
         var output = [];
         for (let item of data) {
+            let properties = {};
+
+            if (withColor) {
+                properties.color = this.randomColor();
+            }
+
             let obj = {
                 type: "Feature",
-                properties: Object.assign({
-                    color: this.randomColor()
-                }, item),
+                properties: Object.assign(properties, item),
                 geometry: JSON.parse(item[field])
             }
             output.push(obj);
@@ -116,6 +145,7 @@ export default class App extends React.Component {
     }
 
     randomColor() {
+        // FIXME: Add more smart colors
         var r = Math.floor(Math.random() * 255);
         var g = Math.floor(Math.random() * 255);
         var b = Math.floor(Math.random() * 255);

@@ -1,7 +1,5 @@
 import random
-import os
 
-from django.conf import settings
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
@@ -14,8 +12,8 @@ class Command(BaseCommand):
     help = 'Generate new world'
 
     def add_arguments(self, parser):
-        parser.add_argument('--max_lat', action="store", dest="max_lat", type=int, default=70)
-        parser.add_argument('--max_lng', action="store", dest="max_lng", type=int, default=70)
+        parser.add_argument('--max_lat', action="store", dest="max_lat", type=int, default=60)
+        parser.add_argument('--max_lng', action="store", dest="max_lng", type=int, default=60)
         parser.add_argument('--seed', action="store", dest="seed", type=int)
         parser.add_argument('--points', action="store", dest="points", type=int, default=1000)
         parser.add_argument(

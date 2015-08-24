@@ -1,6 +1,6 @@
 .PHONY: all help startwebapp startfrontend generateworld createsuperuser updatejsmodules
 	staticwatch migrate generatemapnikstyle generatetilestacheconf starttilestache
-	staticclean staticbuild startdbserver
+	staticclean staticbuild startdbserver removeworlds
 
 # target: all - Default target. Does nothing.
 all:
@@ -30,6 +30,10 @@ startdbserver: migrate
 # target: generateworld - Generate new World.
 generateworld: migrate
 	python3 ./webapp/manage.py generate_world
+
+# target: staticwatch - Remove all worlds.
+removeworlds: migrate
+	python3 ./webapp/manage.py remove_worlds
 
 # target: createsuperuser - Create superuser.
 createsuperuser: migrate

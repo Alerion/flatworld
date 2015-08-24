@@ -29,6 +29,8 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
             world = yield from cursor.fetchone()
             yield from cursor.execute('SELECT name, world_id, ST_AsGeoJSON(geom) as geom FROM world_region WHERE world_id=%s', (world_id,))
             world['regions'] = yield from cursor.fetchall()
+            yield from cursor.execute('SELECT name, capital, world_id, region_id, ST_AsGeoJSON(coords) as coords FROM world_city WHERE world_id=%s', (world_id,))
+            world['cities'] = yield from cursor.fetchall()
             return world
 
 
