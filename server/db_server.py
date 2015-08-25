@@ -27,10 +27,24 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
         with (yield from self._pool.cursor()) as cursor:
             yield from cursor.execute('SELECT * FROM world_world WHERE id=%s', (world_id,))
             world = yield from cursor.fetchone()
-            yield from cursor.execute('SELECT name, world_id, ST_AsGeoJSON(geom) as geom FROM world_region WHERE world_id=%s', (world_id,))
+
+            query = '''
+            SELECT id, name, world_id, ST_AsGeoJSON(geom) as geom FROM world_region WHERE world_id=%s
+            '''
+            yield from cursor.execute(query, (world_id,))
             world['regions'] = yield from cursor.fetchall()
-            yield from cursor.execute('SELECT name, capital, world_id, region_id, ST_AsGeoJSON(coords) as coords FROM world_city WHERE world_id=%s', (world_id,))
-            world['cities'] = yield from cursor.fetchall()
+            regions_index = {item['id']: item for item in world['regions']}
+
+            query = '''
+            SELECT id, name, capital, world_id, region_id, stats, ST_AsGeoJSON(coords) as coords
+            FROM world_city WHERE world_id=%s
+            '''
+            yield from cursor.execute(query, (world_id,))
+            cities = yield from cursor.fetchall()
+            for city in cities:
+                region = regions_index[city['region_id']]
+                region.setdefault('cities', []).append(city)
+
             return world
 
 

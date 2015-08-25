@@ -35,10 +35,22 @@ export default class App extends React.Component {
             return this._div;
         };
 
-        this.infoPanel.update = function (props) {
-            this._div.innerHTML = (props ?
-                '<b>' + props.name + '</b><br><b>Cities: </b> 3 <br><b>Population: </b>1000<br><b>Capital: </b> Kiev'
-                : 'Hover over a regions');
+        this.infoPanel.update = function (region) {
+            var content = '';
+            if (region) {
+                var cities = [];
+                for (let city of region.cities) {
+                    cities.push(<li key={city.id}>{city.name}: {city.stats.population}</li>);
+                }
+
+                content = <p>
+                    <b>{region.name}</b>
+                    <ul>{cities}</ul>
+                </p>
+            } else {
+                content = <b>Hover over a regions</b>;
+            }
+            this._div.innerHTML = React.renderToString(content);
         };
 
         this.infoPanel.addTo(this.map);
@@ -83,7 +95,15 @@ export default class App extends React.Component {
 
         // Render cities
         // TODO: Add resize on zoom. On large zoom level they are too small.
-        var citiesLayer = L.geoJson(this.toGeoJSON(world.cities, 'coords', {withColor: false}), {
+
+        var cities = [];
+        for (let region of world.regions) {
+            for (let city of region.cities) {
+                cities.push(city);
+            }
+        }
+
+        var citiesLayer = L.geoJson(this.toGeoJSON(cities, 'coords', {withColor: false}), {
             pointToLayer: function (feature, latlng) {
                 var style = {
                     radius: 3,

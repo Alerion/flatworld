@@ -11,3 +11,4 @@ shapely==1.5.9
 noise==1.2.2
 ipython
 fake-factory
+-e hg+https://dkostochko123@bitbucket.org/schinckel/django-postgres@6a6078d#egg=django-postgres

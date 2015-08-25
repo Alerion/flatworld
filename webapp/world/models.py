@@ -3,12 +3,19 @@ import os
 from django.contrib.gis.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from postgres.fields import JSONField
+
+WORLD_DEFAULT_PARAMS = {
+    'start_population': 2000,
+    'base_population_growth': 0.05
+}
 
 
 class World(models.Model):
     name = models.CharField(max_length=100)
     seed = models.DecimalField(max_digits=20, decimal_places=0)
     points = models.PositiveIntegerField()
+    params = JSONField(default=WORLD_DEFAULT_PARAMS)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -80,12 +87,16 @@ class Region(models.Model):
 
 
 class City(models.Model):
+    """
+    stats: {population, population_growth}
+    """
     biome = models.ForeignKey(Biome)
     capital = models.BooleanField(default=False)
     name = models.CharField(max_length=100)
     region = models.ForeignKey(Region)
     coords = models.PointField(srid=4326)
     world = models.ForeignKey(World)
+    stats = JSONField()
 
     def __str__(self):
         return self.name

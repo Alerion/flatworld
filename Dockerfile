@@ -22,13 +22,14 @@ RUN apt-get install -y python2.7 python-dev python-pip python-mapnik2
 ADD tilestache/requirements.txt /flatworld/tilestache/requirements.txt
 RUN pip2 install -r flatworld/tilestache/requirements.txt
 
+# Add some useful tools
+RUN apt-get install -y telnet mercurial
+
 # ENV REFRESHED_AT 2014-06-01
 WORKDIR /flatworld
 # If requirements.txt is changed, all next steps will be invalidated
 ADD requirements.txt /flatworld/requirements.txt
 RUN pip3.4 install -r requirements.txt
-
-RUN apt-get install telnet
 
 USER ${USER}
 CMD ['make', 'help']
