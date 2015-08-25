@@ -12,16 +12,16 @@ export default class WorldStore extends Store {
 
     handleNewWorld(obj) {
         this.setState({
-            [obj.id]: obj
+            world: obj
         });
     }
 
-    getWorld(worldId) {
-        if ( ! this.state[worldId]) {
-            this.worldActions.getWorld(worldId);
+    getWorld() {
+        if ( ! this.state.world) {
+            this.worldActions.getWorld();
             return null;
         }
 
-        return this.state[worldId];
+        return this.state.world;
     }
 }

@@ -8,7 +8,7 @@ export default class WorldActions extends Actions {
         this.rpc = rpc;
     }
 
-    async getWorld(worldId) {
-        return await this.rpc.call('get_world', worldId);
+    async getWorld() {
+        return await this.rpc.call('get_world');
     }
 }

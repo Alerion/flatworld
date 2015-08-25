@@ -9,11 +9,18 @@ window.React = React; // For React Developer Tools
 
 
 async function main() {
-    const url = `ws://${CONFIG.FRONTEND_ADDR}:${CONFIG.FRONTEND_PORT}`;
+    const url = `ws://${CONFIG.FRONTEND_ADDR}:${CONFIG.FRONTEND_PORT}?world_id=${CONFIG.WORLD_ID}`;
     console.log('Connectiong...', url);
     const rpc = new Rpc(url);
     await rpc.connect();
     console.log('Connected');
+
+    // For debugging in console
+    window.rpc = rpc;
+
+    rpc.subscribe('update:cities', function (message, topic) {
+        console.log(topic, message);
+    });
 
     const flux = new AppFlux(rpc);
 

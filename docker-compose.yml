@@ -7,7 +7,6 @@ webapp:
     links:
         - db
         - frontend
-        - staticwatch
     ports:
         - "8000:8000"
     restart: always
@@ -23,8 +22,25 @@ frontend:
     links:
         - db
         - dbserver
+        - game
+        - proxy
     ports:
         - "9000:9000"
+    restart: always
+    volumes:
+        - .:/flatworld
+
+game:
+    build: .
+    command: make startgameserver
+    env_file: .env
+    expose:
+        - "5200"
+    links:
+        - dbserver
+        - proxy
+    ports:
+        - "5200:5200"
     restart: always
     volumes:
         - .:/flatworld
@@ -39,6 +55,19 @@ dbserver:
         - "5000"
     links:
         - db
+    restart: always
+    volumes:
+        - .:/flatworld
+
+proxy:
+    build: .
+    command: make startpubsubproxy
+    env_file: .env
+    ports:
+        - "5100:5100"
+        - "5101:5101"
+    expose:
+        - "5101"
     restart: always
     volumes:
         - .:/flatworld

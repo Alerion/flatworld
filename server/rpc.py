@@ -120,12 +120,3 @@ class BaseRpcProtocol(WebSocketServerProtocol):
 
     def _send(self, msg):
         self.sendMessage(ujson.dumps(msg).encode('utf8'), isBinary=False)
-
-
-def register(name):
-    def decorate(func):
-        assert(callable(func))
-        if not hasattr(func, '_rpc_method_name'):
-            func._rpc_method_name = name
-        return func
-    return decorate

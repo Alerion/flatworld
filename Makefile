@@ -1,6 +1,6 @@
 .PHONY: all help startwebapp startfrontend generateworld createsuperuser updatejsmodules
 	staticwatch migrate generatemapnikstyle generatetilestacheconf starttilestache
-	staticclean staticbuild startdbserver removeworlds
+	staticclean staticbuild startdbserver removeworlds startpubsubproxy startgameserver
 
 # target: all - Default target. Does nothing.
 all:
@@ -19,9 +19,17 @@ migrate:
 startwebapp: migrate
 	python3 -u ./webapp/manage.py runserver 0.0.0.0:8000
 
+# target: startfrontend - Start game-server.
+startgameserver:
+	python3 -u ./server/game.py
+
 # target: startfrontend - Start frontend-server.
-startfrontend: migrate
+startfrontend:
 	python3 -u ./server/frontend.py
+
+# target: startpubsubproxy - Start 0mq proxy for PUB-SUB between fronted and game server.
+startpubsubproxy:
+	python3 -u ./server/pubsub_proxy.py
 
 # target: startdbserver - Start DB-server.
 startdbserver: migrate

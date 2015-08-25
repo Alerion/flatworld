@@ -40,7 +40,7 @@ export default class App extends React.Component {
             if (region) {
                 var cities = [];
                 for (let city of region.cities) {
-                    cities.push(<li key={city.id}>{city.name}: {city.stats.population}</li>);
+                    cities.push(<li key={city.id}>{city.name}({city.id}): {city.stats.population}</li>);
                 }
 
                 content = <p>
@@ -187,7 +187,7 @@ export default class FluxApp extends React.Component {
         return (
             <FluxComponent connectToStores={{
                 worldStore: store => ({
-                    world: store.getWorld(this.props.worldId)
+                    world: store.getWorld()
                 })
             }}>
                 <App />

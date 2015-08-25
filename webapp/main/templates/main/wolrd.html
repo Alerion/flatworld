@@ -17,7 +17,8 @@
         var CONFIG = {
             TILE_LAYER_URL: '{{ TILE_SERVER }}' + 'map_{{ world.pk }}/{z}/{x}/{y}.png',
             FRONTEND_ADDR: '{{ FRONTEND_ADDR }}',
-            FRONTEND_PORT: '{{ FRONTEND_PORT }}'
+            FRONTEND_PORT: '{{ FRONTEND_PORT }}',
+            WORLD_ID: {{ world.pk }}
         };
         </script>
     </head>

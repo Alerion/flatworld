@@ -14,47 +14,62 @@ class RpcProtocol(BaseRpcProtocol, aiozmq.rpc.AttrHandler):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.value = 1
-        self.game_value = None
         self.register('get_world', self.get_world)
+        self.register('get_city_stats', self.get_city_stats)
+        self.world_id = None
         self._db = None
+        self._game = None
+
+    def onConnect(self, request):
+        try:
+            self.world_id = int(request.params['world_id'][0])
+        except (KeyError, ValueError, TypeError, IndexError):
+            self.sendClose()
+
+        super().onConnect(request)
 
     def onOpen(self):
         self._db = yield from aiozmq.rpc.connect_rpc(
             connect=os.environ['DBSERVER_PORT_5000_TCP'],
             translation_table=translation_table,
             timeout=5)
-        return
-        self._client = yield from aiozmq.rpc.connect_rpc(
-            connect='tcp://127.0.0.1:5555',
+
+        self._game = yield from aiozmq.rpc.connect_rpc(
+            connect=os.environ['GAME_PORT_5200_TCP'],
             timeout=5)
 
-        yield from aiozmq.rpc.serve_pubsub(self, subscribe='events:%s' % self._user['username'], connect='tcp://127.0.0.1:5550')
+        yield from aiozmq.rpc.serve_pubsub(
+            self, subscribe='updates:%s' % self.world_id,
+            connect=os.environ['PROXY_PORT_5101_TCP'])
 
-        topics = ['events', 'messages', 'other']
-        i = 0
-        while True:
-            yield from asyncio.sleep(2)
-            i += 1
-            topic = random.choice(topics)
-            self.publish(topic, i)
-            # call RPC
-            ret = yield from self._client.call.remote_func(1, i)
-            print(self._user['username'], ret)
+        # topics = ['events', 'messages', 'other']
+        # i = 0
+        # while True:
+        #     yield from asyncio.sleep(2)
+        #     i += 1
+        #     topic = random.choice(topics)
+        #     self.publish(topic, i)
+        #     # call RPC
+        #     ret = yield from self._client.call.remote_func(1, i)
+        #     print(self._user['username'], ret)
 
     # events handlers methods
     @aiozmq.rpc.method
-    def set_value(self, value):
-        self.game_value = value
-        print(self._user['username'], 'set_value', self.game_value)
+    def update_cities(self, cities):
+        self.publish('update:cities', cities)
 
     # web socker RPC
     # FIXME: Filter private fields
     # FIXME: Add args validation
     @asyncio.coroutine
-    def get_world(self, world_id):
-        world = yield from self._db.call.get_world(world_id)
+    def get_world(self):
+        world = yield from self._db.call.get_world(self.world_id)
         return world
+
+    @asyncio.coroutine
+    def get_city_stats(self, city_id):
+        stats = yield from self._game.call.get_city_stats(self.world_id, city_id)
+        return stats
 
 
 def main():

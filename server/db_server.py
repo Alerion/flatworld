@@ -47,6 +47,14 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
 
             return world
 
+    @aiozmq.rpc.method
+    @asyncio.coroutine
+    def get_active_worlds(self):
+        with (yield from self._pool.cursor()) as cursor:
+            yield from cursor.execute('SELECT id FROM world_world')
+            worlds = yield from cursor.fetchall()
+            return worlds
+
 
 def main():
     loop = asyncio.get_event_loop()
