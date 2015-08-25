@@ -37,6 +37,9 @@ class World:
     def get_city_stats(self, city_id):
         return self.cities[city_id]
 
+    def get_world(self):
+        return self.world
+
 
 class ServerHandler(aiozmq.rpc.AttrHandler):
 
@@ -69,12 +72,19 @@ class ServerHandler(aiozmq.rpc.AttrHandler):
     def get_city_stats(self, world_id: int, city_id: int):
         return self.worlds[world_id].get_city_stats(city_id)
 
+    @aiozmq.rpc.method
+    def get_world(self, world_id: int):
+        print(world_id)
+        return self.worlds[world_id].get_world()
+
 
 def main():
     loop = asyncio.get_event_loop()
 
     events = loop.run_until_complete(
-        aiozmq.rpc.connect_pubsub(connect=os.environ['PROXY_PORT_5100_TCP']))
+        aiozmq.rpc.connect_pubsub(
+            connect=os.environ['PROXY_PORT_5100_TCP'],
+            translation_table=translation_table))
 
     db = loop.run_until_complete(
         aiozmq.rpc.connect_rpc(
@@ -92,7 +102,8 @@ def main():
 
     server_handler = ServerHandler(db, events, worlds)
     server = aiozmq.rpc.serve_rpc(
-        server_handler, bind='tcp://0.0.0.0:{}'.format(5200), loop=loop)
+        server_handler, bind='tcp://0.0.0.0:{}'.format(5200),
+        translation_table=translation_table, loop=loop)
 
     loop.run_until_complete(asyncio.wait([
         server,

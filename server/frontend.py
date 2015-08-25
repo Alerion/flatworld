@@ -1,21 +1,16 @@
 import aiozmq.rpc
+import websocket.rpc
 import asyncio
 import os
-import random
-import zmq
 
 from autobahn.asyncio.websocket import WebSocketServerFactory
-
-from rpc import BaseRpcProtocol
 from zmqrpc.translation_table import translation_table
 
 
-class RpcProtocol(BaseRpcProtocol, aiozmq.rpc.AttrHandler):
+class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.register('get_world', self.get_world)
-        self.register('get_city_stats', self.get_city_stats)
         self.world_id = None
         self._db = None
         self._game = None
@@ -36,22 +31,13 @@ class RpcProtocol(BaseRpcProtocol, aiozmq.rpc.AttrHandler):
 
         self._game = yield from aiozmq.rpc.connect_rpc(
             connect=os.environ['GAME_PORT_5200_TCP'],
+            translation_table=translation_table,
             timeout=5)
 
         yield from aiozmq.rpc.serve_pubsub(
             self, subscribe='updates:%s' % self.world_id,
+            translation_table=translation_table,
             connect=os.environ['PROXY_PORT_5101_TCP'])
-
-        # topics = ['events', 'messages', 'other']
-        # i = 0
-        # while True:
-        #     yield from asyncio.sleep(2)
-        #     i += 1
-        #     topic = random.choice(topics)
-        #     self.publish(topic, i)
-        #     # call RPC
-        #     ret = yield from self._client.call.remote_func(1, i)
-        #     print(self._user['username'], ret)
 
     # events handlers methods
     @aiozmq.rpc.method
@@ -61,11 +47,13 @@ class RpcProtocol(BaseRpcProtocol, aiozmq.rpc.AttrHandler):
     # web socker RPC
     # FIXME: Filter private fields
     # FIXME: Add args validation
+    @websocket.rpc.method
     @asyncio.coroutine
     def get_world(self):
-        world = yield from self._db.call.get_world(self.world_id)
+        world = yield from self._game.call.get_world(self.world_id)
         return world
 
+    @websocket.rpc.method
     @asyncio.coroutine
     def get_city_stats(self, city_id):
         stats = yield from self._game.call.get_city_stats(self.world_id, city_id)
@@ -73,14 +61,15 @@ class RpcProtocol(BaseRpcProtocol, aiozmq.rpc.AttrHandler):
 
 
 def main():
-    factory = WebSocketServerFactory(
-        "ws://{}:{}".format(os.environ['FRONTEND_ADDR'], os.environ['FRONTEND_PORT']),
-        debug=True)
-    factory.protocol = RpcProtocol
-
     loop = asyncio.get_event_loop()
-    coro = loop.create_server(factory, '0.0.0.0', os.environ['FRONTEND_PORT'])
-    server = loop.run_until_complete(coro)
+    factory = WebSocketServerFactory(
+        url='ws://{}:{}'.format(os.environ['FRONTEND_ADDR'], os.environ['FRONTEND_PORT']),
+        debug=True,
+        loop=loop)
+    factory.protocol = FrontendHandler
+
+    server = loop.run_until_complete(
+        loop.create_server(factory, '0.0.0.0', os.environ['FRONTEND_PORT']))
 
     try:
         loop.run_forever()

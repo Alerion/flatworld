@@ -3,12 +3,13 @@ import os
 import sys
 import ujson
 from http import cookies
+from types import MethodType
 
 from autobahn.asyncio.websocket import WebSocketServerProtocol
 import django
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(os.path.join(BASE_DIR, 'webapp'))
+sys.path.append(os.path.join(BASE_DIR, '../webapp'))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "webapp.settings")
 django.setup()
 
@@ -16,18 +17,35 @@ from django.contrib.sessions.backends.db import SessionStore
 from django.conf import settings
 from django.contrib.auth import get_user
 
-from pprint import pprint
-
 RPC = 'rpc'
 EVENT = 'event'
 
 
-class BaseRpcProtocol(WebSocketServerProtocol):
+class Error(Exception):
+    """Base RPC exception"""
+
+
+class NotFoundError(Error, LookupError):
+    """Error raised by server if RPC namespace/method lookup failed."""
+
+
+def method(func):
+    func.__websocket_rpc__ = {}
+    return func
+
+
+class WebsocketRpc(WebSocketServerProtocol):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._methods = {}
         self._user = None
+
+    def __getitem__(self, key):
+        try:
+            return getattr(self, key)
+        except AttributeError:
+            raise KeyError
 
     def onConnect(self, request):
         # TODO: move this to other server or thread and call with async
@@ -66,25 +84,40 @@ class BaseRpcProtocol(WebSocketServerProtocol):
             data = ujson.loads(payload)
 
             if data.get('type') == RPC:
-                if data.get('method') not in self._methods:
+                try:
+                    func = self.dispatch(data.get('method'))
+                except NotFoundError:
                     self.send_error(data, 'Method does not exist')
                 else:
-                    method = self._methods[data.get('method')]
+                    args = self.check_args(func, data.get('args'))
 
-                if 'args' in data and data['args']:
-                    args = data['args']
-                else:
-                    args = []
-
-                # TODO: add async call
-                try:
-                    if asyncio.iscoroutinefunction(method):
-                        value = yield from method(*args)
+                    if asyncio.iscoroutinefunction(func):
+                        value = yield from func(*args)
                         self.send_success(data, value)
                     else:
-                        self.send_success(data, method(*args))
-                except TypeError:
-                    self.send_error(data, 'Invalid method call. Check arguments.')
+                        self.send_success(data, func(*args))
+
+    def check_args(self, func, args):
+        # TODO: Add validation like here
+        # https://github.com/aio-libs/aiozmq/blob/master/aiozmq/rpc/base.py#L205
+        if not args:
+            args = []
+
+        return args
+
+    def dispatch(self, method):
+        try:
+            func = self[method]
+        except KeyError:
+            raise NotFoundError(method)
+        else:
+            if isinstance(func, MethodType):
+                holder = func.__func__
+            else:
+                holder = func
+            if not hasattr(holder, '__websocket_rpc__'):
+                raise NotFoundError(method)
+            return func
 
     def authentication_failed(self):
         self.sendClose()
