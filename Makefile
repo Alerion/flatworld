@@ -66,3 +66,6 @@ staticbuild: staticclean
 # target: staticwatch - Watch static and build.
 staticwatch: updatejsmodules staticbuild
 	cd static && gulp
+
+webappbash:
+	docker-compose run --rm --no-deps webapp /bin/bash
