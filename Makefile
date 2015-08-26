@@ -81,4 +81,4 @@ staticwatch: updatejsmodules staticbuild
 	cd static && gulp
 
 webappbash:
-	docker-compose run --rm --no-deps webapp /bin/bash
+	docker-compose run --rm webapp /bin/bash

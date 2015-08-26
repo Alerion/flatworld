@@ -9,7 +9,8 @@ DEFAULT_WORLD_PARAMS = {
     'start_population': 2000,
     'base_population_growth': 0.05,
     'points': None,
-    'seed': None
+    'seed': None,
+    'speed': 1.
 }
 
 
@@ -18,6 +19,7 @@ class WorldParams(Model):
     base_population_growth = fields.FloatField()
     points = fields.IntegerField()
     seed = fields.CharField()
+    speed = fields.FloatField()
 
 
 class World(Model):
@@ -38,6 +40,11 @@ class World(Model):
             output['regions'][region_id] = region.to_dict(serial)
 
         return output
+
+    def cities(self):
+        for region in self.regions.values():
+            for city in region.cities.values():
+                yield city
 
 
 class Region(Model):

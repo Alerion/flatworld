@@ -64,8 +64,8 @@ export default class App extends React.Component {
 
         // Set world bounds
         // FIXME: Save them in DB for each world
-        var southWest = L.latLng(-30, -30),
-            northEast = L.latLng(30, 30),
+        var southWest = L.latLng(-35, -35),
+            northEast = L.latLng(35, 35),
             bounds = L.latLngBounds(southWest, northEast);
         this.map.setMaxBounds(bounds);
     }

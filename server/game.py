@@ -1,3 +1,4 @@
+import time
 import asyncio
 import aiozmq.rpc
 import os
@@ -8,34 +9,27 @@ from engine.engine import WorldEngine
 
 class ServerHandler(aiozmq.rpc.AttrHandler):
 
-    def __init__(self, db, events, worlds):
+    def __init__(self, worlds, db, events):
         super().__init__()
         self.worlds = worlds
         self._db = db
         self._events = events
+        self._last_time = time.time()
+        self._tick_time = 1.
 
     @asyncio.coroutine
     def run(self):
-        # self._events = yield from aiozmq.rpc.connect_pubsub(
-        #     connect=os.environ['PROXY_PORT_5100_TCP'])
-        # self._db = yield from aiozmq.rpc.connect_rpc(
-        #     connect=os.environ['DBSERVER_PORT_5000_TCP'],
-        #     translation_table=translation_table,
-        #     timeout=5)
+        yield from asyncio.sleep(self._tick_time)
 
         while True:
+            current = time.time()
+            elapsed = current - self._last_time
+            self._last_time = current
+
             for world_engine in self.worlds.values():
-                world_engine.run()
+                world_engine.run(elapsed)
 
-            yield from asyncio.sleep(130)
-
-            # self.value += 1
-            # print(self.value)
-            # self._events.publish('updates:{}'.format(self.world_id)).set_value(self.value)
-
-    @aiozmq.rpc.method
-    def get_city_stats(self, world_id: int, city_id: int):
-        return self.worlds[world_id].get_city_stats(city_id)
+            yield from asyncio.sleep(current + self._tick_time - time.time())
 
     @aiozmq.rpc.method
     def get_world(self, world_id: int):
@@ -60,11 +54,10 @@ def main():
     worlds = {}
 
     for item in active_worlds:
-        world_engine = WorldEngine(db, events, item['id'])
-        loop.run_until_complete(world_engine.init())
-        worlds[item['id']] = world_engine
+        world = loop.run_until_complete(db.call.get_world(item['id']))
+        worlds[item['id']] = WorldEngine(events, world)
 
-    server_handler = ServerHandler(db, events, worlds)
+    server_handler = ServerHandler(worlds, db, events)
     server = aiozmq.rpc.serve_rpc(
         server_handler, bind='tcp://0.0.0.0:{}'.format(5200),
         translation_table=translation_table, loop=loop)
