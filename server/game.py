@@ -27,7 +27,7 @@ class ServerHandler(aiozmq.rpc.AttrHandler):
             self._last_time = current
 
             for world_engine in self.worlds.values():
-                world_engine.run(elapsed)
+                yield from world_engine.run(elapsed)
 
             yield from asyncio.sleep(current + self._tick_time - time.time())
 

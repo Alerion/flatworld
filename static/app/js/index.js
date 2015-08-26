@@ -18,7 +18,7 @@ async function main() {
     // For debugging in console
     window.rpc = rpc;
 
-    rpc.subscribe('update:cities', function (message, topic) {
+    rpc.subscribe('update:world', function (message, topic) {
         console.log(topic, message);
     });
 

@@ -34,6 +34,8 @@ def method(func):
     return func
 
 
+# FIXME: Add subscription on server, so we do not send notification to client if it is not
+# really subscribed. Not it is checked on client.
 class WebsocketRpc(WebSocketServerProtocol):
 
     def __init__(self, *args, **kwargs):

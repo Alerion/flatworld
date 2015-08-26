@@ -41,8 +41,8 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
 
     # events handlers methods
     @aiozmq.rpc.method
-    def update_cities(self, cities):
-        self.publish('update:cities', cities)
+    def update_world(self, world):
+        self.publish('update:world', world.to_dict())
 
     # web socker RPC
     # FIXME: Filter private fields
