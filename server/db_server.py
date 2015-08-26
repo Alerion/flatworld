@@ -5,6 +5,8 @@ import os
 import psycopg2
 from zmqrpc.translation_table import translation_table
 
+from engine import models
+
 if os.environ['DB_PASS']:
     dsn = '''dbname={DB_NAME} user={DB_USER} password={DB_PASS}
  host={DB_PORT_5432_TCP_ADDR} port={DB_PORT_5432_TCP_PORT}'''
@@ -21,30 +23,66 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
         super().__init__()
         self._pool = pool
 
+    @asyncio.coroutine
+    def _load_world(self, world_id, cursor):
+        query = '''
+        SELECT id, name, params, created FROM world_world WHERE id=%s
+        '''
+        yield from cursor.execute(query, (world_id,))
+        data = yield from cursor.fetchone()
+        return models.World(**data)
+
+    @asyncio.coroutine
+    def _load_regions(self, world, cursor):
+        query = '''
+        SELECT id, name, ST_AsGeoJSON(geom) as geom
+        FROM world_region WHERE world_id=%s
+        '''
+        yield from cursor.execute(query, (world.id,))
+        data = yield from cursor.fetchall()
+
+        query = '''
+        SELECT rn.from_region_id AS region_id, array_agg(rn.to_region_id) AS neighbors
+        FROM world_region_neighbors rn JOIN world_region r ON (rn.from_region_id=r.id)
+        WHERE r.world_id=%s GROUP BY from_region_id
+        '''
+        yield from cursor.execute(query, (world.id,))
+        neighbors_data = yield from cursor.fetchall()
+
+        regions = {}
+        for item in data:
+            region = models.Region(world=world, **item)
+            regions[region.id] = region
+
+        for item in neighbors_data:
+            for neighbor_id in item['neighbors']:
+                regions[item['region_id']].neighbors[neighbor_id] = regions[neighbor_id]
+
+        world.regions = regions
+
+    @asyncio.coroutine
+    def _load_cities(self, world, cursor):
+        query = '''
+        SELECT id, name, capital, world_id, region_id, stats, ST_AsGeoJSON(coords) as coords
+        FROM world_city WHERE world_id=%s
+        '''
+        yield from cursor.execute(query, (world.id,))
+        data = yield from cursor.fetchall()
+
+        cities = {}
+        for item in data:
+            city = models.City(world=world, region=world.regions[item['region_id']], **item)
+            cities[city.id] = city
+
+        world.cities = cities
+
     @aiozmq.rpc.method
     @asyncio.coroutine
     def get_world(self, world_id: int):
         with (yield from self._pool.cursor()) as cursor:
-            yield from cursor.execute('SELECT * FROM world_world WHERE id=%s', (world_id,))
-            world = yield from cursor.fetchone()
-
-            query = '''
-            SELECT id, name, world_id, ST_AsGeoJSON(geom) as geom FROM world_region WHERE world_id=%s
-            '''
-            yield from cursor.execute(query, (world_id,))
-            world['regions'] = yield from cursor.fetchall()
-            regions_index = {item['id']: item for item in world['regions']}
-
-            query = '''
-            SELECT id, name, capital, world_id, region_id, stats, ST_AsGeoJSON(coords) as coords
-            FROM world_city WHERE world_id=%s
-            '''
-            yield from cursor.execute(query, (world_id,))
-            cities = yield from cursor.fetchall()
-            for city in cities:
-                region = regions_index[city['region_id']]
-                region.setdefault('cities', []).append(city)
-
+            world = yield from self._load_world(world_id, cursor)
+            yield from self._load_regions(world, cursor)
+            yield from self._load_cities(world, cursor)
             return world
 
     @aiozmq.rpc.method

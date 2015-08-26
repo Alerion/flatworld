@@ -12,8 +12,11 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import sys
 from pprint import pprint
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+sys.path.append(os.path.join(BASE_DIR, '..'))
 
 # Mapnik settings
 HEIGHT_CACHE_DIR = os.path.normpath(os.path.join(BASE_DIR, '../cache/height_map'))

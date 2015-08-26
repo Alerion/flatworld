@@ -3,42 +3,7 @@ import aiozmq.rpc
 import os
 from zmqrpc.translation_table import translation_table
 
-
-class World:
-
-    def __init__(self, db, events, world_id):
-        self.world_id = world_id
-        self.world = None
-        self.cities = {}
-        self.regions = {}
-        self._db = db
-        self._events = events
-
-    @asyncio.coroutine
-    def init(self):
-        self.world = yield from self._db.call.get_world(self.world_id)
-
-        for region in self.world['regions']:
-            self.regions[region['id']] = region
-
-            for city in region['cities']:
-                self.cities[city['id']] = city
-
-    def run(self):
-        for region in self.world['regions']:
-            for city in region['cities']:
-                city['stats']['population'] *= 1 + city['stats']['population_growth']
-
-        self.publish('updates').update_cities(self.cities)
-
-    def publish(self, topic):
-        return self._events.publish('{}:{}'.format(topic, self.world_id))
-
-    def get_city_stats(self, city_id):
-        return self.cities[city_id]
-
-    def get_world(self):
-        return self.world
+from engine.base import WorldEngine
 
 
 class ServerHandler(aiozmq.rpc.AttrHandler):
@@ -59,10 +24,10 @@ class ServerHandler(aiozmq.rpc.AttrHandler):
         #     timeout=5)
 
         while True:
-            for world in self.worlds.values():
-                world.run()
+            for world_engine in self.worlds.values():
+                world_engine.run()
 
-            yield from asyncio.sleep(30)
+            yield from asyncio.sleep(130)
 
             # self.value += 1
             # print(self.value)
@@ -74,7 +39,6 @@ class ServerHandler(aiozmq.rpc.AttrHandler):
 
     @aiozmq.rpc.method
     def get_world(self, world_id: int):
-        print(world_id)
         return self.worlds[world_id].get_world()
 
 
@@ -96,9 +60,9 @@ def main():
     worlds = {}
 
     for item in active_worlds:
-        world = World(db, events, item['id'])
-        loop.run_until_complete(world.init())
-        worlds[item['id']] = world
+        world_engine = WorldEngine(db, events, item['id'])
+        loop.run_until_complete(world_engine.init())
+        worlds[item['id']] = world_engine
 
     server_handler = ServerHandler(db, events, worlds)
     server = aiozmq.rpc.serve_rpc(

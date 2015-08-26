@@ -7,6 +7,8 @@ from world import generators, exports
 from world.map import Map
 from world.models import Biome, River, Region, City, World
 
+from server.engine.models import DEFAULT_WORLD_PARAMS
+
 
 class Command(BaseCommand):
     help = 'Generate new world'
@@ -28,7 +30,10 @@ class Command(BaseCommand):
             seed = int(random.random() * 10000)
         print('seed = %s' % seed)
 
-        world = World(seed=seed, name='World#{}'.format(seed), points=points)
+        params = dict(DEFAULT_WORLD_PARAMS)
+        params['seed'] = seed
+        params['points'] = points
+        world = World(name='World#{}'.format(seed), params=params)
         world.save()
 
         map_obj = Map(seed, [

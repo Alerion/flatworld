@@ -1,6 +1,7 @@
 .PHONY: all help startwebapp startfrontend generateworld createsuperuser updatejsmodules
 	staticwatch migrate generatemapnikstyle generatetilestacheconf starttilestache
 	staticclean staticbuild startdbserver removeworlds startpubsubproxy startgameserver
+	generatebigworld
 
 # target: all - Default target. Does nothing.
 all:
@@ -38,6 +39,10 @@ startdbserver: migrate
 # target: generateworld - Generate new World.
 generateworld: migrate
 	python3 ./webapp/manage.py generate_world
+
+# target: generatebigworld - Generate new World with more points.
+generatebigworld: migrate
+	python3 ./webapp/manage.py generate_world --points=2000 --heights_map_width=2000 --hill_noise=true
 
 # target: staticwatch - Remove all worlds.
 removeworlds: migrate
