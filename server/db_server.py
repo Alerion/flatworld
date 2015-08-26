@@ -30,12 +30,12 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
         '''
         yield from cursor.execute(query, (world_id,))
         data = yield from cursor.fetchone()
-        return models.World(**data)
+        return models.World(data)
 
     @asyncio.coroutine
     def _load_regions(self, world, cursor):
         query = '''
-        SELECT id, name, ST_AsGeoJSON(geom) as geom
+        SELECT id, name, world_id, ST_AsGeoJSON(geom) as geom
         FROM world_region WHERE world_id=%s
         '''
         yield from cursor.execute(query, (world.id,))
@@ -51,7 +51,7 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
 
         regions = {}
         for item in data:
-            region = models.Region(world=world, **item)
+            region = models.Region(item, world=world)
             regions[region.id] = region
 
         for item in neighbors_data:
@@ -69,12 +69,10 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
         yield from cursor.execute(query, (world.id,))
         data = yield from cursor.fetchall()
 
-        cities = {}
         for item in data:
-            city = models.City(world=world, region=world.regions[item['region_id']], **item)
-            cities[city.id] = city
-
-        world.cities = cities
+            region = world.regions[item['region_id']]
+            city = models.City(item, world=world, region=region)
+            region.cities[city.id] = city
 
     @aiozmq.rpc.method
     @asyncio.coroutine
@@ -98,8 +96,9 @@ def main():
     loop = asyncio.get_event_loop()
     pool = loop.run_until_complete(
         aiopg.create_pool(dsn, cursor_factory=psycopg2.extras.RealDictCursor))
+    handler = DBServerHandler(pool)
     server = aiozmq.rpc.serve_rpc(
-        DBServerHandler(pool),
+        handler,
         bind='tcp://0.0.0.0:5000',
         translation_table=translation_table,
         loop=loop)

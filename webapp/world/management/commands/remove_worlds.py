@@ -13,6 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if input('Do you wish remove all worlds and related data? [y/N]: ') != 'y':
             return
+        # TODO: Remove TileStache cache
 
         for name in os.listdir(settings.HILLSHADES_DIR):
             if name.endswith('.tif'):

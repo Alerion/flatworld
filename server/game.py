@@ -3,7 +3,7 @@ import aiozmq.rpc
 import os
 from zmqrpc.translation_table import translation_table
 
-from engine.base import WorldEngine
+from engine.engine import WorldEngine
 
 
 class ServerHandler(aiozmq.rpc.AttrHandler):

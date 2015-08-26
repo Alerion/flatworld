@@ -1,4 +1,6 @@
 import { Store } from 'flummox';
+import Immutable from 'immutable';
+
 
 export default class WorldStore extends Store {
 
@@ -12,7 +14,7 @@ export default class WorldStore extends Store {
 
     handleNewWorld(obj) {
         this.setState({
-            world: obj
+            world: Immutable.fromJS(obj)
         });
     }
 

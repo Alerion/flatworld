@@ -51,7 +51,7 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
     @asyncio.coroutine
     def get_world(self):
         world = yield from self._game.call.get_world(self.world_id)
-        return world
+        return world.to_dict()
 
     @websocket.rpc.method
     @asyncio.coroutine

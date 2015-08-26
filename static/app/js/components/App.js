@@ -39,12 +39,13 @@ export default class App extends React.Component {
             var content = '';
             if (region) {
                 var cities = [];
-                for (let city of region.cities) {
-                    cities.push(<li key={city.id}>{city.name}({city.id}): {city.stats.population}</li>);
+
+                for (let city of region.get('cities').values()) {
+                    cities.push(<li key={city.get('id')}>{city.get('name')}({city.get('id')}): {city.get('stats').get('population')}</li>);
                 }
 
                 content = <p>
-                    <b>{region.name}</b>
+                    <b>{region.get('name')}</b>
                     <ul>{cities}</ul>
                 </p>
             } else {
@@ -71,9 +72,23 @@ export default class App extends React.Component {
 
     componentDidUpdate() {
         var world = this.props.world;
+        this.renderRegions(world);
+        this.renderCities(world);
+    }
 
-        // Render regions
-        this.regionsLayer = L.geoJson(this.toGeoJSON(world.regions), {
+    renderRegions(world) {
+        var regions = world.get('regions').map(item => {
+            return {
+                type: "Feature",
+                properties: {
+                    color: randomColor(),
+                    data: item
+                },
+                geometry: JSON.parse(item.get('geom'))
+            }
+        }).toArray();
+
+        this.regionsLayer = L.geoJson(regions, {
             onEachFeature: (feature, layer) => {
                 layer.on({
                     mouseover: this.highlightRegion.bind(this),
@@ -83,27 +98,34 @@ export default class App extends React.Component {
             style: function (feature) {
                 return {
                     color: feature.properties.color,
-                    weight: 0.5,
+                    weight: 1,
                     opacity: 0.8,
-                    fillOpacity: 0.3
+                    dashArray: '5 5',
+                    fillOpacity: 0
                 };
             }
         });
 
         this.regionsLayer.addTo(this.map);
         this.layersControl.addOverlay(this.regionsLayer, 'Regions');
+    }
 
-        // Render cities
+    renderCities(world) {
         // TODO: Add resize on zoom. On large zoom level they are too small.
-
         var cities = [];
-        for (let region of world.regions) {
-            for (let city of region.cities) {
-                cities.push(city);
+        for (let region of world.get('regions').values()) {
+            for (let item of region.get('cities').values()) {
+                cities.push({
+                    type: "Feature",
+                    properties: {
+                        data: item
+                    },
+                    geometry: JSON.parse(item.get('coords'))
+                })
             }
         }
 
-        var citiesLayer = L.geoJson(this.toGeoJSON(cities, 'coords', {withColor: false}), {
+        var citiesLayer = L.geoJson(cities, {
             pointToLayer: function (feature, latlng) {
                 var style = {
                     radius: 3,
@@ -114,7 +136,7 @@ export default class App extends React.Component {
                     fillOpacity: 0.8
                 };
 
-                if (feature.properties.capital) {
+                if (feature.properties.data.get('capital')) {
                     style.fillColor = '#FF5722';
                 }
 
@@ -137,39 +159,12 @@ export default class App extends React.Component {
             layer.bringToFront();
         }
 
-        this.infoPanel.update(layer.feature.properties);
+        this.infoPanel.update(layer.feature.properties.data);
     }
 
     resetHighlight(e) {
         this.regionsLayer.resetStyle(e.target);
         this.infoPanel.update();
-    }
-
-    toGeoJSON(data, field='geom', withColor=true) {
-        var output = [];
-        for (let item of data) {
-            let properties = {};
-
-            if (withColor) {
-                properties.color = this.randomColor();
-            }
-
-            let obj = {
-                type: "Feature",
-                properties: Object.assign(properties, item),
-                geometry: JSON.parse(item[field])
-            }
-            output.push(obj);
-        }
-        return output
-    }
-
-    randomColor() {
-        // FIXME: Add more smart colors
-        var r = Math.floor(Math.random() * 255);
-        var g = Math.floor(Math.random() * 255);
-        var b = Math.floor(Math.random() * 255);
-        return "rgb("+r+" ,"+g+","+ b+")";
     }
 
     render() {
@@ -179,6 +174,14 @@ export default class App extends React.Component {
             <div ref="map" className={"map"} id="{this.props.world.name}" style={{height: 840}}></div>
         );
     }
+}
+
+function randomColor() {
+    // FIXME: Add more smart colors
+    var r = Math.floor(Math.random() * 255);
+    var g = Math.floor(Math.random() * 255);
+    var b = Math.floor(Math.random() * 255);
+    return "rgb("+r+" ,"+g+","+ b+")";
 }
 
 export default class FluxApp extends React.Component {
