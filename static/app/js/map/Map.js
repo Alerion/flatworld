@@ -1,7 +1,7 @@
 import L from 'leaflet';
 import React from 'react';
 import $ from 'jquery';
-import jsx from '../utils/template';
+
 import {InfoPanel, RegionInfoPanel} from './controls';
 import RegionsLayer from './layers/RegionsLayer';
 

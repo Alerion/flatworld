@@ -1,20 +1,18 @@
 import L from 'leaflet';
 import React from 'react';
 import $ from 'jquery';
-import jsx from '../utils/template';
 
 
 var InfoPanel = L.Control.extend({
 
     onAdd: function (map) {
-        this.$container = $(jsx(<div className='info'></div>));
+        this.$container = $('<div class="info"></div>');
         this.hide();
         return this.$container[0];
     },
 
     show: function (obj) {
-        var content = jsx(this.renderObject(obj));
-        this.$container.removeClass('hidden').html(content);
+        this.$container.removeClass('hidden').html(this.renderObject(obj));
     },
 
     hide: function () {
@@ -40,10 +38,10 @@ var RegionInfoPanel = InfoPanel.extend({
             );
         }
 
-        return <p>
+        return React.renderToStaticMarkup(<p>
             <b>{region.get('name')}</b>
             <ul>{cities}</ul>
-        </p>
+        </p>);
     }
 });
 
