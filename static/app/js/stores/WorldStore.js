@@ -9,6 +9,7 @@ export default class WorldStore extends Store {
 
         this.worldActions = worldActions;
         this.register(worldActions.getWorld, this.handleNewWorld);
+        this.register(worldActions.updateWorld, this.handleNewWorld);
         this.state = {};
     }
 

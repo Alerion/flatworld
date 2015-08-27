@@ -36,7 +36,7 @@ class WorldEngine:
 
 
 class SimulationLayer:
-    notify_treshhold = 0
+    notify_treshhold = 0  # seconds
 
     def __init__(self, world):
         self.world = world
@@ -83,7 +83,7 @@ class SimulationLayer:
 
 
 class PopulationLayer(SimulationLayer):
-    notify_treshhold = 5
+    notify_treshhold = 10
 
     def run(self, delta, elapsed):
         """

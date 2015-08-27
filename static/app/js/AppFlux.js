@@ -11,5 +11,9 @@ export default class AppFlux extends Flux {
         this.rpc = rpc;
         const worldActions = this.createActions('worldActions', WorldActions, { rpc });
         this.createStore('worldStore', WorldStore, { worldActions });
+
+        rpc.subscribe('update:world', (world, topic) => {
+            this.getActions('worldActions').updateWorld(world);
+        });
     }
 }

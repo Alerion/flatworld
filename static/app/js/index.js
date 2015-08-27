@@ -18,10 +18,6 @@ async function main() {
     // For debugging in console
     window.rpc = rpc;
 
-    rpc.subscribe('update:world', function (message, topic) {
-        console.log(topic, message);
-    });
-
     const flux = new AppFlux(rpc);
 
     router.run(function (Handler, state) {
