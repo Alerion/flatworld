@@ -1,18 +1,22 @@
+import L from 'leaflet';
+
 // FIXME: We need better way to get style for zoom level, and better way to update them.
 var STYLE_DEFAULT = function (zoom) {
-    var dash = 5 * zoom;
+    var dash = 24 * zoom;
     return {
-        weight: 2 * zoom,
+        weight: 12 * zoom,
         opacity: 0.8,
+        color: '#9E9E9E',
         dashArray: `${dash} ${dash}`,
         fillOpacity: 0
     }
 };
 
 var STYLE_HIGHLIGHT = function (zoom) {
-    var dash = 8 * zoom;
+    var dash = 32 * zoom;
     return {
-        weight: 4 * zoom,
+        weight: 16 * zoom,
+        color: '#607D8B',
         dashArray: `${dash} ${dash}`
     }
 };
@@ -36,7 +40,6 @@ var RegionsLayer = L.GeoJSON.extend({
                 return {
                     type: "Feature",
                     properties: {
-                        color: randomColor(),
                         regionId: String(item.get('id'))
                     },
                     geometry: JSON.parse(item.get('geom'))
@@ -57,16 +60,14 @@ var RegionsLayer = L.GeoJSON.extend({
     },
 
     style: function (feature) {
-        return Object.assign({}, {
-            color: feature.properties.color,
-        }, STYLE_DEFAULT(this._map.getRelativeZoom()));
+        return STYLE_DEFAULT(this._map.getPercentZoom());
     },
 
     onMouseover: function (event) {
         var layer = event.target;
 
         layer.highligh = true;
-        layer.setStyle(STYLE_HIGHLIGHT(this._map.getRelativeZoom()));
+        layer.setStyle(STYLE_HIGHLIGHT(this._map.getPercentZoom()));
 
         if (!L.Browser.ie && !L.Browser.opera) {
             layer.bringToFront();
@@ -84,24 +85,16 @@ var RegionsLayer = L.GeoJSON.extend({
     },
 
     updateStyle: function () {
+        var zoom = this._map.getPercentZoom();
         // Set what this.style returns.
         this.eachLayer(function (layer) {
             if (layer.highligh) {
-                layer.setStyle(STYLE_HIGHLIGHT(this._map.getRelativeZoom()));
+                layer.setStyle(STYLE_HIGHLIGHT(zoom));
             } else {
                 this.resetStyle(layer);
             }
         }, this);
     }
 });
-
-
-function randomColor() {
-    // FIXME: Add more smart colors
-    var r = Math.floor(Math.random() * 255);
-    var g = Math.floor(Math.random() * 255);
-    var b = Math.floor(Math.random() * 255);
-    return "rgb("+r+" ,"+g+","+ b+")";
-}
 
 export default RegionsLayer;

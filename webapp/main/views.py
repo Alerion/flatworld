@@ -20,6 +20,7 @@ def wolrd(request, world_id):
         'TILE_SERVER': settings.TILE_SERVER,
         'FRONTEND_ADDR': settings.FRONTEND_ADDR,
         'FRONTEND_PORT': settings.FRONTEND_PORT,
+        'STATIC_URL': settings.STATIC_URL,
         'world': world
     }
     return render(request, 'main/wolrd.html', context)

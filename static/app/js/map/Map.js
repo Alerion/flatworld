@@ -4,6 +4,7 @@ import $ from 'jquery';
 
 import {InfoPanel, RegionInfoPanel} from './controls';
 import RegionsLayer from './layers/RegionsLayer';
+import {CitiesLayer, CapitalsLayer} from './layers/CitiesLayer';
 
 // Fix vector layer rendering when you drag
 // From here https://github.com/Leaflet/Leaflet/issues/2814
@@ -17,7 +18,7 @@ export default L.Map.extend({
         center: [0, 0],
         attributionControl: false,
         // FIXME: Save them in DB for each world
-        maxBounds: [[-35, -35], [35, 35]],
+        maxBounds: [[-40, -40], [40, 40]],
         layers: [
             L.tileLayer(CONFIG.TILE_LAYER_URL)
         ]
@@ -31,80 +32,49 @@ export default L.Map.extend({
         this.regionInfoPanel = new RegionInfoPanel();
         this.addControl(this.regionInfoPanel);
 
-        // Initialize layers control
-        this.layersControl = L.control.layers({}, {}, {
-            position: 'topleft',
-            collapsed: false
-        });
-        this.addControl(this.layersControl);
-
         // Layers
         this.regionsLayer = new RegionsLayer(this.regionInfoPanel);
         this.addLayer(this.regionsLayer);
-        this.layersControl.addOverlay(this.regionsLayer, 'Regions');
 
-        this.citiesLayer = null;
+        this.capitalsLayer = new CapitalsLayer();
+        this.addLayer(this.capitalsLayer);
 
+        this.citiesLayer = new CitiesLayer();
         // Events
         this.on('zoomend', this.onZoomend.bind(this));
     },
 
     setWorld: function (world) {
-        var initialize = (! this.world);
         this.world = world;
-        this.regionsLayer.setWorld(world);
-        if (initialize) {
-            // this.renderRegions();
-            // this.renderCities();
-        }
+
+        this.eachLayer(function (layer) {
+            if (layer.setWorld) {
+                layer.setWorld(world);
+            }
+        });
     },
 
     getRelativeZoom: function () {
         // Used by layers for get style for zoom level. This is not absolute zoom,
         // so you can use to calculate styles and do not worry if world size,
         // zoom levels or scale can be changed.
-        return this.getZoom() - this.getMinZoom() + 1;
+        return (this.getZoom() - this.getMinZoom() + 1);
+    },
+
+    getPercentZoom: function () {
+        return this.getRelativeZoom() / this.getMaxZoom();
     },
 
     onZoomend: function (event) {
+        var zoom = this.getRelativeZoom();
         this.regionsLayer.updateStyle();
-    },
+        this.capitalsLayer.updateStyle();
 
-    renderCities: function () {
-        // TODO: Add resize on zoom. On large zoom level they are too small.
-        var cities = [];
-        for (let region of this.world.get('regions').values()) {
-            for (let item of region.get('cities').values()) {
-                cities.push({
-                    type: "Feature",
-                    properties: {
-                        data: item
-                    },
-                    geometry: JSON.parse(item.get('coords'))
-                })
-            }
+        // FIXME: make some declarative way for this
+        if (zoom >= 3) {
+            this.addLayer(this.citiesLayer);
+        } else {
+            this.removeLayer(this.citiesLayer);
         }
-
-        this.citiesLayer = L.geoJson(cities, {
-            pointToLayer: function (feature, latlng) {
-                var style = {
-                    radius: 3,
-                    fillColor: "#9E9E9E",
-                    color: "#888",
-                    weight: 1,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                };
-
-                if (feature.properties.data.get('capital')) {
-                    style.fillColor = '#FF5722';
-                }
-
-                return L.circleMarker(latlng, style);
-            }
-        });
-
-        this.addLayer(this.citiesLayer);
-        this.layersControl.addOverlay(this.citiesLayer, 'Cities');
     }
 });
