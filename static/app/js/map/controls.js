@@ -33,13 +33,14 @@ var RegionInfoPanel = InfoPanel.extend({
         for (let city of region.get('cities').values()) {
             cities.push(
                 <li key={city.get('id')}>
-                    {city.get('name')}({city.get('id')}): {city.get('stats').get('population')}
+                    {city.get('name')}: {Math.round(city.get('stats').get('population'))}
                 </li>
             );
         }
 
         return React.renderToStaticMarkup(<p>
-            <b>{region.get('name')}</b>
+            <b>{region.get('name')}</b><br/>
+            Population:
             <ul>{cities}</ul>
         </p>);
     }

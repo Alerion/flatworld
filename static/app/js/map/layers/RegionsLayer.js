@@ -1,3 +1,22 @@
+// FIXME: We need better way to get style for zoom level, and better way to update them.
+var STYLE_DEFAULT = function (zoom) {
+    var dash = 5 * zoom;
+    return {
+        weight: 2 * zoom,
+        opacity: 0.8,
+        dashArray: `${dash} ${dash}`,
+        fillOpacity: 0
+    }
+};
+
+var STYLE_HIGHLIGHT = function (zoom) {
+    var dash = 8 * zoom;
+    return {
+        weight: 4 * zoom,
+        dashArray: `${dash} ${dash}`
+    }
+};
+
 var RegionsLayer = L.GeoJSON.extend({
 
     initialize: function (infoPanel, geojson, options) {
@@ -38,34 +57,41 @@ var RegionsLayer = L.GeoJSON.extend({
     },
 
     style: function (feature) {
-        return {
+        return Object.assign({}, {
             color: feature.properties.color,
-            weight: 1,
-            opacity: 0.8,
-            dashArray: '5 5',
-            fillOpacity: 0
-        };
+        }, STYLE_DEFAULT(this._map.getRelativeZoom()));
     },
 
-    onMouseover: function (e) {
-        var layer = e.target;
+    onMouseover: function (event) {
+        var layer = event.target;
 
-        layer.setStyle({
-            weight: 4
-        });
+        layer.highligh = true;
+        layer.setStyle(STYLE_HIGHLIGHT(this._map.getRelativeZoom()));
 
         if (!L.Browser.ie && !L.Browser.opera) {
             layer.bringToFront();
         }
 
         var regionId = layer.feature.properties.regionId;
-        var regions = this.world.get('regions');
-        this.infoPanel.show(regions.get(regionId));
+        this.infoPanel.show(this.world.get('regions').get(regionId));
     },
 
-    onMouseout: function (e) {
-        this.resetStyle(e.target);
+    onMouseout: function (event) {
+        var layer = event.target;
+        delete layer.highligh;
+        this.resetStyle(layer);
         this.infoPanel.hide();
+    },
+
+    updateStyle: function () {
+        // Set what this.style returns.
+        this.eachLayer(function (layer) {
+            if (layer.highligh) {
+                layer.setStyle(STYLE_HIGHLIGHT(this._map.getRelativeZoom()));
+            } else {
+                this.resetStyle(layer);
+            }
+        }, this);
     }
 });
 

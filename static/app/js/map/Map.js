@@ -44,6 +44,9 @@ export default L.Map.extend({
         this.layersControl.addOverlay(this.regionsLayer, 'Regions');
 
         this.citiesLayer = null;
+
+        // Events
+        this.on('zoomend', this.onZoomend.bind(this));
     },
 
     setWorld: function (world) {
@@ -56,19 +59,15 @@ export default L.Map.extend({
         }
     },
 
-    renderRegions: function () {
-        var regions = this.world.get('regions').map(item => {
-            return {
-                type: "Feature",
-                properties: {
-                    color: randomColor(),
-                    data: item
-                },
-                geometry: JSON.parse(item.get('geom'))
-            }
-        }).toArray();
+    getRelativeZoom: function () {
+        // Used by layers for get style for zoom level. This is not absolute zoom,
+        // so you can use to calculate styles and do not worry if world size,
+        // zoom levels or scale can be changed.
+        return this.getZoom() - this.getMinZoom() + 1;
+    },
 
-        this.regionsLayer.addData(regions);
+    onZoomend: function (event) {
+        this.regionsLayer.updateStyle();
     },
 
     renderCities: function () {
