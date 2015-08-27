@@ -7,7 +7,7 @@ import jsx from '../utils/template';
 var InfoPanel = L.Control.extend({
 
     onAdd: function (map) {
-        this.$container = $(jsx(<div className={'info'}>Hello World!</div>));
+        this.$container = $(jsx(<div className='info'></div>));
         this.hide();
         return this.$container[0];
     },
@@ -33,13 +33,17 @@ var RegionInfoPanel = InfoPanel.extend({
         var cities = [];
 
         for (let city of region.get('cities').values()) {
-            cities.push(<li key={city.get('id')}>{city.get('name')}({city.get('id')}): {city.get('stats').get('population')}</li>);
+            cities.push(
+                <li key={city.get('id')}>
+                    {city.get('name')}({city.get('id')}): {city.get('stats').get('population')}
+                </li>
+            );
         }
 
-        return (<p>
+        return <p>
             <b>{region.get('name')}</b>
             <ul>{cities}</ul>
-        </p>)
+        </p>
     }
 });
 

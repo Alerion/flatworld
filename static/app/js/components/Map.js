@@ -4,7 +4,7 @@ import React from 'react';
 import Map from '../map/Map';
 
 
-export default class App extends React.Component {
+export default class MapComponent extends React.Component {
 
     constructor(props, context) {
         super(props, context);
@@ -32,7 +32,7 @@ export default class App extends React.Component {
 }
 
 
-export default class FluxApp extends React.Component {
+export default class FluxMapComponent extends React.Component {
 
     render() {
         return (
@@ -41,11 +41,11 @@ export default class FluxApp extends React.Component {
                     world: store.getWorld()
                 })
             }}>
-                <App />
+                <MapComponent />
             </FluxComponent>
         );
     }
 
 }
 
-export default FluxApp;
+export default FluxMapComponent;
