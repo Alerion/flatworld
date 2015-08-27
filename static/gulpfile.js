@@ -10,30 +10,34 @@ var babelify = require('babelify');
 var bower = require('gulp-bower');
 var path = require('path');
 var NpmImportPlugin = require("less-plugin-npm-import");
+var eslint = require('gulp-eslint');
 
 function compile(watch) {
     var bundler =
-        browserify('./app/js/index.js', { debug: true })
-        .transform(
+        browserify('./app/js/index.js', {debug: true})
+            .transform(
             babelify.configure({
                 optional: ["runtime", "es7.asyncFunctions"]
             })
-          );
+        );
 
-    bundller =  watch ? watchify(bundler) : bundler;
+    bundller = watch ? watchify(bundler) : bundler;
 
     function rebundle() {
         bundler.bundle()
-            .on('error', function(err) { console.error(err); this.emit('end'); })
+            .on('error', function (err) {
+                console.error(err);
+                this.emit('end');
+            })
             .pipe(source('build.js'))
             .pipe(buffer())
-            .pipe(sourcemaps.init({ loadMaps: true }))
+            .pipe(sourcemaps.init({loadMaps: true}))
             .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest('./build/js'));
     }
 
     if (watch) {
-        bundler.on('update', function() {
+        bundler.on('update', function () {
             console.log('-> bundling...');
             rebundle();
         });
@@ -48,7 +52,7 @@ gulp.task('cssbuild', function () {
         .pipe(less({
             plugins: [new NpmImportPlugin({prefix: 'npm://'})]
         }))
-        .pipe(sourcemaps.init({ loadMaps: true }))
+        .pipe(sourcemaps.init({loadMaps: true}))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./build/css'));
 });
@@ -57,22 +61,22 @@ gulp.task('csswatch', function () {
     return gulp.watch('./app/less/**/*.less', ['cssbuild', 'fontsbuild']);
 });
 
-gulp.task('jswatch', function() {
+gulp.task('jswatch', function () {
     return compile(true);
 });
 
-gulp.task('jsbuild', function() {
+gulp.task('jsbuild', function () {
     return compile();
 });
 
-gulp.task('fontsbuild', function() {
+gulp.task('fontsbuild', function () {
     return gulp.src([
-            './app/fonts/**/*.{ttf,woff,woff2,eof,svg}'
-        ])
+        './app/fonts/**/*.{ttf,woff,woff2,eof,svg}'
+    ])
         .pipe(gulp.dest('./build/fonts'));
 });
 
-gulp.task('imgbuild', function() {
+gulp.task('imgbuild', function () {
     return gulp.src('./app/img/**/*.{png,gif,jpg}')
         .pipe(gulp.dest('./build/img'));
 });
@@ -81,12 +85,19 @@ gulp.task('clean', function (cb) {
     del(['build'], cb)
 });
 
-gulp.task('bower', function() {
+gulp.task('bower', function () {
     return bower()
         .pipe(gulp.dest('./build/vendors'))
 });
 
-gulp.task('build', ['bower', 'jsbuild', 'cssbuild', 'fontsbuild', 'imgbuild']);
+gulp.task('lint', function () {
+    return gulp.src(['app/js/**/*.js'])
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failOnError());
+});
+
+gulp.task('build', ['bower', 'jsbuild', 'cssbuild', 'fontsbuild', 'imgbuild', 'lint']);
 gulp.task('watch', ['jswatch', 'csswatch']);
 
 gulp.task('default', ['watch']);
