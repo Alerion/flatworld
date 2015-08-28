@@ -1,7 +1,7 @@
 import aiozmq.rpc
-import websocket.rpc
 import asyncio
 import os
+import websocket.rpc
 
 from autobahn.asyncio.websocket import WebSocketServerFactory
 from zmqrpc.translation_table import translation_table
@@ -9,11 +9,12 @@ from zmqrpc.translation_table import translation_table
 
 class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, db, game, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.world_id = None
-        self._db = None
-        self._game = None
+        self._db = db
+        self._game = game
+        self._pubsub = None
 
     def onConnect(self, request):
         try:
@@ -24,20 +25,16 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
         super().onConnect(request)
 
     def onOpen(self):
-        self._db = yield from aiozmq.rpc.connect_rpc(
-            connect=os.environ['DBSERVER_PORT_5000_TCP'],
-            translation_table=translation_table,
-            timeout=5)
-
-        self._game = yield from aiozmq.rpc.connect_rpc(
-            connect=os.environ['GAME_PORT_5200_TCP'],
-            translation_table=translation_table,
-            timeout=5)
-
-        yield from aiozmq.rpc.serve_pubsub(
+        self._pubsub = yield from aiozmq.rpc.serve_pubsub(
             self, subscribe='updates:%s' % self.world_id,
             translation_table=translation_table,
             connect=os.environ['PROXY_PORT_5101_TCP'])
+
+    def connection_lost(self, exc):
+        self._db = None
+        self._game = None
+        self._pubsub.close()
+        super().connection_lost(exc)
 
     # events handlers methods
     @aiozmq.rpc.method
@@ -62,11 +59,27 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
 
 def main():
     loop = asyncio.get_event_loop()
+
+    db = loop.run_until_complete(
+        aiozmq.rpc.connect_rpc(
+            connect=os.environ['DBSERVER_PORT_5000_TCP'],
+            translation_table=translation_table,
+            timeout=5))
+
+    # Is this good idea to have one connection?
+    game = loop.run_until_complete(
+        aiozmq.rpc.connect_rpc(
+            connect=os.environ['GAME_PORT_5200_TCP'],
+            translation_table=translation_table,
+            timeout=5))
+
+    def create_protocol(*args, **kwargs):
+        return FrontendHandler(db=db, game=game, *args, **kwargs)
+
     factory = WebSocketServerFactory(
         url='ws://{}:{}'.format(os.environ['FRONTEND_ADDR'], os.environ['FRONTEND_PORT']),
-        debug=True,
         loop=loop)
-    factory.protocol = FrontendHandler
+    factory.protocol = create_protocol
 
     server = loop.run_until_complete(
         loop.create_server(factory, '0.0.0.0', os.environ['FRONTEND_PORT']))

@@ -2,6 +2,7 @@ import asyncio
 import os
 import sys
 import ujson
+import msgpack
 from http import cookies
 from types import MethodType
 
@@ -40,7 +41,6 @@ class WebsocketRpc(WebSocketServerProtocol):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._methods = {}
         self._user = None
 
     def __getitem__(self, key):
@@ -77,27 +77,26 @@ class WebsocketRpc(WebSocketServerProtocol):
 
     @asyncio.coroutine
     def onMessage(self, payload, isBinary):
+        assert isBinary
         # Not sure this can happen, but lets check
         if not self._user:
             self.authentication_failed()
 
         # TODO: add better validation
-        if not isBinary:
-            data = ujson.loads(payload)
+        data = msgpack.unpackb(payload, encoding='utf8')
+        if data.get('type') == RPC:
+            try:
+                func = self.dispatch(data.get('method'))
+            except NotFoundError:
+                self.send_error(data, 'Method does not exist')
+            else:
+                args = self.check_args(func, data.get('args'))
 
-            if data.get('type') == RPC:
-                try:
-                    func = self.dispatch(data.get('method'))
-                except NotFoundError:
-                    self.send_error(data, 'Method does not exist')
+                if asyncio.iscoroutinefunction(func):
+                    value = yield from func(*args)
+                    self.send_success(data, value)
                 else:
-                    args = self.check_args(func, data.get('args'))
-
-                    if asyncio.iscoroutinefunction(func):
-                        value = yield from func(*args)
-                        self.send_success(data, value)
-                    else:
-                        self.send_success(data, func(*args))
+                    self.send_success(data, func(*args))
 
     def check_args(self, func, args):
         # TODO: Add validation like here
@@ -106,6 +105,10 @@ class WebsocketRpc(WebSocketServerProtocol):
             args = []
 
         return args
+
+    def _send(self, msg):
+        # FIXME: exceptions from here are not displayed in docker logs
+        self.sendMessage(msgpack.packb(msg), isBinary=True)
 
     def dispatch(self, method):
         try:
@@ -152,6 +155,3 @@ class WebsocketRpc(WebSocketServerProtocol):
             'message': message
         }
         self._send(msg)
-
-    def _send(self, msg):
-        self.sendMessage(ujson.dumps(msg).encode('utf8'), isBinary=False)

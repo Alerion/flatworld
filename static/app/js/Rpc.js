@@ -1,3 +1,5 @@
+import msgpack from 'msgpack-js-browser';
+
 export default class Rpc {
 
     constructor(url) {
@@ -11,6 +13,7 @@ export default class Rpc {
     connect() {
         return new Promise((resolve, reject) => {
             this._socket = new WebSocket(this.url);
+            this._socket.binaryType = 'arraybuffer';
             this._socket.onopen = resolve;
             this._socket.onmessage = this.onMessage.bind(this);
             this._socket.onclose = this.onClose.bind(this);
@@ -18,8 +21,8 @@ export default class Rpc {
         });
     }
 
-    onMessage(msg) {
-        var response = JSON.parse(msg.data);
+    onMessage(event) {
+        var response = msgpack.decode(event.data);
 
         if (response.type == 'rpc') {
             var promise = this._requests.get(response.id);
@@ -42,7 +45,12 @@ export default class Rpc {
     }
 
     onClose() {
+        // Try to reconnect
         setTimeout(this.connect.bind(this), 1000);
+    }
+
+    send(msg) {
+        this._socket.send(msgpack.encode(msg));
     }
 
     call(method, ...args) {
@@ -55,12 +63,12 @@ export default class Rpc {
                 reject: reject
             });
 
-            this._socket.send(JSON.stringify({
+            this.send({
                 id: id,
                 method: method,
                 type: 'rpc',
                 args: args
-            }), {binary: false});
+            });
         });
 
         return promise;
