@@ -1,20 +1,159 @@
-<!doctype html>{% load staticfiles %}
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Flat World</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-    </head>
-    <body>
-        Available worlds:
-        <ul>
-            {% for world in worlds %}
-            <ul>
-                <a href="{{ world.get_absolute_url }}">{{ world }}</a>
-            </ul>
-            {% endfor %}
-        </ul>
-    </body>
-</html>
+{% extends 'base.html' %}{% load staticfiles %}
+
+{% block body %}
+<section id="content">
+    <div class="container wall">
+
+        <div class="block-header">
+            <h2>Flat World <small>Here we can display some base information about our game, news and other staff.</small></h2>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="media">
+                            <div class="pull-left">
+                                <img class="lv-img" src="{% static 'img/profile-pics/1.jpg' %}" alt="">
+                            </div>
+
+                            <div class="media-body m-t-5">
+                                <h2>Mallinda Hollaway <small>Posted on 31st Aug 2015 at 07:00</small></h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body card-padding">
+                        <p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce eget dolor id justo luctus commodo vel pharetra nisi. Donec velit libero, gravida vel diam ut, lobortis mollis quam. Morbi posuere egestas posuere. Curabitur in dui sollicitudin, lacinia magna at, laoreet sapien. Integer vitae eros nulla.</p>
+
+                        <div class="wall-img-preview lightbox clearfix">
+                            <div class="wip-item" data-src="img/headers/4.png" style="background-image: url({% static 'img/world.png' %});">
+                                <div class="lightbox-item"></div>
+                            </div>
+                        </div>
+
+                        <ul class="wall-attrs clearfix list-inline list-unstyled">
+                            <li class="wa-stats">
+                                <span><i class="zmdi zmdi-comments"></i> 36</span>
+                                <span class="active"><i class="zmdi zmdi-favorite"></i> 220</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="media">
+                            <div class="pull-left">
+                                <img class="lv-img" src="{% static 'img/profile-pics/3.jpg' %}" alt="">
+                            </div>
+
+                            <div class="media-body m-t-5">
+                                <h2>Felix Harper <small>Posted on 29th Aug 2015 at 02:10</small></h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body card-padding p-t-0">
+                        <p>Aliquam vel sem ut ligula posuere viverra. Ut dolor nisi, fringilla quis consectetur maximus, finibus vel diam. Duis condimentum, diam in semper congue, tortor orci condimentum urna</p>
+
+                        <ul class="wall-attrs clearfix list-inline list-unstyled">
+                            <li class="wa-stats">
+                                <span><i class="zmdi zmdi-comments"></i> 0</span>
+                                <span><i class="zmdi zmdi-favorite"></i> 0</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="media">
+                            <div class="pull-left">
+                                <img class="lv-img" src="{% static 'img/profile-pics/2.jpg' %}" alt="">
+                            </div>
+
+                            <div class="media-body m-t-5">
+                                <h2>Morgan Francis <small>Posted on 2nd Sep 2015 at 17:00</small></h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body card-padding">
+                        <p>Donec velit libero, gravida vel diam ut, lobortis mollis quam. Morbi posuere egestas posuere. Curabitur in dui sollicitudin, lacinia magna at, laoreet sapien. Integer vitae eros nulla.</p>
+
+                        <ul class="wall-attrs clearfix list-inline list-unstyled">
+                            <li class="wa-stats">
+                                <span><i class="zmdi zmdi-comments"></i> 20</span>
+                                <span class="active"><i class="zmdi zmdi-favorite"></i> 78</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 hidden-sm">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>About us</h2>
+                    </div>
+
+                    <div class="card-body card-padding">
+                        Maecenas malesuada. Nam adipiscing. Etiam vitae tortor. Maecenas ullamcorper, dui et placerat feugiat, eros pede varius nisi, condimentum viverra felis nunc et lorem. <a data-ui-sref="pages.profile.profile-about"><small>Read more...</small></a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Select the world</h2>
+                    </div>
+
+                    <div class="listview">
+                        <div class="lv-body">
+                            {% for world in worlds %}
+                            <a class="lv-item" href="{{ world.get_absolute_url }}">
+                                <div class="media">
+                                    <div class="pull-left">
+                                        <img class="lv-img-sm" src="{% static 'img/world.png' %}" alt="">
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="lv-title">{{ world }}</div>
+                                        <small class="lv-small">Created at {{ world.created }}</small>
+                                    </div>
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Contact Information <small>Fusce eget dolor id justo luctus commodo vel pharetra nisi. Donec velit libero</small></h2>
+                    </div>
+                    <div class="card-body card-padding">
+                        <div class="pmo-contact">
+                            <ul>
+                                <li class="ng-binding"><i class="zmdi zmdi-phone"></i> 00971123456789</li>
+                                <li class="ng-binding"><i class="zmdi zmdi-email"></i> malinda.h@gmail.com</li>
+                                <li class="ng-binding"><i class="zmdi zmdi-facebook-box"></i> malinda.hollaway</li>
+                                <li class="ng-binding"><i class="zmdi zmdi-twitter"></i> @malinda (twitter.com/malinda)</li>
+                                <li>
+                                    <i class="zmdi zmdi-pin"></i>
+                                    <address class="m-b-0 ng-binding">
+                                        10098 A Towers, <br>
+                                        Dubai Silicon Oasis, Dubai, <br>
+                                        United Arab Emirates
+                                    </address>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+{% endblock %}

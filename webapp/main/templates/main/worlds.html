@@ -1,0 +1,31 @@
+{% extends 'base.html' %}{% load staticfiles %}
+
+{% block body_class %}login-content{% endblock %}
+
+{% block body %}
+    <div class="lc-block lcb-alt toggled">
+
+        <img class="lcb-user" src="{{ user.avatar }}" alt="{{ user }}">
+
+        <div class="listview">
+            <div class="lv-header">
+                Select the world
+            </div>
+            <div class="lv-body">
+                {% for world in worlds %}
+                <a class="lv-item" href="{{ world.get_absolute_url }}">
+                    <div class="media">
+                        <div class="pull-left">
+                            <img class="lv-img-sm" src="{% static 'img/world.png' %}" alt="">
+                        </div>
+                        <div class="media-body">
+                            <div class="lv-title">{{ world }}</div>
+                            <small class="lv-small">Created at {{ world.created }}</small>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

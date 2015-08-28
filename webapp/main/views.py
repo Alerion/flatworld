@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 
 from world.models import World
@@ -14,23 +14,25 @@ def index(request):
 
 
 @login_required
-def wolrd(request, world_id):
-    world = get_object_or_404(World, pk=world_id)
+def worlds(request):
+    context = {
+        'worlds': World.objects.all()
+    }
+    return render(request, 'main/worlds.html', context)
+
+
+@login_required
+def world(request, world_id):
+    try:
+        world_obj = World.objects.get(pk=world_id)
+    except World.DoesNotExist:
+        return redirect('main:worlds')
+
     context = {
         'TILE_SERVER': settings.TILE_SERVER,
         'FRONTEND_ADDR': settings.FRONTEND_ADDR,
         'FRONTEND_PORT': settings.FRONTEND_PORT,
         'STATIC_URL': settings.STATIC_URL,
-        'world': world
+        'world': world_obj
     }
     return render(request, 'main/wolrd.html', context)
-
-
-@login_required
-def world_data(request, world_id):
-    world = get_object_or_404(World, pk=world_id)
-    return JsonResponse({
-        'id': world.pk,
-        'name': world.name,
-        'points': world.points
-    })
