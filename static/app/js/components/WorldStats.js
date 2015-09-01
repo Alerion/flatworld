@@ -33,7 +33,7 @@ class WorldStats extends React.Component {
         return (
             <div className="card">
                 <div className="card-header">
-                    <h2>World Stats</h2>
+                    <h2>World statistic</h2>
                     <small>Some general information about the world.</small>
                 </div>
 

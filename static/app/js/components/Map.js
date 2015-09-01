@@ -34,7 +34,7 @@ class MapComponent extends React.Component {
     }
 }
 
-
+// TODO: This part is similar for many components.
 export default class FluxMapComponent extends React.Component {
 
     render() {
