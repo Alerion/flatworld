@@ -139,7 +139,6 @@ class ModelExporter:
         print('Save cities')
         self.cleanup_city(map_obj)
         new_objects = []
-        wparams = self.world.params
 
         for region in map_obj.regions:
             for center in region.centers:
@@ -150,12 +149,7 @@ class ModelExporter:
                 obj.region = region.model
                 obj.coords = Point(*self.point_to_lnglat(center.point))
                 obj.world = self.world
-
-                population_growth = wparams['base_population_growth'] * (1 + random.random())
-                obj.stats = {
-                    'population': wparams['start_population'],
-                    'population_growth': population_growth
-                }
+                obj.init_stats()
                 obj.full_clean()
                 new_objects.append(obj)
 

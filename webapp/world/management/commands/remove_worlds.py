@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from django.conf import settings
 from django.core.management import call_command
@@ -13,7 +14,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if input('Do you wish remove all worlds and related data? [y/N]: ') != 'y':
             return
-        # TODO: Remove TileStache cache
+
+        for name in os.listdir(settings.TILESTACHE_CACHE):
+            if name.startswith('map_'):
+                path = os.path.join(settings.TILESTACHE_CACHE, name)
+                if os.path.isdir(path):
+                    shutil.rmtree(path)
 
         for name in os.listdir(settings.HILLSHADES_DIR):
             if name.endswith('.tif'):

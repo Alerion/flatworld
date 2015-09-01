@@ -1,9 +1,12 @@
 import os
+import random
 
 from django.contrib.gis.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from postgres.fields import JSONField
+
+from server.engine.models import DEFAULT_WORLD_PARAMS
 
 
 class World(models.Model):
@@ -16,6 +19,12 @@ class World(models.Model):
 
     def get_absolute_url(self):
         return reverse('main:world', args=(self.pk,))
+
+    def init_params(self, points, seed):
+        params = dict(DEFAULT_WORLD_PARAMS)
+        params['seed'] = seed
+        params['points'] = points
+        self.params = params
 
     @property
     def mapnik_style_path(self):
@@ -91,3 +100,15 @@ class City(models.Model):
 
     def __str__(self):
         return self.name
+
+    def init_stats(self):
+        wparams = self.world.params
+        population_growth = wparams['base_population_growth'] * (0.75 + 0.5 * random.random())
+        pasive_income = wparams['base_income'] * (0.75 + 0.5 * random.random())
+        self.stats = {
+            'population': wparams['start_population'],
+            'population_growth': population_growth,
+            'money': wparams['start_money'],
+            'pasive_income': pasive_income,
+            'tax': wparams['base_tax']
+        }

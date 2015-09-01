@@ -1,13 +1,19 @@
 """
 Keep these objects as simple as possible. They are passed via 0MQ with Pickle.
 """
-from engine.base import Model
-from engine import fields
+from .base import Model
+from . import fields
 # FIXME: WORLD_PARAMS is used in generate_world command. Not sure this is the best place,
 # because requires to add the main folder to python paths.
 DEFAULT_WORLD_PARAMS = {
+    # Population
     'start_population': 2000,
     'base_population_growth': 0.05,
+    # Money
+    'start_money': 500,
+    'base_income': 50,
+    'base_tax': 0.1,
+    # General
     'points': None,
     'seed': None,
     'speed': 1.
@@ -17,6 +23,8 @@ DEFAULT_WORLD_PARAMS = {
 class WorldParams(Model):
     start_population = fields.IntegerField()
     base_population_growth = fields.FloatField()
+    start_money = fields.IntegerField()
+    base_income = fields.IntegerField()
     points = fields.IntegerField()
     seed = fields.CharField()
     speed = fields.FloatField()
@@ -76,6 +84,9 @@ class Region(Model):
 class CityStats(Model):
     population = fields.FloatField()
     population_growth = fields.FloatField()
+    money = fields.FloatField()
+    pasive_income = fields.FloatField()
+    tax = fields.FloatField()
 
 
 class City(Model):
@@ -91,3 +102,10 @@ class City(Model):
         super().__init__(data)
         self.world = world
         self.region = region
+
+    def update_population(self, delta):
+        self.stats.population *= (1 + self.stats.population_growth * delta)
+
+    def update_money(self, delta):
+        stats = self.stats
+        stats.money += stats.pasive_income + stats.population * stats.tax

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}{% load staticfiles %}
 
 {% block styles %}
-    {{ block.parent }}
+    {{ block.super }}
     <link href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" rel="stylesheet"/>
     <link href="{% static 'css/app.css' %}" rel="stylesheet"/>
 {% endblock %}
@@ -26,16 +26,7 @@
     <section id="main">
         {% include 'main/_sidebar.html' %}
 
-        <section id="content">
-            <div class="container">
-                <div class="card">
-                    <div class="card-body">
-                        <div id="app"></div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
+        <section id="content"></section>
     </section>
 {% endblock body %}
 

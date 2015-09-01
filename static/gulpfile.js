@@ -12,6 +12,8 @@ var path = require('path');
 var NpmImportPlugin = require("less-plugin-npm-import");
 var eslint = require('gulp-eslint');
 
+var buildCounter = 0;
+
 function compile(watch) {
     var bundler =
         browserify('./app/js/index.js', {debug: true})
@@ -38,7 +40,7 @@ function compile(watch) {
 
     if (watch) {
         bundler.on('update', function () {
-            console.log('-> bundling...');
+            console.log('-> bundling... #' + (++buildCounter));
             rebundle();
         });
     }
@@ -71,7 +73,7 @@ gulp.task('jsbuild', function () {
 
 gulp.task('fontsbuild', function () {
     return gulp.src([
-        './app/fonts/**/*.{ttf,woff,woff2,eof,svg}'
+        './app/fonts/**/*.{ttf,woff,woff2,eot,svg}'
     ])
         .pipe(gulp.dest('./build/fonts'));
 });

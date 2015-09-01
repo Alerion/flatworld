@@ -28,6 +28,7 @@
     "leaflet": "^0.7.3",
     "less-plugin-npm-import": "^2.1.0",
     "msgpack-js-browser": "^0.1.4",
+    "numeral": "^1.5.3",
     "react": "^0.13.3",
     "react-router": "^0.13.3",
     "regenerator": "^0.8.36",

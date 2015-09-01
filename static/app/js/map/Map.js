@@ -8,7 +8,7 @@ import {CitiesLayer, CapitalsLayer} from './layers/CitiesLayer';
 
 // Fix vector layer rendering when you drag
 // From here https://github.com/Leaflet/Leaflet/issues/2814
-L.Path.CLIP_PADDING = 1;
+L.Path.CLIP_PADDING = 0.75;
 
 export default L.Map.extend({
     options: {
@@ -71,6 +71,7 @@ export default L.Map.extend({
         this.capitalsLayer.updateStyle();
 
         // FIXME: make some declarative way for this
+        // FIXME: first time appears so long
         if (zoom >= 3) {
             this.addLayer(this.citiesLayer);
         } else {

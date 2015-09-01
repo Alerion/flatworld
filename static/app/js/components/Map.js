@@ -1,10 +1,9 @@
 import FluxComponent from 'flummox/component';
-import L from 'leaflet';
 import React from 'react';
 import Map from '../map/Map';
 
 
-export default class MapComponent extends React.Component {
+class MapComponent extends React.Component {
 
     constructor(props, context) {
         super(props, context);
@@ -26,7 +25,11 @@ export default class MapComponent extends React.Component {
     render() {
         // FIXME: Get height from screen size
         return (
-            <div ref="map" className={"map"}  style={{height: 840}}></div>
+            <div className="card">
+                <div className="card-body">
+                    <div ref="map" className="map" style={{height: 840}}></div>
+                </div>
+            </div>
         );
     }
 }
@@ -41,11 +44,9 @@ export default class FluxMapComponent extends React.Component {
                     world: store.getWorld()
                 })
             }}>
-                <MapComponent />
+                <MapComponent/>
             </FluxComponent>
         );
     }
 
 }
-
-export default FluxMapComponent;

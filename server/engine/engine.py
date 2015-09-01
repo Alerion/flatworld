@@ -8,6 +8,7 @@ class WorldEngine:
         self._events = events
         self.speed = world.params.speed
         self.layers = [
+            MoneyLayer(world),
             PopulationLayer(world)
         ]
 
@@ -83,13 +84,20 @@ class SimulationLayer:
 
 
 class PopulationLayer(SimulationLayer):
-    notify_treshhold = 10
+    notify_treshhold = 30
 
     def run(self, delta, elapsed):
-        """
-        Update world. Return True if it was updated.
-        """
         for city in self.world.cities():
-            city.stats.population *= (1 + city.stats.population_growth * delta)
+            city.update_population(delta)
+
+        return self._check_notify(elapsed)
+
+
+class MoneyLayer(SimulationLayer):
+    notify_treshhold = 30
+
+    def run(self, delta, elapsed):
+        for city in self.world.cities():
+            city.update_money(delta)
 
         return self._check_notify(elapsed)
