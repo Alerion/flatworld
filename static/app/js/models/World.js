@@ -12,7 +12,7 @@ var defaults = {
 
 export default class World extends Immutable.Record(defaults) {
 
-    *cities() {
+    *getAllCities() {
         for (let region of this.get('regions').values()) {
             for (let city of region.get('cities').values()) {
                 yield city;
@@ -23,7 +23,7 @@ export default class World extends Immutable.Record(defaults) {
     _totalForCities(field, verbose=false) {
         var total = 0;
 
-        for (let city of this.cities()) {
+        for (let city of this.getAllCities()) {
             total += city.get('stats').get(field);
         }
 
