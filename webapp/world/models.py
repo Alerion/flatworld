@@ -34,6 +34,14 @@ class World(models.Model):
     def hillshade_path(self):
         return os.path.join(settings.HILLSHADES_DIR, 'map_{}.tif'.format(self.pk))
 
+    def create_city_for_user(self, user):
+        if self.city_set.filter(user=user).exists():
+            return
+
+        city = self.city_set.filter(capital=False, user=None).order_by('?').first()
+        city.user = user
+        city.save()
+
 BIOMES = (
     ('BARE', 'Bare'),
     ('BEACH', 'Beach'),
@@ -95,8 +103,12 @@ class City(models.Model):
     name = models.CharField(max_length=100)
     region = models.ForeignKey(Region)
     coords = models.PointField(srid=4326)
+    user = models.ForeignKey('accounts.User', null=True, blank=True)
     world = models.ForeignKey(World)
     stats = JSONField()
+
+    class Meta:
+        unique_together = ('user', 'world')
 
     def __str__(self):
         return self.name

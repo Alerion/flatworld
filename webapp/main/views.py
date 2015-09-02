@@ -28,6 +28,8 @@ def world(request, world_id):
     except World.DoesNotExist:
         return redirect('main:worlds')
 
+    world_obj.create_city_for_user(request.user)
+
     context = {
         'TILE_SERVER': settings.TILE_SERVER,
         'FRONTEND_ADDR': settings.FRONTEND_ADDR,

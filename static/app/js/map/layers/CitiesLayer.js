@@ -24,6 +24,7 @@ var BaseCitiesLayer = L.GeoJSON.extend({
                         type: "Feature",
                         properties: {
                             capital: city.get('capital'),
+                            userId: city.get('user_id'),
                             cityId: String(city.get('id')),
                             regionId: String(region.get('id'))
                         },
@@ -83,8 +84,16 @@ var CitiesLayer = BaseCitiesLayer.extend({
     iconUrl: CONFIG.STATIC_URL + 'img/map/icons/bluegray/smallcity.png',
 
     filter: function (feature, layer) {
-        return ! feature.properties.capital;
+        return ! feature.properties.capital && feature.properties.userId != CONFIG.USER_ID;
     }
 });
 
-export {CapitalsLayer, CitiesLayer};
+var UserCityLayer = BaseCitiesLayer.extend({
+    iconUrl: CONFIG.STATIC_URL + 'img/map/icons/deeporange/palace-2.png',
+
+    filter: function (feature, layer) {
+        return feature.properties.userId == CONFIG.USER_ID;
+    }
+});
+
+export {CapitalsLayer, CitiesLayer, UserCityLayer};

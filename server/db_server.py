@@ -63,8 +63,8 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
     @asyncio.coroutine
     def _load_cities(self, world, cursor):
         query = '''
-        SELECT id, name, capital, world_id, region_id, stats, ST_AsGeoJSON(coords) as coords
-        FROM world_city WHERE world_id=%s
+        SELECT id, name, capital, world_id, region_id, stats, user_id,
+        ST_AsGeoJSON(coords) as coords FROM world_city WHERE world_id=%s
         '''
         yield from cursor.execute(query, (world.id,))
         data = yield from cursor.fetchall()

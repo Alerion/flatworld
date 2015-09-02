@@ -4,7 +4,7 @@ import $ from 'jquery';
 
 import {InfoPanel, RegionInfoPanel} from './controls';
 import RegionsLayer from './layers/RegionsLayer';
-import {CitiesLayer, CapitalsLayer} from './layers/CitiesLayer';
+import {CitiesLayer, CapitalsLayer, UserCityLayer} from './layers/CitiesLayer';
 
 // Fix vector layer rendering when you drag
 // From here https://github.com/Leaflet/Leaflet/issues/2814
@@ -39,6 +39,9 @@ export default L.Map.extend({
         this.capitalsLayer = new CapitalsLayer();
         this.addLayer(this.capitalsLayer);
 
+        this.userCityLayer = new UserCityLayer();
+        this.addLayer(this.userCityLayer);
+
         this.citiesLayer = new CitiesLayer();
         // Events
         this.on('zoomend', this.onZoomend.bind(this));
@@ -67,8 +70,6 @@ export default L.Map.extend({
 
     onZoomend: function (event) {
         var zoom = this.getRelativeZoom();
-        this.regionsLayer.updateStyle();
-        this.capitalsLayer.updateStyle();
 
         // FIXME: make some declarative way for this
         // FIXME: first time appears so long
@@ -77,5 +78,11 @@ export default L.Map.extend({
         } else {
             this.removeLayer(this.citiesLayer);
         }
+
+        this.eachLayer(function (layer) {
+            if (layer.updateStyle) {
+                layer.updateStyle();
+            }
+        });
     }
 });

@@ -97,6 +97,7 @@ class City(Model):
     stats = fields.ModelField(CityStats)
     region_id = fields.IntegerField()
     world_id = fields.IntegerField()
+    user_id = fields.IntegerField()
 
     def __init__(self, data, world, region):
         super().__init__(data)
