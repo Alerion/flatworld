@@ -1,4 +1,5 @@
 """ Based on https://github.com/j4mie/micromodels """
+import collections
 import ujson
 
 from .fields import BaseField
@@ -139,4 +140,18 @@ class Model(object, metaclass=ModelBase):
         relies on the :meth:`~micromodels.Model.to_dict` method.
 
         '''
+        return ujson.dumps(self.to_dict())
+
+
+class ModelsDict(collections.UserDict):
+
+    def to_dict(self, serial=True):
+        output = {}
+
+        for key, item in self.items():
+            output[key] = item.to_dict(serial=serial)
+
+        return output
+
+    def to_json(self):
         return ujson.dumps(self.to_dict())

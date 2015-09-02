@@ -6,6 +6,7 @@ import psycopg2
 from zmqrpc.translation_table import translation_table
 
 from engine import models
+from engine.base import ModelsDict
 
 if os.environ['DB_PASS']:
     dsn = '''dbname={DB_NAME} user={DB_USER} password={DB_PASS}
@@ -35,8 +36,7 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
     @asyncio.coroutine
     def _load_regions(self, world, cursor):
         query = '''
-        SELECT id, name, world_id, ST_AsGeoJSON(geom) as geom
-        FROM world_region WHERE world_id=%s
+        SELECT *, ST_AsGeoJSON(geom) as geom FROM world_region WHERE world_id=%s
         '''
         yield from cursor.execute(query, (world.id,))
         data = yield from cursor.fetchall()
@@ -63,8 +63,7 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
     @asyncio.coroutine
     def _load_cities(self, world, cursor):
         query = '''
-        SELECT id, name, capital, world_id, region_id, stats, user_id,
-        ST_AsGeoJSON(coords) as coords FROM world_city WHERE world_id=%s
+        SELECT *, ST_AsGeoJSON(coords) as coords FROM world_city WHERE world_id=%s
         '''
         yield from cursor.execute(query, (world.id,))
         data = yield from cursor.fetchall()
@@ -90,6 +89,18 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
             yield from cursor.execute('SELECT id FROM world_world')
             worlds = yield from cursor.fetchall()
             return worlds
+
+    @aiozmq.rpc.method
+    @asyncio.coroutine
+    def get_buildings(self):
+        with (yield from self._pool.cursor()) as cursor:
+            yield from cursor.execute('SELECT * FROM building_building')
+            data = yield from cursor.fetchall()
+            buildings = ModelsDict()
+            for item in data:
+                buildings[item['id']] = models.Building(item)
+            print(type(buildings))
+            return buildings
 
 
 def main():

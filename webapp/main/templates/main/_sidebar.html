@@ -30,8 +30,8 @@
                     </div>
 
                     <ul class="main-menu">
-                        <li class="active"><a href=""><i class="zmdi zmdi-home"></i> Home</a></li>
-                        <li><a href=""><i class="zmdi zmdi zmdi-format-underlined"></i> Your Town</a></li>
+                        <li class="active"><a href="{% url 'main:world' world.pk %}"><i class="zmdi zmdi-globe"></i> Map</a></li>
+                        <li><a href="{% url 'main:building' world.pk %}"><i class="zmdi zmdi-city"></i> Building</a></li>
                         <li class="sub-menu">
                             <a href=""><i class="zmdi zmdi-widgets"></i> Science</a>
 

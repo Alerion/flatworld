@@ -70,7 +70,7 @@ export default class FluxWorldStats extends React.Component {
                     world: store.getWorld()
                 })
             }}>
-                <CitiesStats/>
+                <CitiesStats {...this.props}/>
             </FluxComponent>
         );
     }

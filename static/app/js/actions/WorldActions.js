@@ -6,7 +6,6 @@ export default class WorldActions extends Actions {
     constructor({ rpc }) {
         super();
         this.rpc = rpc;
-        this._pendingRequests = {};
     }
 
     getWorld() {

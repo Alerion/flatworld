@@ -57,7 +57,7 @@ class World(Model):
 
 class Region(Model):
     id = fields.IntegerField()
-    geom = fields.GeoJSONField()
+    geom = fields.JSONField()
     name = fields.CharField()
     world_id = fields.IntegerField()
 
@@ -92,7 +92,7 @@ class CityStats(Model):
 class City(Model):
     id = fields.IntegerField()
     capital = fields.BooleanField()
-    coords = fields.GeoJSONField()
+    coords = fields.JSONField()
     name = fields.CharField()
     stats = fields.ModelField(CityStats)
     region_id = fields.IntegerField()
@@ -110,3 +110,14 @@ class City(Model):
     def update_money(self, delta):
         stats = self.stats
         stats.money += stats.pasive_income + stats.population * stats.tax
+
+
+class Building(Model):
+    id = fields.IntegerField()
+    name = fields.CharField()
+    description = fields.CharField()
+    build_time = fields.IntegerField()
+    cost_money = fields.IntegerField()
+    cost_population = fields.IntegerField()
+    unique = fields.BooleanField()
+    properties = fields.JSONField()

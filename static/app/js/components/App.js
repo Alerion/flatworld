@@ -8,7 +8,7 @@ export default React.createClass({
     render() {
         return (
             <div className="container">
-                <RouteHandler/>
+                <RouteHandler {...this.props} />
                 <WorldStats/>
                 <CitiesStats/>
             </div>

@@ -12,9 +12,10 @@ all:
 help:
 	@egrep "^# target:" [Mm]akefile
 
-# target: migrate - migrate DB.
+# target: migrate - migrate DB and load fixtures.
 migrate:
 	python3 ./webapp/manage.py migrate
+	python3 ./webapp/manage.py loaddata building
 
 # target: startwebapp - Start dev-server.
 startwebapp: migrate
@@ -82,3 +83,8 @@ staticwatch: updatejsmodules staticbuild
 
 webappbash:
 	docker-compose run --rm webapp /bin/bash
+
+restartserver:
+	docker-compose restart dbserver
+	docker-compose restart game
+	docker-compose restart frontend

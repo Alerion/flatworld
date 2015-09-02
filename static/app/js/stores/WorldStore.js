@@ -1,5 +1,4 @@
 import { Store } from 'flummox';
-import Immutable from 'immutable';
 
 import World from '../models/World';
 

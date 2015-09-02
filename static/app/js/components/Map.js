@@ -44,7 +44,7 @@ export default class FluxMapComponent extends React.Component {
                     world: store.getWorld()
                 })
             }}>
-                <MapComponent/>
+                <MapComponent {...this.props}/>
             </FluxComponent>
         );
     }

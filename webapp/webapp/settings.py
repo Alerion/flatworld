@@ -58,6 +58,7 @@ INSTALLED_APPS = (
     'accounts',
     'main',
     'world',
+    'building'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -93,6 +94,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webapp.wsgi.application'
 
+FIXTURE_DIRS = (
+    os.path.join(BASE_DIR, 'fixtures'),
+)
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases

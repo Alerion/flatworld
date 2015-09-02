@@ -1,26 +1,26 @@
 import FluxComponent from 'flummox/component';
 import React from 'react';
+import {Link} from 'react-router';
 
 
-class WorldStats extends React.Component {
+class Building extends React.Component {
 
     render() {
-        var world = this.props.world;
+        var buildings = this.props.buildings;
         var content;
 
-        if (world) {
+        if (buildings) {
             content = (
                 <div className="pmb-block">
                     <div className="pmbb-body">
                         <div className="pmbb-view">
-                            <dl className="dl-horizontal">
-                                <dt>Total population</dt>
-                                <dd>{world.totalPopulation({verbose: true})}</dd>
-                            </dl>
-                            <dl className="dl-horizontal">
-                                <dt>Total money</dt>
-                                <dd>{world.totalMoney({verbose: true})}</dd>
-                            </dl>
+                            {buildings.map(function (item) {
+                                return (
+                                    <dl key={item.get('id')} className="dl-horizontal">
+                                        <dt>{item.get('name')}</dt>
+                                        <dd>1</dd>
+                                    </dl>);
+                            })}
                         </div>
                     </div>
                 </div>
@@ -29,12 +29,11 @@ class WorldStats extends React.Component {
             content = 'Loading...';
         }
 
-
         return (
             <div className="card">
                 <div className="card-header">
-                    <h2>World statistic</h2>
-                    <small>Some general information about the world.</small>
+                    <h2>Buildings</h2>
+                    <Link to="world" params={{worldId: this.props.worldId}}>Map</Link>
                 </div>
 
                 <div className="card-body card-padding">
@@ -50,11 +49,11 @@ export default class FluxWorldStats extends React.Component {
     render() {
         return (
             <FluxComponent connectToStores={{
-                worldStore: store => ({
-                    world: store.getWorld()
+                buildingsStore: store => ({
+                    buildings: store.getBuildings()
                 })
             }}>
-                <WorldStats {...this.props}/>
+                <Building {...this.props}/>
             </FluxComponent>
         );
     }

@@ -35,7 +35,7 @@ class BaseField(object):
         return data
 
 
-class GeoJSONField(BaseField):
+class JSONField(BaseField):
     pass
 
 
