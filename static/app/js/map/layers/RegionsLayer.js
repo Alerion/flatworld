@@ -21,6 +21,7 @@ var STYLE_HIGHLIGHT = function (zoom) {
     }
 };
 
+// FIXME: Memory somewhere here
 var RegionsLayer = L.GeoJSON.extend({
 
     initialize: function (infoPanel, geojson, options) {

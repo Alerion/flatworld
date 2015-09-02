@@ -84,7 +84,7 @@ class SimulationLayer:
 
 
 class PopulationLayer(SimulationLayer):
-    notify_treshhold = 30
+    notify_treshhold = 15
 
     def run(self, delta, elapsed):
         for city in self.world.cities():
@@ -94,7 +94,7 @@ class PopulationLayer(SimulationLayer):
 
 
 class MoneyLayer(SimulationLayer):
-    notify_treshhold = 30
+    notify_treshhold = 15
 
     def run(self, delta, elapsed):
         for city in self.world.cities():
