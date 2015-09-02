@@ -9,14 +9,8 @@ export default class WorldActions extends Actions {
         this._pendingRequests = {};
     }
 
-    async getWorld() {
-        if ( ! this._pendingRequests[this.getWorld._id]) {
-            var promise = this.rpc.call('get_world');
-            this._pendingRequests[this.getWorld._id] = promise;
-        }
-        var result = await this._pendingRequests[this.getWorld._id];
-        delete this._pendingRequests[this.getWorld._id];
-        return result;
+    getWorld() {
+        return this.rpc.call('get_world');
     }
 
     updateWorld(world) {

@@ -47,7 +47,6 @@ class CitiesStats extends React.Component {
             content = 'Loading...';
         }
 
-
         return (
             <div className="card">
                 <div className="card-header">

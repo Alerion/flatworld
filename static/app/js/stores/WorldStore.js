@@ -10,19 +10,25 @@ export default class WorldStore extends Store {
         super();
 
         this.worldActions = worldActions;
-        this.register(worldActions.getWorld, this.handleNewWorld);
-        this.register(worldActions.updateWorld, this.handleNewWorld);
+        this.registerAsync(worldActions.getWorld, this.startWorldLoading, this.updateWorld);
+        this.register(worldActions.updateWorld, this.updateWorld);
         this.state = {};
+        this._loadingInProgress = false;
     }
 
-    handleNewWorld(obj) {
+    startWorldLoading() {
+        this._loadingInProgress = true;
+    }
+
+    updateWorld(obj) {
         this.setState({
             world: new World(Immutable.fromJS(obj))
         });
+        this._loadingInProgress = false;
     }
 
     getWorld() {
-        if ( ! this.state.world) {
+        if ( ! this.state.world && ! this._loadingInProgress) {
             this.worldActions.getWorld();
             return null;
         }
