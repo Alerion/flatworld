@@ -28,21 +28,11 @@ var InfoPanel = L.Control.extend({
 var RegionInfoPanel = InfoPanel.extend({
 
     renderObject: function (region) {
-        var cities = [];
-
-        for (let city of region.get('cities').values()) {
-            cities.push(
-                <li key={city.get('id')}>
-                    {city.get('name')}: {Math.round(city.get('stats').get('population'))}
-                </li>
-            );
-        }
-
-        return React.renderToStaticMarkup(<p>
+        return React.renderToStaticMarkup(<div>
             <b>{region.get('name')}</b><br/>
-            Population:
-            <ul>{cities}</ul>
-        </p>);
+            Population: {region.totalPopulation({verbose: true})}<br/>
+            Money: {region.totalMoney({verbose: true})}<br/>
+        </div>);
     }
 });
 

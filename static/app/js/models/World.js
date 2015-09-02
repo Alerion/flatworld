@@ -1,6 +1,8 @@
 import Immutable from 'immutable';
 import numeral from 'numeral';
 
+import Region from './Region';
+
 var defaults = {
     id: null,
     name: null,
@@ -41,4 +43,18 @@ export default class World extends Immutable.Record(defaults) {
     totalMoney(verbose=false) {
         return this._totalForCities('money', verbose);
     }
+}
+
+World.fromJS = function (obj) {
+    var imObj = Immutable.fromJS(obj);
+
+    var regions = imObj.get('regions').withMutations(function (regions) {
+        for (let [key, region] of regions) {
+            regions.set(key, new Region(region));
+        }
+    });
+
+    imObj = imObj.set('regions', regions);
+
+    return new World(imObj);
 }

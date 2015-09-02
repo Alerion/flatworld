@@ -22,7 +22,7 @@ export default class WorldStore extends Store {
 
     updateWorld(obj) {
         this.setState({
-            world: new World(Immutable.fromJS(obj))
+            world: World.fromJS(obj)
         });
         this._loadingInProgress = false;
     }
