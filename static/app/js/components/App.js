@@ -9,8 +9,6 @@ export default React.createClass({
         return (
             <div className="container">
                 <RouteHandler {...this.props} />
-                <WorldStats/>
-                <CitiesStats/>
             </div>
         );
     }
