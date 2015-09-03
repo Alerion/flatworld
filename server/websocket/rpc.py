@@ -30,6 +30,13 @@ class NotFoundError(Error, LookupError):
     """Error raised by server if RPC namespace/method lookup failed."""
 
 
+class RequestError(Exception):
+    """Error raised from RPC method and send as error to client."""
+
+    def __init__(self, errors):
+        self.errors = errors
+
+
 def method(func):
     func.__websocket_rpc__ = {}
     return func
@@ -88,15 +95,18 @@ class WebsocketRpc(WebSocketServerProtocol):
             try:
                 func = self.dispatch(data.get('method'))
             except NotFoundError:
-                self.send_error(data, 'Method does not exist')
+                self.send_exception(data, 'Method does not exist')
             else:
                 args = self.check_args(func, data.get('args'))
 
-                if asyncio.iscoroutinefunction(func):
-                    value = yield from func(*args)
-                    self.send_success(data, value)
-                else:
-                    self.send_success(data, func(*args))
+                try:
+                    if asyncio.iscoroutinefunction(func):
+                        value = yield from func(*args)
+                        self.send_success(data, value)
+                    else:
+                        self.send_success(data, func(*args))
+                except RequestError as error:
+                    self.send_error(data, error)
 
     def check_args(self, func, args):
         # TODO: Add validation like here
@@ -139,11 +149,20 @@ class WebsocketRpc(WebSocketServerProtocol):
         }
         self._send(msg)
 
-    def send_error(self, data, message):
+    def send_error(self, data, error):
         msg = {
             'id': data['id'],
             'type': data['type'],
             'event': 'error',
+            'message': error.errors
+        }
+        self._send(msg)
+
+    def send_exception(self, data, message):
+        msg = {
+            'id': data['id'],
+            'type': data['type'],
+            'event': 'exception',
             'message': message
         }
         self._send(msg)

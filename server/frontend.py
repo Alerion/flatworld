@@ -3,6 +3,8 @@ import asyncio
 import os
 import websocket.rpc
 
+from websocket.rpc import RequestError
+
 from autobahn.asyncio.websocket import WebSocketServerFactory
 from zmqrpc.translation_table import translation_table
 
@@ -60,7 +62,9 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
     @websocket.rpc.method
     @asyncio.coroutine
     def build(self, building_id):
-        return True
+        raise RequestError({
+            'not_enough_resources': 'You don\'t have enough money.'
+        })
 
 
 def main():

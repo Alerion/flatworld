@@ -9,7 +9,7 @@ import BuildingsStore from './stores/BuildingsStore'
 import Rpc from './Rpc'
 
 
-export default class AppFlux extends Flux {
+export default class Application extends Flux {
 
     constructor(rpc) {
         super();
@@ -18,7 +18,7 @@ export default class AppFlux extends Flux {
         const worldActions = this.createActions('worldActions', WorldActions, { rpc });
         this.createStore('worldStore', WorldStore, { worldActions });
 
-        const buildingsActions = this.createActions('BuildingsActions', BuildingsActions, { rpc });
+        const buildingsActions = this.createActions('buildingsActions', BuildingsActions, { rpc });
         this.createStore('buildingsStore', BuildingsStore, { buildingsActions });
 
         rpc.subscribe('update:world', (world, topic) => {

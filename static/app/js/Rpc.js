@@ -1,4 +1,5 @@
 import msgpack from 'msgpack-js-browser';
+import Immutable from 'immutable';
 
 export default class Rpc {
 
@@ -30,7 +31,10 @@ export default class Rpc {
             if (response.event == 'success') {
                 promise.resolve(response.value);
             } else {
-                promise.reject(response.message);
+                promise.reject({
+                    messages: Immutable.fromJS(response.message),
+                    type: response.event
+                });
             }
         }
 

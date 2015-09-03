@@ -26,6 +26,6 @@
     "animate.css": "~3.4.0",
     "moment": "~2.10.6",
     "jquery.nicescroll": "~3.6.0",
-    "bootstrap-growl": "~1.1.0"
+    "remarkable-bootstrap-notify": "~2.0.1"
   }
 }

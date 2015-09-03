@@ -1,9 +1,25 @@
 import FluxComponent from 'flummox/component';
 import React from 'react';
-import {Link} from 'react-router';
+import {showErrors} from '../utils/notify';
+import {confirm} from '../utils/alert';
+import {capitalize} from 'lodash/string';
 
 
 class Building extends React.Component {
+
+    onBuildClick(buildingId) {
+        var building = this.props.buildings.get(String(buildingId));
+        var name = capitalize(building.get('name'));
+
+        confirm({
+            title: `Do you wish to build ${name}?`,
+            confirmButtonText: 'Yes, build it!'
+        }, this.build.bind(this, buildingId));
+    }
+
+    build(buildingId) {
+        this.props.flux.getActions('buildingsActions').build(buildingId).catch(showErrors);
+    }
 
     render() {
         var buildings = this.props.buildings;
@@ -17,12 +33,12 @@ class Building extends React.Component {
                     <div key={item.get('id')} className="col-sm-4">
                         <div className="card building">
                             <div className="card-header bgm-indigo m-b-20">
-                                <h2 className="text-capitalize">
-                                    {item.get('name')}
+                                <h2>
+                                    {capitalize(item.get('name'))}
                                     <small>{item.get('description')}</small>
                                 </h2>
 
-                                <button className="btn bgm-blue btn-float waves-effect waves-effect waves-circle waves-float">
+                                <button onClick={this.onBuildClick.bind(this, item.get('id'))} className="btn bgm-blue btn-float waves-effect waves-effect waves-circle waves-float">
                                     <i className="zmdi zmdi-plus"></i>
                                 </button>
                             </div>

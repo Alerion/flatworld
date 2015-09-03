@@ -1,7 +1,7 @@
 import FluxComponent from 'flummox/component';
 import React from 'react';
 
-import AppFlux from './AppFlux'
+import Application from './Application'
 import router from './router';
 import Rpc from './Rpc'
 
@@ -18,7 +18,7 @@ async function main() {
     // For debugging in console
     window.rpc = rpc;
 
-    const flux = new AppFlux(rpc);
+    const flux = new Application(rpc);
 
     router.run(function (Handler, state) {
         React.render(

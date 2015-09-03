@@ -9,7 +9,8 @@ export default class WorldStore extends Store {
 
         this.buildingsActions = buildingsActions;
         this.registerAsync(
-            buildingsActions.getBuildings, this.startBuildingsLoading, this.upateBuildings);
+            buildingsActions.getBuildings, this.startBuildingsLoading, this.updateBuildings);
+        this.register(buildingsActions.build, this.updateCityBuildings);
 
         this.state = {};
         this._loadingInProgress = false;
@@ -19,7 +20,7 @@ export default class WorldStore extends Store {
         this._loadingInProgress = true;
     }
 
-    upateBuildings(obj) {
+    updateBuildings(obj) {
         this.setState({
             buildings: Immutable.fromJS(obj)
         });
@@ -33,5 +34,9 @@ export default class WorldStore extends Store {
         }
 
         return this.state.buildings;
+    }
+
+    updateCityBuildings(obj) {
+
     }
 }
