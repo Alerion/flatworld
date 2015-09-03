@@ -11,12 +11,6 @@ class Building extends React.Component {
 
         if (buildings) {
             let items = [];
-            let limitBlock = (
-                <dl className="dl-horizontal">
-                    <dt><i className="zmdi zmdi-collection-item-1 m-r-5"></i> Limit</dt>
-                    <dd>You can build only one.</dd>
-                </dl>
-            );
 
             for (let item of buildings.values()) {
                 items.push(
@@ -49,7 +43,6 @@ class Building extends React.Component {
                                                 <dt><i className="zmdi zmdi-accounts m-r-5"></i> Population</dt>
                                                 <dd>{item.get('cost_population')}</dd>
                                             </dl>
-                                            {item.get('unique') ? limitBlock : ''}
                                         </div>
                                     </div>
                                 </div>

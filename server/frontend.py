@@ -57,6 +57,11 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
         print(type(buildings))
         return buildings.to_dict()
 
+    @websocket.rpc.method
+    @asyncio.coroutine
+    def build(self, building_id):
+        return True
+
 
 def main():
     loop = asyncio.get_event_loop()

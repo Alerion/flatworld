@@ -119,5 +119,4 @@ class Building(Model):
     build_time = fields.IntegerField()
     cost_money = fields.IntegerField()
     cost_population = fields.IntegerField()
-    unique = fields.BooleanField()
     properties = fields.JSONField()
