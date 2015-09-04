@@ -1,4 +1,4 @@
-import { Store } from 'flummox';
+import {Store} from 'flummox';
 import Immutable from 'immutable';
 
 
@@ -10,7 +10,6 @@ export default class WorldStore extends Store {
         this.buildingsActions = buildingsActions;
         this.registerAsync(
             buildingsActions.getBuildings, this.startBuildingsLoading, this.updateBuildings);
-        this.register(buildingsActions.build, this.updateCityBuildings);
 
         this.state = {};
         this._loadingInProgress = false;
@@ -34,9 +33,5 @@ export default class WorldStore extends Store {
         }
 
         return this.state.buildings;
-    }
-
-    updateCityBuildings(obj) {
-
     }
 }

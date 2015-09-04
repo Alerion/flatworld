@@ -11,8 +11,4 @@ export default class BuildingsActions extends Actions {
     getBuildings() {
         return this.rpc.call('get_buildings');
     }
-
-    build(buildingId) {
-        return this.rpc.call('build', buildingId);
-    }
 }

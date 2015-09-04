@@ -34,6 +34,12 @@ class WorldEngine:
     def get_world(self):
         return self.world
 
+    def get_city(self, city_id):
+        city = self.world.cities.get(city_id)
+        if not city:
+            raise CityDoesNotExist(city_id)
+        return city
+
     def build(self, city_id, building_id):
         city = self.world.cities.get(city_id)
         if not city:

@@ -136,7 +136,8 @@ class City(Model):
                 city_building = CityBuilding({
                     'level': 0,
                     'in_progress': False,
-                    'building_id': building_id
+                    'building_id': building_id,
+                    'build_progress': 0
                 })
                 self.buildings[building_id] = city_building
 
@@ -150,3 +151,6 @@ class City(Model):
         city_building.in_progress = True
         city_building.build_progress = building.build_time
         print('Build {}'.format(building.id))
+
+    def to_dict(self, detailed=False, serial=True):
+        return super().to_dict(serial=serial)

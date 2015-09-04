@@ -18,29 +18,45 @@ class Building extends React.Component {
     }
 
     build(buildingId) {
-        this.props.flux.getActions('buildingsActions').build(buildingId).catch(showErrors);
+        this.props.flux.getActions('cityActions').build(buildingId).catch(showErrors);
     }
 
     render() {
         var buildings = this.props.buildings;
+        var city = this.props.city;
         var content;
 
-        if (buildings) {
+        if (buildings && city) {
             let items = [];
 
             for (let item of buildings.values()) {
+                let cityBuilding = city.get('buildings').get(String(item.get('id')));
+
+                let buildButton;
+                if (cityBuilding.get('in_progress')) {
+                    buildButton = (
+                        <button onClick={this.onBuildClick.bind(this, item.get('id'))} className="btn bgm-blue btn-float waves-effect waves-effect waves-circle waves-float">
+                            {cityBuilding.get('build_progress')}s
+                        </button>
+                    )
+                } else {
+                    buildButton = (
+                        <button onClick={this.onBuildClick.bind(this, item.get('id'))} className="btn bgm-blue btn-float waves-effect waves-effect waves-circle waves-float">
+                            <i className="zmdi zmdi-plus"></i>
+                        </button>
+                    )
+                }
+
                 items.push(
                     <div key={item.get('id')} className="col-sm-4">
                         <div className="card building">
                             <div className="card-header bgm-indigo m-b-20">
                                 <h2>
-                                    {capitalize(item.get('name'))}
+                                    {capitalize(item.get('name'))} [{cityBuilding.get('level')}]
                                     <small>{item.get('description')}</small>
                                 </h2>
 
-                                <button onClick={this.onBuildClick.bind(this, item.get('id'))} className="btn bgm-blue btn-float waves-effect waves-effect waves-circle waves-float">
-                                    <i className="zmdi zmdi-plus"></i>
-                                </button>
+                                {buildButton}
                             </div>
 
                             <div className="card-body card-padding">
@@ -94,13 +110,16 @@ class Building extends React.Component {
     }
 }
 
-export default class FluxWorldStats extends React.Component {
+export default class FluxBuilding extends React.Component {
 
     render() {
         return (
             <FluxComponent connectToStores={{
                 buildingsStore: store => ({
                     buildings: store.getBuildings()
+                }),
+                cityStore: store => ({
+                    city: store.getCity()
                 })
             }}>
                 <Building {...this.props}/>

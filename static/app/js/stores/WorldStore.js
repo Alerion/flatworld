@@ -1,4 +1,4 @@
-import { Store } from 'flummox';
+import {Store} from 'flummox';
 
 import World from '../models/World';
 
