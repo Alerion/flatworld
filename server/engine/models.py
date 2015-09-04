@@ -104,6 +104,19 @@ class CityBuilding(Model):
     build_progress = fields.IntegerField()
     building_id = fields.IntegerField()
 
+    def __init__(self, data):
+        super().__init__(data)
+        self.building = None
+
+    def start_build(self):
+        self.in_progress = True
+        self.build_progress = self.building.build_time
+
+    def finish_build(self):
+        self.in_progress = False
+        self.build_progress = 0
+        self.level += 1
+
 
 class City(Model):
     id = fields.IntegerField()
@@ -129,10 +142,16 @@ class City(Model):
         stats = self.stats
         stats.money += stats.pasive_income + stats.population * stats.tax
 
+    def update_build(self, delta):
+        for city_building in self.buildings.values():
+            if city_building.in_progress:
+                city_building.build_progress -= delta
+                if city_building.build_progress <= 0:
+                    city_building.finish_build()
+
     def _init_city_building(self):
-        for building_id in self.world.buildings.keys():
-            city_building = self.buildings.get(building_id)
-            if not city_building:
+        for building_id, building in self.world.buildings.items():
+            if building_id not in self.buildings:
                 city_building = CityBuilding({
                     'level': 0,
                     'in_progress': False,
@@ -141,16 +160,15 @@ class City(Model):
                 })
                 self.buildings[building_id] = city_building
 
+            self.buildings[building_id].building = building
+
     def build(self, building):
         city_building = self.buildings[building.id]
 
         if city_building.in_progress:
             raise BuildError(self.id, building.id, 'Building already in progress.')
         # TODO: Add resources check and consume
-
-        city_building.in_progress = True
-        city_building.build_progress = building.build_time
-        print('Build {}'.format(building.id))
+        city_building.start_build()
 
     def to_dict(self, detailed=False, serial=True):
         return super().to_dict(serial=serial)

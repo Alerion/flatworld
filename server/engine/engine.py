@@ -11,7 +11,8 @@ class WorldEngine:
         self.speed = world.params.speed
         self.layers = [
             MoneyLayer(world),
-            PopulationLayer(world)
+            PopulationLayer(world),
+            BuildLayer(world)
         ]
 
     @asyncio.coroutine
@@ -119,5 +120,15 @@ class MoneyLayer(SimulationLayer):
     def run(self, delta, elapsed):
         for city in self.world.cities.values():
             city.update_money(delta)
+
+        return self._check_notify(elapsed)
+
+
+class BuildLayer(SimulationLayer):
+    notify_treshhold = None
+
+    def run(self, delta, elapsed):
+        for city in self.world.cities.values():
+            city.update_build(delta)
 
         return self._check_notify(elapsed)
