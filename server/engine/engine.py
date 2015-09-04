@@ -1,5 +1,7 @@
 import asyncio
 
+from .exceptions import CityDoesNotExist, BuildingDoesNotExist
+
 
 class WorldEngine:
 
@@ -31,6 +33,18 @@ class WorldEngine:
 
     def get_world(self):
         return self.world
+
+    def build(self, city_id, building_id):
+        city = self.world.cities.get(city_id)
+        if not city:
+            raise CityDoesNotExist(city_id)
+
+        building = self.world.buildings.get(building_id)
+        if not building:
+            raise BuildingDoesNotExist(building_id)
+
+        city.build(building)
+        return city
 
     def _publish(self, topic):
         return self._events.publish('{}:{}'.format(topic, self.world.id))
@@ -87,7 +101,7 @@ class PopulationLayer(SimulationLayer):
     notify_treshhold = 15
 
     def run(self, delta, elapsed):
-        for city in self.world.cities():
+        for city in self.world.cities.values():
             city.update_population(delta)
 
         return self._check_notify(elapsed)
@@ -97,7 +111,7 @@ class MoneyLayer(SimulationLayer):
     notify_treshhold = 15
 
     def run(self, delta, elapsed):
-        for city in self.world.cities():
+        for city in self.world.cities.values():
             city.update_money(delta)
 
         return self._check_notify(elapsed)

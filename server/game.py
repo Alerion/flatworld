@@ -2,6 +2,7 @@ import time
 import asyncio
 import aiozmq.rpc
 import os
+import traceback
 from zmqrpc.translation_table import translation_table
 
 from engine.engine import WorldEngine
@@ -34,6 +35,10 @@ class ServerHandler(aiozmq.rpc.AttrHandler):
     @aiozmq.rpc.method
     def get_world(self, world_id: int):
         return self.worlds[world_id].get_world()
+
+    @aiozmq.rpc.method
+    def build(self, world_id: int, *args, **kwargs):
+        return self.worlds[world_id].build(*args, **kwargs)
 
 
 def main():

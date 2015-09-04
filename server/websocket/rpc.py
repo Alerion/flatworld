@@ -18,6 +18,8 @@ from django.contrib.sessions.backends.db import SessionStore
 from django.conf import settings
 from django.contrib.auth import get_user
 
+from engine.exceptions import RequestError
+
 RPC = 'rpc'
 EVENT = 'event'
 
@@ -30,7 +32,7 @@ class NotFoundError(Error, LookupError):
     """Error raised by server if RPC namespace/method lookup failed."""
 
 
-class RequestError(Exception):
+class RpcRequestError(Exception):
     """Error raised from RPC method and send as error to client."""
 
     def __init__(self, errors):
@@ -105,7 +107,7 @@ class WebsocketRpc(WebSocketServerProtocol):
                         self.send_success(data, value)
                     else:
                         self.send_success(data, func(*args))
-                except RequestError as error:
+                except (RequestError, RpcRequestError) as error:
                     self.send_error(data, error)
 
     def check_args(self, func, args):

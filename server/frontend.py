@@ -6,7 +6,7 @@ import websocket.rpc
 from websocket.rpc import RequestError
 
 from autobahn.asyncio.websocket import WebSocketServerFactory
-from zmqrpc.translation_table import translation_table
+from zmqrpc.translation_table import translation_table, error_table
 
 
 class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
@@ -14,6 +14,7 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
     def __init__(self, db, game, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.world_id = None
+        self.city_id = None
         self._db = db
         self._game = game
         self._pubsub = None
@@ -31,6 +32,9 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
             self, subscribe='updates:%s' % self.world_id,
             translation_table=translation_table,
             connect=os.environ['PROXY_PORT_5101_TCP'])
+
+        user_data = yield from self._db.call.get_user_data(self._user['id'])
+        self.city_id = user_data['city_id']
 
     def connection_lost(self, exc):
         self._db = None
@@ -56,15 +60,13 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
     @asyncio.coroutine
     def get_buildings(self):
         buildings = yield from self._db.call.get_buildings()
-        print(type(buildings))
         return buildings.to_dict()
 
     @websocket.rpc.method
     @asyncio.coroutine
     def build(self, building_id):
-        raise RequestError({
-            'not_enough_resources': 'You don\'t have enough money.'
-        })
+        city = yield from self._game.call.build(self.world_id, self.city_id, building_id)
+        return city.to_dict()
 
 
 def main():
@@ -81,6 +83,7 @@ def main():
         aiozmq.rpc.connect_rpc(
             connect=os.environ['GAME_PORT_5200_TCP'],
             translation_table=translation_table,
+            error_table=error_table,
             timeout=5))
 
     def create_protocol(*args, **kwargs):

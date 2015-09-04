@@ -3,6 +3,7 @@ import aiozmq.rpc
 import asyncio
 import os
 import psycopg2
+import traceback
 from zmqrpc.translation_table import translation_table
 
 from engine import models
@@ -31,7 +32,10 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
         '''
         yield from cursor.execute(query, (world_id,))
         data = yield from cursor.fetchone()
-        return models.World(data)
+        world = models.World(data)
+        buildings = yield from self.get_buildings()
+        world.buildings = buildings
+        return world
 
     @asyncio.coroutine
     def _load_regions(self, world, cursor):
@@ -72,6 +76,7 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
             region = world.regions[item['region_id']]
             city = models.City(item, world=world, region=region)
             region.cities[city.id] = city
+            world.cities[city.id] = city
 
     @aiozmq.rpc.method
     @asyncio.coroutine
@@ -99,8 +104,17 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
             buildings = ModelsDict()
             for item in data:
                 buildings[item['id']] = models.Building(item)
-            print(type(buildings))
             return buildings
+
+    @aiozmq.rpc.method
+    @asyncio.coroutine
+    def get_user_data(self, user_id: int):
+        with (yield from self._pool.cursor()) as cursor:
+            yield from cursor.execute('SELECT id FROM world_city WHERE user_id=%s', (user_id,))
+            data = yield from cursor.fetchone()
+            return {
+                'city_id': data['id']
+            }
 
 
 def main():

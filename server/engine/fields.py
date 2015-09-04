@@ -264,6 +264,50 @@ class ModelCollectionField(WrappedObjectField):
         return [instance.to_dict(serial=True) for instance in model_instances]
 
 
+class ModelDictCollectionField(WrappedObjectField):
+    """ Field containing a dictionary of model instances.
+
+    For example::
+
+        some_data = {
+            'values': {
+                1: {'value': 'First value'},
+                2: {'value': 'Second value'},
+                3: {'value': 'Third value'},
+            }
+        }
+
+        class MyNestedModel(Model):
+            value = fields.CharField()
+
+        class MyMainModel(Model):
+            values = fields.ModelDictCollectionField(MyNestedModel)
+
+        >>> m = MyMainModel(some_data)
+        >>> m.values
+        {1: <__main__.MyNestedModel at 0x7f0b02724780>,
+         2: <__main__.MyNestedModel at 0x7f0b027247b8>,
+         3: <__main__.MyNestedModel at 0x7f0b0284a668>}
+    """
+    def populate(self, data):
+        if not data:
+            data = {}
+        super().populate(data)
+
+    def to_python(self):
+        object_dict = {}
+        for key, item in self.data.items():
+            obj = self._wrapped_class.from_dict(item)
+            if self._related_name is not None:
+                setattr(obj, self._related_name, self._related_obj)
+            object_dict[key] = obj
+
+        return object_dict
+
+    def to_serial(self, model_instances):
+        return {item[0]: item[1].to_dict(serial=True) for item in model_instances.items()}
+
+
 class FieldCollectionField(BaseField):
     """Field containing a list of the same type of fields.
 

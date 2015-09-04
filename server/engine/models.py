@@ -1,8 +1,9 @@
 """
 Keep these objects as simple as possible. They are passed via 0MQ with Pickle.
 """
-from .base import Model
 from . import fields
+from .base import Model
+from .exceptions import BuildError
 # FIXME: WORLD_PARAMS is used in generate_world command. Not sure this is the best place,
 # because requires to add the main folder to python paths.
 DEFAULT_WORLD_PARAMS = {
@@ -39,6 +40,8 @@ class World(Model):
     def __init__(self, data):
         super().__init__(data)
         self.regions = {}
+        self.cities = {}
+        self.buildings = {}
 
     def to_dict(self, serial=True):
         output = super().to_dict(serial)
@@ -47,12 +50,8 @@ class World(Model):
         for region_id, region in self.regions.items():
             output['regions'][region_id] = region.to_dict(serial)
 
+        # FIXME: Do not send full information about every city
         return output
-
-    def cities(self):
-        for region in self.regions.values():
-            for city in region.cities.values():
-                yield city
 
 
 class Region(Model):
@@ -81,6 +80,16 @@ class Region(Model):
         return output
 
 
+class Building(Model):
+    id = fields.IntegerField()
+    name = fields.CharField()
+    description = fields.CharField()
+    build_time = fields.IntegerField()
+    cost_money = fields.IntegerField()
+    cost_population = fields.IntegerField()
+    properties = fields.JSONField()
+
+
 class CityStats(Model):
     population = fields.FloatField()
     population_growth = fields.FloatField()
@@ -89,10 +98,18 @@ class CityStats(Model):
     tax = fields.FloatField()
 
 
+class CityBuilding(Model):
+    level = fields.IntegerField()
+    in_progress = fields.BooleanField()
+    build_progress = fields.IntegerField()
+    building_id = fields.IntegerField()
+
+
 class City(Model):
     id = fields.IntegerField()
     capital = fields.BooleanField()
     coords = fields.JSONField()
+    buildings = fields.ModelDictCollectionField(CityBuilding)
     name = fields.CharField()
     stats = fields.ModelField(CityStats)
     region_id = fields.IntegerField()
@@ -103,6 +120,7 @@ class City(Model):
         super().__init__(data)
         self.world = world
         self.region = region
+        self._init_city_building()
 
     def update_population(self, delta):
         self.stats.population *= (1 + self.stats.population_growth * delta)
@@ -111,12 +129,24 @@ class City(Model):
         stats = self.stats
         stats.money += stats.pasive_income + stats.population * stats.tax
 
+    def _init_city_building(self):
+        for building_id in self.world.buildings.keys():
+            city_building = self.buildings.get(building_id)
+            if not city_building:
+                city_building = CityBuilding({
+                    'level': 0,
+                    'in_progress': False,
+                    'building_id': building_id
+                })
+                self.buildings[building_id] = city_building
 
-class Building(Model):
-    id = fields.IntegerField()
-    name = fields.CharField()
-    description = fields.CharField()
-    build_time = fields.IntegerField()
-    cost_money = fields.IntegerField()
-    cost_population = fields.IntegerField()
-    properties = fields.JSONField()
+    def build(self, building):
+        city_building = self.buildings[building.id]
+
+        if city_building.in_progress:
+            raise BuildError(self.id, building.id, 'Building already in progress.')
+        # TODO: Add resources check and consume
+
+        city_building.in_progress = True
+        city_building.build_progress = building.build_time
+        print('Build {}'.format(building.id))

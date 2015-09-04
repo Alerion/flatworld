@@ -1,6 +1,8 @@
 import msgpack
 import pickle
 from decimal import Decimal
+
+import engine.exceptions
 from engine.base import Model, ModelsDict
 
 
@@ -16,3 +18,11 @@ translation_table = {
         lambda value: msgpack.packb(pickle.dumps(value)),
         lambda binary: pickle.loads(msgpack.unpackb(binary))),
 }
+
+
+error_table = {}
+
+for name in dir(engine.exceptions):
+    val = getattr(engine.exceptions, name)
+    if isinstance(val, type) and issubclass(val, Exception):
+        error_table['engine.exceptions.'+name] = val
