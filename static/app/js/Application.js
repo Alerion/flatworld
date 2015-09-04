@@ -29,5 +29,9 @@ export default class Application extends Flux {
         rpc.subscribe('update:world', (world, topic) => {
             this.getActions('worldActions').updateWorld(world);
         });
+
+        rpc.subscribe('update:city', (city, topic) => {
+            this.getActions('cityActions').updateCity(city);
+        });
     }
 }

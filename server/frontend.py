@@ -28,13 +28,13 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
         super().onConnect(request)
 
     def onOpen(self):
+        user_data = yield from self._db.call.get_user_data(self._user['id'])
+        self.city_id = user_data['city_id']
+
         self._pubsub = yield from aiozmq.rpc.serve_pubsub(
             self, subscribe='updates:%s' % self.world_id,
             translation_table=translation_table,
             connect=os.environ['PROXY_PORT_5101_TCP'])
-
-        user_data = yield from self._db.call.get_user_data(self._user['id'])
-        self.city_id = user_data['city_id']
 
     def connection_lost(self, exc):
         self._db = None
@@ -46,6 +46,12 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
     @aiozmq.rpc.method
     def update_world(self, world):
         self.publish('update:world', world.to_dict())
+
+    @aiozmq.rpc.method
+    def update_city(self, city):
+        # FIXME: subscribe only to your city
+        if city.id == self.city_id:
+            self.publish('update:city', city.to_dict(detailed=True))
 
     # web socker RPC
     # FIXME: Filter private fields

@@ -143,11 +143,16 @@ class City(Model):
         stats.money += stats.pasive_income + stats.population * stats.tax
 
     def update_build(self, delta):
+        build_finished = False
+
         for city_building in self.buildings.values():
             if city_building.in_progress:
                 city_building.build_progress -= delta
                 if city_building.build_progress <= 0:
                     city_building.finish_build()
+                    build_finished = True
+
+        return build_finished
 
     def _init_city_building(self):
         for building_id, building in self.world.buildings.items():

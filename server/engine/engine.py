@@ -23,14 +23,22 @@ class WorldEngine:
         game speed time.
         """
         delta = (elapsed * self.speed) / (3600 * 24)
-        notify = False
+        notify_world = False
+        notify_cities = set()
 
         for layer in self.layers:
-            if layer.run(delta, elapsed) and not notify:
-                notify = True
+            notify = layer.run(delta, elapsed)
+            # FIXME: fix this crap
+            if isinstance(notify, list):
+                notify_cities = notify_cities.union(set(notify))
+            elif notify and not notify_world:
+                notify_world = True
 
-        if notify:
+        if notify_world:
             yield from self._publish('updates').update_world(self.get_world())
+
+        for city_id in notify_cities:
+            yield from self._publish('updates').update_city(self.world.cities.get(city_id))
 
     def get_world(self):
         return self.world
@@ -128,7 +136,11 @@ class BuildLayer(SimulationLayer):
     notify_treshhold = None
 
     def run(self, delta, elapsed):
+        notify = []
+        # FIXME: Check just buildings in progress
         for city in self.world.cities.values():
-            city.update_build(delta)
+            build_finished = city.update_build(delta)
+            if build_finished:
+                notify.append(city.id)
 
-        return self._check_notify(elapsed)
+        return notify

@@ -16,7 +16,7 @@
         "cost_population": 0,
         "description": "Boost your economy like a pro!",
         "name": "market",
-        "build_time": 60,
+        "build_time": 15,
         "properties": "{pasive_income: 5}",
         "cost_money": 100
     },

@@ -34,6 +34,7 @@ class Building extends React.Component {
 
                 let buildButton;
                 if (cityBuilding.get('in_progress')) {
+                    // FIXME: Add timer
                     buildButton = (
                         <button onClick={this.onBuildClick.bind(this, item.get('id'))} className="btn bgm-blue btn-float waves-effect waves-effect waves-circle waves-float">
                             {cityBuilding.get('build_progress')}s
