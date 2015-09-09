@@ -5,30 +5,39 @@ import {confirm} from '../utils/alert';
 import {capitalize} from 'lodash/string';
 
 
-class Building extends React.Component {
-
-    constructor(props) {
-        super();
-        this.state = this._getProgressState(props);
-        this.timer = null;
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState(this._getProgressState(nextProps));
-    }
+class ProgressChart extends React.Component {
 
     componentDidMount() {
-        this._initChart();
-        this.timer = setInterval(this._tick.bind(this), 1000);
+        $(React.findDOMNode(this.refs.progressChart)).easyPieChart({
+            trackColor: false,
+            scaleColor: false,
+            barColor: 'rgba(255,255,255,0.7)',
+            lineWidth: 5,
+            lineCap: 'butt',
+            size: 50,
+            animate: false
+        });
     }
 
     componentDidUpdate() {
-        this._initChart();
+        $(React.findDOMNode(this.refs.progressChart))
+            .data('easyPieChart')
+            .update(this.props.progress);
     }
 
-    componentWillUnmount() {
-        clearInterval(this.timer);
+    render() {
+        return (
+            <div className="bgm-blue btn-float">
+                <div ref="progressChart" className="easy-pie main-pie" data-percent={this.props.progress}>
+                    <div className="percent">{this.props.timeLeft}</div>
+                </div>
+            </div>
+        )
     }
+}
+
+
+class Building extends React.Component {
 
     render() {
         var building = this.props.building;
@@ -37,14 +46,10 @@ class Building extends React.Component {
         var buildButton;
         var progressChart;
         if (cityBuilding.get('in_progress')) {
-            // FIXME: Add timer
-            progressChart = (
-                <div className="bgm-blue btn-float">
-                    <div ref="progressChart" className="easy-pie main-pie" data-percent={this.state.progressInPerc}>
-                        <div className="percent">{this.state.progressInSec}</div>
-                    </div>
-                </div>
-            )
+            progressChart = <ProgressChart
+                progress={cityBuilding.get('build_progress') / building.get('build_time') * 100}
+                timeLeft={cityBuilding.get('build_progress')}
+            />
         } else {
             buildButton = (
                 <button onClick={this.onBuildClick.bind(this)} className="btn bgm-blue btn-float waves-effect waves-effect waves-circle waves-float">
@@ -101,42 +106,6 @@ class Building extends React.Component {
             title: `Do you wish to build ${name}?`,
             confirmButtonText: 'Yes, build it!'
         }, this.build.bind(this));
-    }
-
-    _tick() {
-        // FIXME: Use world speed
-        if (this.state.progressInSec && this.state.progressInSec > 0) {
-            this.setState({
-                progressInSec: this.state.progressInSec - 1,
-                progressInPerc: (this.state.progressInSec - 1) / this.props.building.get('build_time') * 100
-            });
-        }
-    }
-
-    _initChart() {
-        // FIXME: Make ReactJS component
-        if (this.refs.progressChart) {
-            $(React.findDOMNode(this.refs.progressChart)).easyPieChart({
-                trackColor: false,
-                scaleColor: false,
-                barColor: 'rgba(255,255,255,0.7)',
-                lineWidth: 5,
-                lineCap: 'butt',
-                size: 50,
-                animate: false
-            }).data('easyPieChart').update(this.state.progressInPerc);
-        }
-    }
-
-    _getProgressState(props) {
-        if (props.cityBuilding.get('in_progress')) {
-            var progressInSec = props.cityBuilding.get('build_progress')
-            return {
-                progressInSec: progressInSec,
-                progressInPerc: progressInSec / props.building.get('build_time') * 100
-            }
-        }
-        return {}
     }
 }
 

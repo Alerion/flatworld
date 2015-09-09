@@ -16,6 +16,13 @@ class MapComponent extends React.Component {
     componentDidMount() {
         // Executed once after render. Here we don't have any information about the world here.
         this.map = new Map(React.findDOMNode(this.refs.map));
+        if (this.props.world) {
+            this.map.setWorld(this.props.world);
+        }
+    }
+
+    componentWillUnmount() {
+        this.map.remove();
     }
 
     componentDidUpdate() {

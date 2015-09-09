@@ -1,8 +1,8 @@
 import React from 'react';
 import {RouteHandler} from 'react-router';
-import WorldStats from './WorldStats';
-import CitiesStats from './CitiesStats';
+
 import Header from './Header';
+import Sidebar from './Sidebar';
 
 
 export default React.createClass({
@@ -10,6 +10,7 @@ export default React.createClass({
         return (
             <section id="main">
                 <Header/>
+                <Sidebar/>
                 <section id="content">
                     <div className="container">
                         <RouteHandler {...this.props} />

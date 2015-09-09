@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 
 var statsDefault = {
-    population: 1,
+    population: null,
     population_growth: null,
     money: null,
     pasive_income: null,

@@ -17,6 +17,10 @@ migrate:
 	python3 ./webapp/manage.py migrate
 	python3 ./webapp/manage.py loaddata building
 
+# target: savedata - save game data to fixtures.
+savedata:
+	python3 ./webapp/manage.py dumpdata --indent=4 building	> webapp/fixtures/building.json
+
 # target: startwebapp - Start dev-server.
 startwebapp: migrate
 	python3 -u ./webapp/manage.py runserver 0.0.0.0:8000

@@ -13,6 +13,8 @@
         FRONTEND_PORT: '{{ FRONTEND_PORT }}',
         WORLD_ID: {{ world.pk }},
         USER_ID: {{ user.pk }},
+        USER_NAME: '{{ user }}',
+        USER_AVATAR: '{{ user.avatar }}',
         STATIC_URL: '{{ STATIC_URL }}'
     };
     </script>

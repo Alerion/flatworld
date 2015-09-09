@@ -15,6 +15,8 @@ export default class CityStore extends Store {
         this.register(cityActions.updateCity, this.updateCity);
         this.state = {};
         this._loadingInProgress = false;
+
+        setInterval(this._updateBuildProgress.bind(this), 1000);
     }
 
     startCityLoading() {
@@ -35,5 +37,20 @@ export default class CityStore extends Store {
         }
 
         return this.state.city;
+    }
+
+    _updateBuildProgress() {
+        if ( ! this.state.city) return;
+
+        var buildings = this.state.city.get('buildings').map(function (building) {
+            if (building.get('in_progress') && building.get('build_progress') > 0) {
+                return building.set('build_progress', building.get('build_progress') - 1);
+            }
+            return building;
+        });
+
+        this.setState({
+            city: this.state.city.set('buildings', buildings)
+        });
     }
 }

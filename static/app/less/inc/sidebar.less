@@ -11,13 +11,13 @@
     .opacity(0);
     .transition(all);
     .transition-duration(300ms);
-    
+
     .sidebar-inner {
         height: 100%;
         overflow-y: auto;
         width: @sidebar-left-width;
     }
-    
+
     &.toggled {
         .translate3d(0, 0, 0);
         .opacity(1);
@@ -32,10 +32,10 @@
         width: 100%;
         background: url(../img/profile-menu.png) no-repeat left top;
         background-size: 100%;
-        
+
         .profile-pic {
             padding: 12px;
-            
+
             & > img {
                 width: 47px;
                 height: 47px;
@@ -44,14 +44,14 @@
                 box-sizing: content-box;
             }
         }
-        
+
         .profile-info {
             background: rgba(0, 0, 0, 0.37);
             padding: 7px 14px;
             color: #fff;
             margin-top: 20px;
             position: relative;
-            
+
             & > i {
                 font-size: 19px;
                 line-height: 100%;
@@ -67,11 +67,11 @@
         display: none;
         margin: 0 0 0;
         border-bottom: 1px solid #E6E6E6;
-        
+
     }
-    
+
     .clearfix();
-    
+
     &.toggled {
         .profile-info {
             & > i {
@@ -85,7 +85,7 @@
     list-style: none;
     padding-left: 0;
     margin: 20px 0 0 0;
-    
+
     & > li {
         & > a {
             padding: 14px 20px 14px 52px;
@@ -93,12 +93,17 @@
             color: #4C4C4C;
             font-weight: 500;
             position: relative;
-            
+
+            &.active {
+                color: #262626;
+                background-color: #F4F4F4;
+            }
+
             &:hover {
                 color: #262626;
                 background-color: #f7f7f7;
             }
-            
+
             & > i {
                 position: absolute;
                 left: 16px;
@@ -109,7 +114,7 @@
                 padding: 13px 0;
             }
         }
-        
+
         &.sub-menu {
             & > a {
                 &:before, &:after {
@@ -123,53 +128,53 @@
                     .transition-duration(250ms);
                     .backface-visibility(hidden);
                 }
-                
+
                 &:before {
                     content: "\f278";
                     .scale(1);
                 }
-                
+
                 &:after {
                     content: "\f273";
                     .scale(0);
                 }
             }
-            
+
             &.toggled {
                 & > a {
                     &:before {
                         content: "\f278";
                         .scale(0);
                     }
-                    
+
                     &:after {
                         content: "\f273";
                         .scale(1);
                     }
                 }
             }
-            
+
             & > ul {
                 list-style: none;
                 display: none;
                 padding: 0;
-                
+
                 & > li {
                     & > a {
                         color: #7f7f7f;
                         padding: 8px 20px 8px 50px;
                         font-weight: 500;
                         display: block;
-                        
+
                         &.active, &:hover {
                             color: #000;
                         }
                     }
-                    
+
                     &:first-child > a {
                         padding-top: 14px;
                     }
-                    
+
                     &:last-child > a {
                         padding-bottom: 16px;
                     }
@@ -180,9 +185,9 @@
                 & > ul {
                     display: block;
                 }
-            } 
+            }
         }
-        
+
         &.active {
             & > a {
                 color: #262626;
@@ -201,7 +206,7 @@ body {
             box-shadow: 0 0 10px rgba(51, 51, 51, 0.38);
         }
     }
-    
+
     &.sw-toggled {
         #sidebar {
             @media (min-width: @screen-lg-min) {
@@ -209,7 +214,7 @@ body {
                 .opacity(1) !important;
                 box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
             }
-            
+
             @media (max-width: @screen-lg-min) {
                 box-shadow: 0 0 10px rgba(51, 51, 51, 0.38);
             }
@@ -226,7 +231,7 @@ body {
             display: block;
         }
     }
-    
+
     body:not(.sw-toggled) {
          #sidebar:not(.toggled) {
             display: none;
@@ -235,7 +240,7 @@ body {
 }
 
 /*
- * Nicescroll fix for sidebar when hidden 
+ * Nicescroll fix for sidebar when hidden
  */
 
 #sidebar:hover {

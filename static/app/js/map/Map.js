@@ -18,15 +18,14 @@ export default L.Map.extend({
         center: [0, 0],
         attributionControl: false,
         // FIXME: Save them in DB for each world
-        maxBounds: [[-40, -40], [40, 40]],
-        layers: [
-            L.tileLayer(CONFIG.TILE_LAYER_URL)
-        ]
+        maxBounds: [[-40, -40], [40, 40]]
     },
 
     initialize: function (id, options) {
         L.Map.prototype.initialize.call(this, id, options);
         this.world = null;
+
+        this.addLayer(L.tileLayer(CONFIG.TILE_LAYER_URL))
 
         // Initialize region info panel
         this.regionInfoPanel = new RegionInfoPanel();
