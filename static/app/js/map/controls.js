@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import React from 'react';
-import $ from 'jquery';
+
+import toString from '../utils/toString';
 
 
 var InfoPanel = L.Control.extend({
@@ -30,8 +31,8 @@ var RegionInfoPanel = InfoPanel.extend({
     renderObject: function (region) {
         return React.renderToStaticMarkup(<div>
             <b>{region.get('name')}</b><br/>
-            Population: {region.totalPopulation({verbose: true})}<br/>
-            Money: {region.totalMoney({verbose: true})}<br/>
+            Population: {toString(region.totalPopulation())}<br/>
+            Money: {toString(region.totalMoney())}<br/>
         </div>);
     }
 });

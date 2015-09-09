@@ -1,6 +1,8 @@
 import FluxComponent from 'flummox/component';
 import React from 'react';
 
+import toString from '../utils/toString';
+
 
 class CitiesStats extends React.Component {
 
@@ -20,8 +22,8 @@ class CitiesStats extends React.Component {
                     rows.push(
                         <tr key={city.get('id')}>
                             <td>{city.get('name')}</td>
-                            <td>{city.get('stats').get('population')}</td>
-                            <td>{city.get('stats').get('money')}</td>
+                            <td>{toString(city.get('stats').get('population'))}</td>
+                            <td>{toString(city.get('stats').get('money'))}</td>
                         </tr>
                     );
                 }

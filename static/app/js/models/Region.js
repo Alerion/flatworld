@@ -13,25 +13,21 @@ var defaults = {
 
 export default class Region extends Immutable.Record(defaults) {
 
-    _totalForCities(field, verbose=false) {
+    _totalForCities(field) {
         var total = 0;
 
         for (let city of this.get('cities').values()) {
             total += city.get('stats').get(field);
         }
 
-        if (verbose) {
-            total = numeral(total).format('0,0');
-        }
-
         return total;
     }
 
-    totalPopulation(verbose=false) {
-        return this._totalForCities('population', verbose);
+    totalPopulation() {
+        return this._totalForCities('population');
     }
 
-    totalMoney(verbose=false) {
-        return this._totalForCities('money', verbose);
+    totalMoney() {
+        return this._totalForCities('money');
     }
 }

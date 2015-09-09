@@ -114,6 +114,7 @@ class Building extends React.Component {
     }
 
     _initChart() {
+        // FIXME: Make ReactJS component
         if (this.refs.progressChart) {
             $(React.findDOMNode(this.refs.progressChart)).easyPieChart({
                 trackColor: false,

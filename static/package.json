@@ -31,6 +31,7 @@
     "msgpack-js-browser": "^0.1.4",
     "numeral": "^1.5.3",
     "react": "^0.13.3",
+    "react-bootstrap": "^0.25.1",
     "react-router": "^0.13.3",
     "regenerator": "^0.8.36",
     "source-map": "^0.4.4"

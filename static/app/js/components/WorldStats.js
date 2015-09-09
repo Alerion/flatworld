@@ -1,6 +1,8 @@
 import FluxComponent from 'flummox/component';
 import React from 'react';
 
+import toString from '../utils/toString';
+
 
 class WorldStats extends React.Component {
 
@@ -15,11 +17,11 @@ class WorldStats extends React.Component {
                         <div className="pmbb-view">
                             <dl className="dl-horizontal">
                                 <dt>Total population</dt>
-                                <dd>{world.totalPopulation()}</dd>
+                                <dd>{toString(world.totalPopulation())}</dd>
                             </dl>
                             <dl className="dl-horizontal">
                                 <dt>Total money</dt>
-                                <dd>{world.totalMoney()}</dd>
+                                <dd>{toString(world.totalMoney())}</dd>
                             </dl>
                         </div>
                     </div>

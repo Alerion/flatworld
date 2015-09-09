@@ -1,5 +1,8 @@
 import FluxComponent from 'flummox/component';
 import React from 'react';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
+
+import toString from '../utils/toString';
 
 
 class Header extends React.Component {
@@ -12,12 +15,24 @@ class Header extends React.Component {
             resources = (
                 <li>
                     <ul className="city-resources">
-                        <li>
-                            <i className="zmdi zmdi-accounts zmdi-hc-lg"/> {city.population()}
-                        </li>
-                        <li>
-                            <i className="zmdi zmdi-money zmdi-hc-lg"/> {city.money()}
-                        </li>
+                        <OverlayTrigger placement='left'
+                                overlay={<Popover id="resources-population">
+                                    growth: {toString(city.stats.population_growth, 'percent')}
+                                </Popover>}>
+                            <li>
+                                <i className="zmdi zmdi-accounts zmdi-hc-lg"/>
+                                &nbsp;{toString(city.stats.population)}
+                            </li>
+                        </OverlayTrigger>
+                        <OverlayTrigger placement='left'
+                                overlay={<Popover id="resources-money">
+                                    tax {toString(city.stats.tax, 'float')}, income: {toString(city.stats.pasive_income)}
+                                </Popover>}>
+                            <li>
+                                <i className="zmdi zmdi-money zmdi-hc-lg"/>
+                                &nbsp;{toString(city.stats.money)}
+                            </li>
+                        </OverlayTrigger>
                     </ul>
                 </li>
             )

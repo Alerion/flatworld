@@ -22,26 +22,22 @@ export default class World extends Immutable.Record(defaults) {
         }
     }
 
-    _totalForCities(field, verbose=true) {
+    _totalForCities(field) {
         var total = 0;
 
         for (let city of this.getAllCities()) {
             total += city.get('stats').get(field);
         }
 
-        if (verbose) {
-            total = numeral(total).format('0,0');
-        }
-
         return total;
     }
 
     totalPopulation(verbose=true) {
-        return this._totalForCities('population', verbose);
+        return this._totalForCities('population');
     }
 
     totalMoney(verbose=true) {
-        return this._totalForCities('money', verbose);
+        return this._totalForCities('money');
     }
 }
 
