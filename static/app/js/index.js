@@ -25,7 +25,7 @@ async function main() {
             <FluxComponent flux={flux}>
                 <Handler {...state.params} />
             </FluxComponent>,
-            document.getElementById('content')
+            document.getElementById('app')
         );
     });
 }

@@ -15,11 +15,11 @@ class WorldStats extends React.Component {
                         <div className="pmbb-view">
                             <dl className="dl-horizontal">
                                 <dt>Total population</dt>
-                                <dd>{world.totalPopulation({verbose: true})}</dd>
+                                <dd>{world.totalPopulation()}</dd>
                             </dl>
                             <dl className="dl-horizontal">
                                 <dt>Total money</dt>
-                                <dd>{world.totalMoney({verbose: true})}</dd>
+                                <dd>{world.totalMoney()}</dd>
                             </dl>
                         </div>
                     </div>

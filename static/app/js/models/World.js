@@ -22,7 +22,7 @@ export default class World extends Immutable.Record(defaults) {
         }
     }
 
-    _totalForCities(field, verbose=false) {
+    _totalForCities(field, verbose=true) {
         var total = 0;
 
         for (let city of this.getAllCities()) {
@@ -36,11 +36,11 @@ export default class World extends Immutable.Record(defaults) {
         return total;
     }
 
-    totalPopulation(verbose=false) {
+    totalPopulation(verbose=true) {
         return this._totalForCities('population', verbose);
     }
 
-    totalMoney(verbose=false) {
+    totalMoney(verbose=true) {
         return this._totalForCities('money', verbose);
     }
 }

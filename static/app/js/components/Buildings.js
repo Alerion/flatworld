@@ -13,54 +13,6 @@ class Building extends React.Component {
         this.timer = null;
     }
 
-    _getProgressState(props) {
-        if (props.cityBuilding.get('in_progress')) {
-            var progressInSec = props.cityBuilding.get('build_progress')
-            return {
-                progressInSec: progressInSec,
-                progressInPerc: progressInSec / props.building.get('build_time') * 100
-            }
-        }
-        return {}
-    }
-
-    build() {
-        this.props.flux.getActions('cityActions').build(this.props.building.get('id')).catch(showErrors);
-    }
-
-    onBuildClick() {
-        var name = capitalize(this.props.building.get('name'));
-
-        confirm({
-            title: `Do you wish to build ${name}?`,
-            confirmButtonText: 'Yes, build it!'
-        }, this.build.bind(this));
-    }
-
-    _tick() {
-        // FIXME: Use world speed
-        if (this.state.progressInSec && this.state.progressInSec > 0) {
-            this.setState({
-                progressInSec: this.state.progressInSec - 1,
-                progressInPerc: (this.state.progressInSec - 1) / this.props.building.get('build_time') * 100
-            });
-        }
-    }
-
-    _initChart() {
-        if (this.refs.progressChart) {
-            $(React.findDOMNode(this.refs.progressChart)).easyPieChart({
-                trackColor: false,
-                scaleColor: false,
-                barColor: 'rgba(255,255,255,0.7)',
-                lineWidth: 5,
-                lineCap: 'butt',
-                size: 50,
-                animate: false
-            }).data('easyPieChart').update(this.state.progressInPerc);
-        }
-    }
-
     componentWillReceiveProps(nextProps) {
         this.setState(this._getProgressState(nextProps));
     }
@@ -136,6 +88,54 @@ class Building extends React.Component {
                 </div>
             </div>
         )
+    }
+
+    build() {
+        this.props.flux.getActions('cityActions').build(this.props.building.get('id')).catch(showErrors);
+    }
+
+    onBuildClick() {
+        var name = capitalize(this.props.building.get('name'));
+
+        confirm({
+            title: `Do you wish to build ${name}?`,
+            confirmButtonText: 'Yes, build it!'
+        }, this.build.bind(this));
+    }
+
+    _tick() {
+        // FIXME: Use world speed
+        if (this.state.progressInSec && this.state.progressInSec > 0) {
+            this.setState({
+                progressInSec: this.state.progressInSec - 1,
+                progressInPerc: (this.state.progressInSec - 1) / this.props.building.get('build_time') * 100
+            });
+        }
+    }
+
+    _initChart() {
+        if (this.refs.progressChart) {
+            $(React.findDOMNode(this.refs.progressChart)).easyPieChart({
+                trackColor: false,
+                scaleColor: false,
+                barColor: 'rgba(255,255,255,0.7)',
+                lineWidth: 5,
+                lineCap: 'butt',
+                size: 50,
+                animate: false
+            }).data('easyPieChart').update(this.state.progressInPerc);
+        }
+    }
+
+    _getProgressState(props) {
+        if (props.cityBuilding.get('in_progress')) {
+            var progressInSec = props.cityBuilding.get('build_progress')
+            return {
+                progressInSec: progressInSec,
+                progressInPerc: progressInSec / props.building.get('build_time') * 100
+            }
+        }
+        return {}
     }
 }
 

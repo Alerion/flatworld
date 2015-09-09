@@ -64,7 +64,7 @@ def main():
 
     for item in active_worlds:
         world = loop.run_until_complete(db.call.get_world(item['id']))
-        worlds[item['id']] = WorldEngine(events, world)
+        worlds[item['id']] = WorldEngine(loop, events, world)
 
     server_handler = ServerHandler(worlds, db, events)
     server = aiozmq.rpc.serve_rpc(

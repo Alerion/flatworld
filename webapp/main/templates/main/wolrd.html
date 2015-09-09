@@ -3,7 +3,6 @@
 {% block styles %}
     {{ block.super }}
     <link href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" rel="stylesheet"/>
-    <link href="{% static 'css/app.css' %}" rel="stylesheet"/>
 {% endblock %}
 
 {% block extra_headers %}
@@ -22,13 +21,7 @@
 {% block body_class %}sw-toggled{% endblock %}
 
 {% block body %}
-    {% include 'main/_header.html' %}
-
-    <section id="main">
-        {% include 'main/_sidebar.html' %}
-
-        <section id="content"></section>
-    </section>
+    <div id="app"></div>
 {% endblock body %}
 
 {% block scripts %}

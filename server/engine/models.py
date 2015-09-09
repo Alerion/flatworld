@@ -140,7 +140,7 @@ class City(Model):
 
     def update_money(self, delta):
         stats = self.stats
-        stats.money += stats.pasive_income + stats.population * stats.tax
+        stats.money += (stats.pasive_income + stats.population * stats.tax) * delta
 
     def update_build(self, delta):
         build_finished = False
@@ -173,10 +173,10 @@ class City(Model):
         if city_building.in_progress:
             raise BuildError(self.id, building.id, 'Building already in progress.')
 
-        if building.cost_money < self.stats.money:
+        if building.cost_money > self.stats.money:
             raise BuildError(self.id, building.id, 'Not enough money.')
 
-        if building.cost_population < self.stats.population:
+        if building.cost_population > self.stats.population:
             raise BuildError(self.id, building.id, 'Not enough population.')
 
         self.stats.money -= building.cost_money

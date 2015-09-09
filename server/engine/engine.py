@@ -5,9 +5,10 @@ from .exceptions import CityDoesNotExist, BuildingDoesNotExist
 
 class WorldEngine:
 
-    def __init__(self, events, world):
+    def __init__(self, loop, events, world):
         self.world = world
         self._events = events
+        self._loop = loop
         self.speed = world.params.speed
         self.layers = [
             MoneyLayer(world),
@@ -23,22 +24,14 @@ class WorldEngine:
         game speed time.
         """
         delta = (elapsed * self.speed) / (3600 * 24)
-        notify_world = False
-        notify_cities = set()
+        notify = False
 
         for layer in self.layers:
-            notify = layer.run(delta, elapsed)
-            # FIXME: fix this crap
-            if isinstance(notify, list):
-                notify_cities = notify_cities.union(set(notify))
-            elif notify and not notify_world:
-                notify_world = True
+            if layer.run(delta, elapsed) and not notify:
+                notify = True
 
-        if notify_world:
-            yield from self._publish('updates').update_world(self.get_world())
-
-        for city_id in notify_cities:
-            yield from self._publish('updates').update_city(self.world.cities.get(city_id))
+        if notify:
+            self._loop.call_soon(self._update_world)
 
     def get_world(self):
         return self.world
@@ -61,8 +54,9 @@ class WorldEngine:
         city.build(building)
         return city
 
-    def _publish(self, topic):
-        return self._events.publish('{}:{}'.format(topic, self.world.id))
+    def _update_world(self):
+        return self._events.publish('updates:world:{}'.format(self.world.id)) \
+            .update_world(self.world)
 
 
 class SimulationLayer:
@@ -143,4 +137,4 @@ class BuildLayer(SimulationLayer):
             if build_finished:
                 notify.append(city.id)
 
-        return notify
+        return bool(notify)

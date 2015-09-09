@@ -1,6 +1,8 @@
 import {Store} from 'flummox';
 import Immutable from 'immutable';
 
+import City from '../models/City';
+
 
 export default class CityStore extends Store {
 
@@ -21,7 +23,7 @@ export default class CityStore extends Store {
 
     updateCity(obj) {
         this.setState({
-            city: Immutable.fromJS(obj)
+            city: City.fromJS(obj)
         });
         this._loadingInProgress = false;
     }

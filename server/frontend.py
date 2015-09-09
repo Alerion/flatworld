@@ -32,7 +32,7 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
         self.city_id = user_data['city_id']
 
         self._pubsub = yield from aiozmq.rpc.serve_pubsub(
-            self, subscribe='updates:%s' % self.world_id,
+            self, subscribe='updates:world:%s' % self.world_id,
             translation_table=translation_table,
             connect=os.environ['PROXY_PORT_5101_TCP'])
 
@@ -45,13 +45,9 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
     # events handlers methods
     @aiozmq.rpc.method
     def update_world(self, world):
+        city = world.cities.get(self.city_id)
+        self.publish('update:city', city.to_dict(detailed=True))
         self.publish('update:world', world.to_dict())
-
-    @aiozmq.rpc.method
-    def update_city(self, city):
-        # FIXME: subscribe only to your city
-        if city.id == self.city_id:
-            self.publish('update:city', city.to_dict(detailed=True))
 
     # web socker RPC
     # FIXME: Filter private fields
