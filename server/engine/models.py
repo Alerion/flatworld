@@ -90,14 +90,6 @@ class Building(Model):
     properties = fields.JSONField()
 
 
-class CityStats(Model):
-    population = fields.FloatField()
-    population_growth = fields.FloatField()
-    money = fields.FloatField()
-    pasive_income = fields.FloatField()
-    tax = fields.FloatField()
-
-
 class CityBuilding(Model):
     level = fields.IntegerField()
     in_progress = fields.BooleanField()
@@ -116,6 +108,14 @@ class CityBuilding(Model):
         self.in_progress = False
         self.build_progress = 0
         self.level += 1
+
+
+class CityStats(Model):
+    population = fields.FloatField()
+    population_growth = fields.FloatField()
+    money = fields.FloatField()
+    pasive_income = fields.FloatField()
+    tax = fields.FloatField()
 
 
 class City(Model):
@@ -172,6 +172,16 @@ class City(Model):
 
         if city_building.in_progress:
             raise BuildError(self.id, building.id, 'Building already in progress.')
+
+        if building.cost_money < self.stats.money:
+            raise BuildError(self.id, building.id, 'Not enough money.')
+
+        if building.cost_population < self.stats.population:
+            raise BuildError(self.id, building.id, 'Not enough population.')
+
+        self.stats.money -= building.cost_money
+        self.stats.population -= building.cost_population
+
         # TODO: Add resources check and consume
         city_building.start_build()
 
