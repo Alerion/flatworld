@@ -7,6 +7,11 @@ import {capitalize} from 'lodash/string';
 
 class Building extends React.Component {
 
+}
+
+
+class Buildings extends React.Component {
+
     onBuildClick(buildingId) {
         var building = this.props.buildings.get(String(buildingId));
         var name = capitalize(building.get('name'));
@@ -17,8 +22,16 @@ class Building extends React.Component {
         }, this.build.bind(this, buildingId));
     }
 
-    build(buildingId) {
-        this.props.flux.getActions('cityActions').build(buildingId).catch(showErrors);
+    componentDidUpdate() {
+        $(React.findDOMNode(this.refs.buildings)).find('.easy-pie').easyPieChart({
+            trackColor: 'rgba(255,255,255,0.3)',
+            scaleColor: false,
+            barColor: 'rgba(255,255,255,0.8)',
+            lineWidth: 5,
+            lineCap: 'butt',
+            size: 50,
+            animate: false
+        });
     }
 
     render() {
@@ -36,9 +49,11 @@ class Building extends React.Component {
                 if (cityBuilding.get('in_progress')) {
                     // FIXME: Add timer
                     buildButton = (
-                        <button onClick={this.onBuildClick.bind(this, item.get('id'))} className="btn bgm-blue btn-float waves-effect waves-effect waves-circle waves-float">
-                            {cityBuilding.get('build_progress')}s
-                        </button>
+                        <div className="bgm-blue btn-float">
+                            <div className="easy-pie main-pie" data-percent="89">
+                                <div className="percent">{cityBuilding.get('build_progress')}s</div>
+                            </div>
+                        </div>
                     )
                 } else {
                     buildButton = (
@@ -100,7 +115,7 @@ class Building extends React.Component {
         }
 
         return (
-            <div>
+            <div ref="buildings">
                 <div className="block-header">
                     <h2>Building</h2>
                 </div>
@@ -108,6 +123,10 @@ class Building extends React.Component {
                 {content}
             </div>
         );
+    }
+
+    build(buildingId) {
+        this.props.flux.getActions('cityActions').build(buildingId).catch(showErrors);
     }
 }
 
@@ -123,7 +142,7 @@ export default class FluxBuilding extends React.Component {
                     city: store.getCity()
                 })
             }}>
-                <Building {...this.props}/>
+                <Buildings {...this.props}/>
             </FluxComponent>
         );
     }
