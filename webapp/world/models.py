@@ -110,6 +110,7 @@ class City(models.Model):
 
     class Meta:
         unique_together = ('user', 'world')
+        verbose_name_plural = 'cities'
 
     def __str__(self):
         return self.name

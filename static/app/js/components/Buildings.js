@@ -69,7 +69,7 @@ class BuildingProperties extends React.Component {
                     <div className="pmbb-view">
                         <dl className="dl-horizontal">
                             <dt><i className="zmdi zmdi-alarm m-r-5"></i> Сonstruction time</dt>
-                            <dd>{building.get('build_time')} seconds</dd>
+                            <dd>{toString(building.get('build_time'), 'time')}</dd>
                         </dl>
                         <dl className="dl-horizontal">
                             <dt><i className="zmdi zmdi-money m-r-5"></i> Money</dt>

@@ -1,11 +1,9 @@
-from django import forms
 from django.contrib import admin
-from postgres.fields import JSONField
 
 from .models import Building
 
 
 class BuildingModelAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name', 'build_time', 'cost_money', 'cost_population', 'properties')
 
 admin.site.register(Building, BuildingModelAdmin)

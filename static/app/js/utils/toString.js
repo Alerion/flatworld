@@ -14,6 +14,8 @@ export default function toString(value, format) {
             return numeral(value).format('0.00');
         case 'percent':
             return numeral(value).format('0.0%');
+        case 'time':
+            return numeral(value).format('00:00:00');
         case 'key':
             return capitalize(startCase(value).toLowerCase());
         default:
