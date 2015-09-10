@@ -14,7 +14,7 @@ properties_schema = {
             'exclusiveMinimum': True
         },
         'population_growth': {
-            'description': 'Population growth percent per day.',
+            'description': 'Population growth in percent per day.',
             'type': 'number',
             'minimum': 0,
             'exclusiveMinimum': True,

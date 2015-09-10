@@ -3,9 +3,9 @@ Keep these objects as simple as possible. They are passed via 0MQ with Pickle.
 """
 from . import fields
 from .base import Model
-from ..exceptions import BuildError
 
 from .building import Building
+from .city import City
 
 __all__ = ['DEFAULT_WORLD_PARAMS', 'Building', 'World', 'Region', 'City']
 
@@ -83,102 +83,3 @@ class Region(Model):
             output['neighbors'].append(neighbor_id)
 
         return output
-
-
-class CityBuilding(Model):
-    level = fields.IntegerField()
-    in_progress = fields.BooleanField()
-    build_progress = fields.IntegerField()
-    building_id = fields.IntegerField()
-
-    def __init__(self, data):
-        super().__init__(data)
-        self.building = None
-
-    def start_build(self):
-        self.in_progress = True
-        self.build_progress = self.building.build_time
-
-    def finish_build(self):
-        self.in_progress = False
-        self.build_progress = 0
-        self.level += 1
-
-
-class CityStats(Model):
-    population = fields.FloatField()
-    population_growth = fields.FloatField()
-    money = fields.FloatField()
-    pasive_income = fields.FloatField()
-    tax = fields.FloatField()
-
-
-class City(Model):
-    id = fields.IntegerField()
-    capital = fields.BooleanField()
-    coords = fields.JSONField()
-    buildings = fields.ModelDictCollectionField(CityBuilding)
-    name = fields.CharField()
-    stats = fields.ModelField(CityStats)
-    region_id = fields.IntegerField()
-    world_id = fields.IntegerField()
-    user_id = fields.IntegerField()
-
-    def __init__(self, data, world, region):
-        super().__init__(data)
-        self.world = world
-        self.region = region
-        self._init_city_building()
-
-    def update_population(self, delta):
-        self.stats.population *= (1 + self.stats.population_growth * delta)
-
-    def update_money(self, delta):
-        stats = self.stats
-        stats.money += (stats.pasive_income + stats.population * stats.tax) * delta
-
-    def update_build(self, delta):
-        build_finished = False
-
-        for city_building in self.buildings.values():
-            if city_building.in_progress:
-                city_building.build_progress -= delta
-                if city_building.build_progress <= 0:
-                    city_building.finish_build()
-                    build_finished = True
-
-        return build_finished
-
-    def _init_city_building(self):
-        for building_id, building in self.world.buildings.items():
-            if building_id not in self.buildings:
-                city_building = CityBuilding({
-                    'level': 0,
-                    'in_progress': False,
-                    'building_id': building_id,
-                    'build_progress': 0
-                })
-                self.buildings[building_id] = city_building
-
-            self.buildings[building_id].building = building
-
-    def build(self, building):
-        city_building = self.buildings[building.id]
-
-        if city_building.in_progress:
-            raise BuildError(self.id, building.id, 'Building already in progress.')
-
-        if building.cost_money > self.stats.money:
-            raise BuildError(self.id, building.id, 'Not enough money.')
-
-        if building.cost_population > self.stats.population:
-            raise BuildError(self.id, building.id, 'Not enough population.')
-
-        self.stats.money -= building.cost_money
-        self.stats.population -= building.cost_population
-
-        # TODO: Add resources check and consume
-        city_building.start_build()
-
-    def to_dict(self, detailed=False, serial=True):
-        return super().to_dict(serial=serial)

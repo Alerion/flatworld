@@ -9,9 +9,10 @@ class BaseField(object):
     name as the key to retrieve the value from the source data.
 
     """
-    def __init__(self, source=None):
+    def __init__(self, source=None, improvable=False):
         self.source = source
         self.data = None
+        self.improvable = improvable
 
     def populate(self, data):
         """Set the value or values wrapped by this field"""
