@@ -4,8 +4,8 @@ import random
 from django.contrib.gis.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from postgres.fields import JSONField
 
+from utils.models import JSONField
 from server.engine.models import DEFAULT_WORLD_PARAMS
 
 

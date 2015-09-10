@@ -5,15 +5,15 @@
     margin-bottom: 30px;
 
     .card-header {
-        position: relative; 
-        
+        position: relative;
+
         &:not(.ch-alt) {
             @media screen and (min-width: @screen-sm-min) {
                 padding: 23px 25px;
             }
-            
+
             @media screen and (max-width: @screen-sm-max) {
-                padding: 18px; 
+                padding: 18px;
             }
         }
 
@@ -22,60 +22,60 @@
             line-height: 100%;
             font-size: 17px;
             font-weight: 400;
-            
+
             small {
                 display: block;
                 margin-top: 8px;
                 color: #AEAEAE;
                 line-height: 160%;
             }
-        } 
+        }
 
         &.ch-alt {
             @media screen and (min-width: @screen-sm-min) {
                 padding: 23px 26px;
-            } 
-            
+            }
+
             @media screen and (max-width: @screen-sm-max) {
                 padding: 18px 18px 28px;
             }
-                        
+
             &:not([class*="bgm-"]) {
                 background-color: #f7f7f7;
             }
         }
 
         &[class*="bgm-"] {
-            h2, h2 small { 
+            h2, h2 small {
                 color: #fff;
             }
         }
-        
+
         .actions {
-            position: absolute; 
+            position: absolute;
             right: 10px;
-            z-index: 2; 
+            z-index: 2;
             top: 15px;
         }
-        
+
         .btn-float {
             right: 25px;
             bottom: -23px;
             z-index: 1;
         }
     }
-    
-    .card-body { 
+
+    .card-body {
         &.card-padding {
             @media screen and (min-width: @screen-sm-min) {
                 padding: 23px 26px;
             }
-            
+
             @media screen and (max-width: @screen-sm-max) {
                 padding: 18px;
             }
         }
-        
+
         &.card-padding-sm {
             padding: 15px;
         }
@@ -84,4 +84,24 @@
 
 .card-header:not(.ch-alt):not([class*="bgm-"]) + .card-padding {
     padding-top: 0;
+}
+
+.card-group {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+
+    &.row {
+        & > [class*="col-"] {
+            display: table-cell;
+            vertical-align: top;
+            float: none;
+
+            & > .card {
+                height: 100%;
+                overflow: auto;
+                margin-bottom: 0;
+            }
+        }
+    }
 }

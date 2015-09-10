@@ -1,8 +1,11 @@
 import FluxComponent from 'flummox/component';
 import React from 'react';
-import {showErrors} from '../utils/notify';
-import {confirm} from '../utils/alert';
-import {capitalize} from 'lodash/string';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
+
+import toString from '../utils/toString';
+import { capitalize } from 'lodash/string';
+import { confirm } from '../utils/alert';
+import { showErrors } from '../utils/notify';
 
 
 class ProgressChart extends React.Component {
@@ -33,6 +36,54 @@ class ProgressChart extends React.Component {
                 </div>
             </div>
         )
+    }
+}
+
+
+class BuildingProperties extends React.Component {
+
+    render () {
+        var building = this.props.building;
+
+        var properties = [];
+
+        for (let [key, value] of building.get('properties')) {
+            let info = building.get('properties_description').get(key);
+
+            properties.push(
+                <dl key={key} className="dl-horizontal">
+                    <dt><i className="zmdi zmdi-settings m-r-5"></i> {toString(key, 'key')}</dt>
+                    <dd>
+                        {value}
+                        <OverlayTrigger overlay={<Popover id="help-{key}">{info}</Popover>}>
+                            <i className="zmdi zmdi-help-outline m-l-5"></i>
+                        </OverlayTrigger>
+                    </dd>
+                </dl>
+            );
+        }
+
+        return (
+            <div className="pmb-block">
+                <div className="pmbb-body">
+                    <div className="pmbb-view">
+                        <dl className="dl-horizontal">
+                            <dt><i className="zmdi zmdi-alarm m-r-5"></i> Сonstruction time</dt>
+                            <dd>{building.get('build_time')} seconds</dd>
+                        </dl>
+                        <dl className="dl-horizontal">
+                            <dt><i className="zmdi zmdi-money m-r-5"></i> Money</dt>
+                            <dd>{building.get('cost_money')}</dd>
+                        </dl>
+                        <dl className="dl-horizontal">
+                            <dt><i className="zmdi zmdi-accounts m-r-5"></i> Population</dt>
+                            <dd>{building.get('cost_population')}</dd>
+                        </dl>
+                        {properties}
+                    </div>
+                </div>
+            </div>
+        );
     }
 }
 
@@ -71,24 +122,7 @@ class Building extends React.Component {
                     </div>
 
                     <div className="card-body card-padding">
-                        <div className="pmb-block">
-                            <div className="pmbb-body">
-                                <div className="pmbb-view">
-                                    <dl className="dl-horizontal">
-                                        <dt><i className="zmdi zmdi-alarm m-r-5"></i> Сonstruction time</dt>
-                                        <dd>{building.get('build_time')} seconds</dd>
-                                    </dl>
-                                    <dl className="dl-horizontal">
-                                        <dt><i className="zmdi zmdi-money m-r-5"></i> Money</dt>
-                                        <dd>{building.get('cost_money')}</dd>
-                                    </dl>
-                                    <dl className="dl-horizontal">
-                                        <dt><i className="zmdi zmdi-accounts m-r-5"></i> Population</dt>
-                                        <dd>{building.get('cost_population')}</dd>
-                                    </dl>
-                                </div>
-                            </div>
-                        </div>
+                        <BuildingProperties building={building} />
                     </div>
                 </div>
             </div>
@@ -129,12 +163,12 @@ class Buildings extends React.Component {
             var group = [];
             items.forEach(function(item, i) {
                 if (i % 3 === 0 && i !== 0) {
-                    content.push(<div key={content.length} className="row">{group}</div>);
+                    content.push(<div key={content.length} className="row card-group">{group}</div>);
                     group = [];
                 }
                 group.push(item);
             }.bind(this));
-            content.push(<div key={content.length} className="row">{group}</div>);
+            content.push(<div key={content.length} className="row card-group">{group}</div>);
         } else {
             content = 'Loading...';
         }

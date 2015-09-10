@@ -1,4 +1,5 @@
 import numeral from 'numeral';
+import { capitalize, startCase } from 'lodash';
 
 
 export default function toString(value, format) {
@@ -13,6 +14,8 @@ export default function toString(value, format) {
             return numeral(value).format('0.00');
         case 'percent':
             return numeral(value).format('0.0%');
+        case 'key':
+            return capitalize(startCase(value).toLowerCase());
         default:
             return value;
     }

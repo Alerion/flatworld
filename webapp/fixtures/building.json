@@ -1,38 +1,45 @@
 [
 {
+    "pk": 1,
     "fields": {
-        "build_time": 300,
+        "properties": {
+            "population_growth": 0.02,
+            "tax": 0.01
+        },
         "cost_population": 50,
-        "properties": "{'tax': 0.01, 'population_growth': 0.02}",
-        "name": "town hall",
         "description": "Town hall is cool. Build it!",
+        "build_time": 300,
+        "name": "town hall",
         "cost_money": 500
     },
-    "model": "building.building",
-    "pk": 1
+    "model": "building.building"
 },
 {
+    "pk": 2,
     "fields": {
-        "build_time": 15,
+        "properties": {
+            "pasive_income": 5
+        },
         "cost_population": 0,
-        "properties": "{pasive_income: 5}",
-        "name": "market",
         "description": "Boost your economy like a pro!",
+        "build_time": 15,
+        "name": "market",
         "cost_money": 100
     },
-    "model": "building.building",
-    "pk": 2
+    "model": "building.building"
 },
 {
+    "pk": 3,
     "fields": {
-        "build_time": 6000,
+        "properties": {
+            "pasive_income": 0.1
+        },
         "cost_population": 0,
-        "properties": "{}",
-        "name": "storehouse",
         "description": "You can keep some stuff here.",
+        "build_time": 6000,
+        "name": "storehouse",
         "cost_money": 1
     },
-    "model": "building.building",
-    "pk": 3
+    "model": "building.building"
 }
 ]

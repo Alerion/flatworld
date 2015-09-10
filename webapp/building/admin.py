@@ -6,9 +6,6 @@ from .models import Building
 
 
 class BuildingModelAdmin(admin.ModelAdmin):
-    formfield_overrides = {
-        JSONField: {'widget': forms.Textarea},
-    }
-
+    pass
 
 admin.site.register(Building, BuildingModelAdmin)

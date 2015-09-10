@@ -3,21 +3,23 @@ import L from 'leaflet';
 // FIXME: We need better way to get style for zoom level, and better way to update them.
 var STYLE_DEFAULT = function (zoom) {
     var dash = 24 * zoom;
+    var dash1 = dash * 2;
     return {
         weight: 12 * zoom,
         opacity: 0.8,
-        color: '#9E9E9E',
-        dashArray: `${dash} ${dash}`,
+        color: '#607D8B',
+        dashArray: `${dash} ${dash1}`,
         fillOpacity: 0
     }
 };
 
 var STYLE_HIGHLIGHT = function (zoom) {
     var dash = 32 * zoom;
+    var dash1 = dash * 2;
     return {
         weight: 16 * zoom,
-        color: '#607D8B',
-        dashArray: `${dash} ${dash}`
+        color: '#FF5722',
+        dashArray: `${dash} ${dash1}`
     }
 };
 

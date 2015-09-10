@@ -3,7 +3,12 @@ Keep these objects as simple as possible. They are passed via 0MQ with Pickle.
 """
 from . import fields
 from .base import Model
-from .exceptions import BuildError
+from ..exceptions import BuildError
+
+from .building import Building
+
+__all__ = ['DEFAULT_WORLD_PARAMS', 'Building', 'World', 'Region', 'City']
+
 # FIXME: WORLD_PARAMS is used in generate_world command. Not sure this is the best place,
 # because requires to add the main folder to python paths.
 DEFAULT_WORLD_PARAMS = {
@@ -78,16 +83,6 @@ class Region(Model):
             output['neighbors'].append(neighbor_id)
 
         return output
-
-
-class Building(Model):
-    id = fields.IntegerField()
-    name = fields.CharField()
-    description = fields.CharField()
-    build_time = fields.IntegerField()
-    cost_money = fields.IntegerField()
-    cost_population = fields.IntegerField()
-    properties = fields.JSONField()
 
 
 class CityBuilding(Model):

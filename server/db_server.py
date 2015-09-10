@@ -3,11 +3,10 @@ import aiozmq.rpc
 import asyncio
 import os
 import psycopg2
-import traceback
 from zmqrpc.translation_table import translation_table
 
 from engine import models
-from engine.base import ModelsDict
+from engine.models.base import ModelsDict
 
 if os.environ['DB_PASS']:
     dsn = '''dbname={DB_NAME} user={DB_USER} password={DB_PASS}

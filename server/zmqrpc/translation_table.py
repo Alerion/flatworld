@@ -3,7 +3,7 @@ import pickle
 from decimal import Decimal
 
 import engine.exceptions
-from engine.base import Model, ModelsDict
+from engine.models.base import Model, ModelsDict
 
 
 translation_table = {
