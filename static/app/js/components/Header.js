@@ -30,7 +30,7 @@ class Header extends React.Component {
                                 </Popover>}>
                             <li>
                                 <i className="zmdi zmdi-money zmdi-hc-lg"/>
-                                &nbsp;{toString(city.stats.money)}
+                                &nbsp;{toString(city.stats.money, 'int')}
                             </li>
                         </OverlayTrigger>
                     </ul>

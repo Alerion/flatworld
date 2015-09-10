@@ -18,7 +18,7 @@
     "pk": 2,
     "fields": {
         "properties": {
-            "pasive_income": 5
+            "pasive_income": 10
         },
         "cost_population": 0,
         "description": "Boost your economy like a pro!",

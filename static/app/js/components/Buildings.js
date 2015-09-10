@@ -30,7 +30,7 @@ class ProgressChart extends React.Component {
 
     render() {
         return (
-            <div className="bgm-blue btn-float">
+            <div className="bgm-green btn-float">
                 <div ref="progressChart" className="easy-pie main-pie" data-percent={this.props.progress}>
                     <div className="percent">{this.props.timeLeft}</div>
                 </div>
@@ -73,11 +73,11 @@ class BuildingProperties extends React.Component {
                         </dl>
                         <dl className="dl-horizontal">
                             <dt><i className="zmdi zmdi-money m-r-5"></i> Money</dt>
-                            <dd>{building.get('cost_money')}</dd>
+                            <dd>{toString(building.get('cost_money'))}</dd>
                         </dl>
                         <dl className="dl-horizontal">
                             <dt><i className="zmdi zmdi-accounts m-r-5"></i> Population</dt>
-                            <dd>{building.get('cost_population')}</dd>
+                            <dd>{toString(building.get('cost_population'))}</dd>
                         </dl>
                         {properties}
                     </div>
@@ -103,7 +103,7 @@ class Building extends React.Component {
             />
         } else {
             buildButton = (
-                <button onClick={this.onBuildClick.bind(this)} className="btn bgm-blue btn-float waves-effect waves-effect waves-circle waves-float">
+                <button onClick={this.onBuildClick.bind(this)} className="btn bgm-green btn-float waves-effect waves-effect waves-circle waves-float">
                     <i className="zmdi zmdi-plus"></i>
                 </button>
             )
@@ -112,7 +112,7 @@ class Building extends React.Component {
         return (
             <div className="col-sm-4">
                 <div className="card building">
-                    <div className="card-header bgm-indigo m-b-20">
+                    <div className="card-header bgm-teal m-b-20">
                         <h2>
                             {capitalize(building.get('name'))} [{cityBuilding.get('level')}]
                             <small>{building.get('description')}</small>

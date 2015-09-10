@@ -1,5 +1,5 @@
 import numeral from 'numeral';
-import { capitalize, startCase } from 'lodash';
+import { capitalize, startCase, floor } from 'lodash';
 
 
 export default function toString(value, format) {
@@ -9,7 +9,9 @@ export default function toString(value, format) {
 
     switch (format) {
         case 'number':
-            return numeral(value).format('0a');
+            return numeral(value).format('0.[00]a');
+        case 'int':
+            return numeral(floor(value)).format('0.[00]a');
         case 'float':
             return numeral(value).format('0.00');
         case 'percent':
