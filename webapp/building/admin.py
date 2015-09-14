@@ -1,9 +1,15 @@
 from django.contrib import admin
 
-from .models import Building
+from .models import Building, BuildingTier
+
+
+class BuildingTierInline(admin.StackedInline):
+    model = BuildingTier
+    extra = 1
 
 
 class BuildingModelAdmin(admin.ModelAdmin):
-    list_display = ('name', 'build_time', 'cost_money', 'cost_population', 'properties')
+    inlines = (BuildingTierInline,)
+    list_display = ('name', 'max_level')
 
 admin.site.register(Building, BuildingModelAdmin)

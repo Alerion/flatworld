@@ -40,15 +40,14 @@ class ProgressChart extends React.Component {
 }
 
 
-class BuildingProperties extends React.Component {
+class BuildingTierProperties extends React.Component {
 
     render () {
-        var building = this.props.building;
-
+        var buildingTier = this.props.buildingTier;
         var properties = [];
 
-        for (let [key, value] of building.get('properties')) {
-            let info = building.get('properties_description').get(key);
+        for (let [key, value] of buildingTier.get('properties')) {
+            let info = buildingTier.get('properties_description').get(key);
 
             properties.push(
                 <dl key={key} className="dl-horizontal">
@@ -69,15 +68,15 @@ class BuildingProperties extends React.Component {
                     <div className="pmbb-view">
                         <dl className="dl-horizontal">
                             <dt><i className="zmdi zmdi-alarm m-r-5"></i> Сonstruction time</dt>
-                            <dd>{toString(building.get('build_time'), 'time')}</dd>
+                            <dd>{toString(buildingTier.get('build_time'), 'time')}</dd>
                         </dl>
                         <dl className="dl-horizontal">
                             <dt><i className="zmdi zmdi-money m-r-5"></i> Money</dt>
-                            <dd>{toString(building.get('cost_money'))}</dd>
+                            <dd>{toString(buildingTier.get('cost_money'))}</dd>
                         </dl>
                         <dl className="dl-horizontal">
                             <dt><i className="zmdi zmdi-accounts m-r-5"></i> Population</dt>
-                            <dd>{toString(building.get('cost_population'))}</dd>
+                            <dd>{toString(buildingTier.get('cost_population'))}</dd>
                         </dl>
                         {properties}
                     </div>
@@ -93,15 +92,16 @@ class Building extends React.Component {
     render() {
         var building = this.props.building;
         var cityBuilding = this.props.cityBuilding;
+        var nextBuildingTier = building.get('tiers').get(String(cityBuilding.get('level') + 1));
 
         var buildButton;
         var progressChart;
         if (cityBuilding.get('in_progress')) {
             progressChart = <ProgressChart
-                progress={cityBuilding.get('build_progress') / building.get('build_time') * 100}
+                progress={cityBuilding.get('build_progress') / nextBuildingTier.get('build_time') * 100}
                 timeLeft={cityBuilding.get('build_progress')}
             />
-        } else {
+        } else if (nextBuildingTier) {
             buildButton = (
                 <button onClick={this.onBuildClick.bind(this)} className="btn bgm-green btn-float waves-effect waves-effect waves-circle waves-float">
                     <i className="zmdi zmdi-plus"></i>
@@ -109,12 +109,19 @@ class Building extends React.Component {
             )
         }
 
+        var buildingTierProperties;
+        if (nextBuildingTier) {
+            buildingTierProperties = <BuildingTierProperties buildingTier={nextBuildingTier} />;
+        } else {
+            buildingTierProperties = 'Building has max level.'
+        }
+
         return (
             <div className="col-sm-4">
                 <div className="card building">
                     <div className="card-header bgm-teal m-b-20">
                         <h2>
-                            {capitalize(building.get('name'))} [{cityBuilding.get('level')}]
+                            {capitalize(building.get('name'))} [{nextBuildingTier ? cityBuilding.get('level') : 'MAX'}]
                             <small>{building.get('description')}</small>
                         </h2>
                         {progressChart}
@@ -122,7 +129,7 @@ class Building extends React.Component {
                     </div>
 
                     <div className="card-body card-padding">
-                        <BuildingProperties building={building} />
+                        {buildingTierProperties}
                     </div>
                 </div>
             </div>

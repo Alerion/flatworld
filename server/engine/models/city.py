@@ -18,9 +18,15 @@ class CityBuilding(Model):
     def set_building(self, building):
         self.building = building
 
-    def start_build(self):
+    @property
+    def tiers(self):
+        for index in range(0, self.level):
+            yield self.building.tiers[index + 1]
+
+    def start_build(self, building_tier):
+        assert building_tier.level == self.level + 1
         self.in_progress = True
-        self.build_progress = self.building.build_time
+        self.build_progress = building_tier.build_time
 
     def finish_build(self):
         self.in_progress = False
@@ -57,12 +63,11 @@ class CityStats(Model):
         self.set_data(self._initial_data)
 
         for city_building in city_buildings.values():
-            level = city_building.level
-            if level > 0:
-                properties = city_building.building.properties
+            for building_tier in city_building.tiers:
+                properties = building_tier.properties
                 for key, delta in properties.items():
                     current_value = getattr(self, key)
-                    new_value = current_value + level * delta
+                    new_value = current_value + delta
                     setattr(self, key, new_value)
 
 
@@ -128,17 +133,22 @@ class City(Model):
         if city_building.in_progress:
             raise BuildError(self.id, building.id, 'Building already in progress.')
 
-        if building.cost_money > self.stats.money:
+        try:
+            building_tier = building.tiers[city_building.level + 1]
+        except KeyError:
+            raise BuildError(self.id, building.id, 'Building already has max level.')
+
+        if building_tier.cost_money > self.stats.money:
             raise BuildError(self.id, building.id, 'Not enough money.')
 
-        if building.cost_population > self.stats.population:
+        if building_tier.cost_population > self.stats.population:
             raise BuildError(self.id, building.id, 'Not enough population.')
 
-        self.stats.money -= building.cost_money
-        self.stats.population -= building.cost_population
+        self.stats.money -= building_tier.cost_money
+        self.stats.population -= building_tier.cost_population
 
         # TODO: Add resources check and consume
-        city_building.start_build()
+        city_building.start_build(building_tier)
 
     def to_dict(self, detailed=False, serial=True):
         return super().to_dict(serial=serial)

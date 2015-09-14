@@ -98,11 +98,19 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
     @asyncio.coroutine
     def get_buildings(self):
         with (yield from self._pool.cursor()) as cursor:
+            yield from cursor.execute('SELECT * FROM building_buildingtier ORDER BY level')
+            data = yield from cursor.fetchall()
+            building_tiers = {}
+            for row in data:
+                building_tiers.setdefault(row['building_id'], {})[row['level']] = row
+
             yield from cursor.execute('SELECT * FROM building_building')
             data = yield from cursor.fetchall()
             buildings = ModelsDict()
-            for item in data:
-                buildings[item['id']] = models.Building(item)
+            for row in data:
+                row['tiers'] = building_tiers[row['id']]
+                buildings[row['id']] = models.Building(row)
+
             return buildings
 
     @aiozmq.rpc.method
@@ -125,7 +133,8 @@ def main():
         handler,
         bind='tcp://0.0.0.0:5000',
         translation_table=translation_table,
-        loop=loop)
+        loop=loop,
+        log_exceptions=True)
     loop.run_until_complete(server)
 
     try:

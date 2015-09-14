@@ -28,18 +28,24 @@ properties_schema = {
 }
 
 
-class Building(Model):
+class BuildingTier(Model):
     id = fields.IntegerField()
-    name = fields.CharField()
-    description = fields.CharField()
+    level = fields.IntegerField()
     build_time = fields.IntegerField()
     cost_money = fields.IntegerField()
     cost_population = fields.IntegerField()
     properties = fields.JSONField()
     properties_description = fields.JSONField()
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def set_data(self, data, is_json=False):
+        super().set_data(data, is_json)
         self.properties_description = {}
         for key in self.properties.keys():
             self.properties_description[key] = properties_schema['properties'][key]['description']
+
+
+class Building(Model):
+    id = fields.IntegerField()
+    name = fields.CharField()
+    description = fields.CharField()
+    tiers = fields.ModelDictCollectionField(BuildingTier)

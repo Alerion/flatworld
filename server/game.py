@@ -69,7 +69,8 @@ def main():
     server_handler = ServerHandler(worlds, db, events)
     server = aiozmq.rpc.serve_rpc(
         server_handler, bind='tcp://0.0.0.0:{}'.format(5200),
-        translation_table=translation_table, loop=loop)
+        translation_table=translation_table, loop=loop,
+        log_exceptions=True)
 
     loop.run_until_complete(asyncio.wait([
         server,
