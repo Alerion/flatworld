@@ -27,6 +27,7 @@
     "moment": "~2.10.6",
     "jquery.nicescroll": "~3.6.0",
     "remarkable-bootstrap-notify": "~2.0.1",
-    "jquery.easy-pie-chart": "~2.1.6"
+    "jquery.easy-pie-chart": "~2.1.6",
+    "nouislider": "~8.0.2"
   }
 }

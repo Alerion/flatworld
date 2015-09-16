@@ -47,6 +47,11 @@ export default class Sidebar extends React.Component {
                                 <i className="zmdi zmdi-city"/> Building
                             </Link>
                         </li>
+                        <li>
+                            <Link to="quest-demo" params={{worldId: CONFIG.WORLD_ID}}>
+                                <i className="zmdi zmdi-city"/> Quests Demo
+                            </Link>
+                        </li>
                     </ul>
                 </div>
             </aside>

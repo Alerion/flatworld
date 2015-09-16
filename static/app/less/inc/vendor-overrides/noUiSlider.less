@@ -11,7 +11,7 @@
 
 .noUi-horizontal {
     height: 3px;
-    
+
     .noUi-handle {
         top: -8px;
     }
@@ -26,6 +26,7 @@
     .noUi-handle {
         width: 19px;
         height: 19px;
+        left: -10px;
         border: 0;
         border-radius: 100%;
         box-shadow: none;
@@ -33,16 +34,16 @@
         .transition-duration(200ms);
         cursor: pointer;
         position: relative;
-        
+
         &:before,
         &:after {
             display: none;
         }
-        
+
         &:active {
             background: #ccc !important;
         }
-        
+
         .is-tooltip {
             position: absolute;
             bottom: 32px;
@@ -60,7 +61,7 @@
             .backface-visibility(hidden);
             .opacity(0);
             .scale(0);
-            
+
             &:after {
                 width: 0;
                 height: 0;
@@ -75,17 +76,17 @@
             }
         }
     }
-    
+
     .noUi-active {
         box-shadow: 0 0 0 13px rgba(0,0,0,0.1);
-        
+
         .is-tooltip {
             .scale(1);
             bottom: 40px;
             .opacity(1);
         }
     }
-}  
+}
 
 .input-slider,
 .input-slider-range,
@@ -95,32 +96,32 @@
         .noUi-connect, {
             background: @m-teal !important;
         }
-        
+
         .is-tooltip {
             background: @m-teal;
-            
+
             &:after {
                 border-color: @m-teal transparent transparent transparent;
             }
         }
     }
-    
+
     &[data-is-color=red] {
         .is-color-handle(@m-red);
     }
-    
+
     &[data-is-color=blue] {
         .is-color-handle(@m-blue);
     }
-    
+
     &[data-is-color=cyan] {
         .is-color-handle(@m-cyan);
     }
-    
+
     &[data-is-color=amber] {
         .is-color-handle(@m-amber);
     }
-    
+
     &[data-is-color=green] {
         .is-color-handle(@m-green);
     }
@@ -130,29 +131,29 @@
     .noUi-origin {
         background: #d4d4d4;
     }
-    
+
     &:not([data-is-color]) {
         .noUi-base {
             background: @m-teal !important;
         }
     }
-    
+
     &[data-is-color=red] {
         .is-color-base(@m-red);
     }
-    
+
     &[data-is-color=blue] {
         .is-color-base(@m-blue);
     }
-    
+
     &[data-is-color=cyan] {
         .is-color-base(@m-cyan);
     }
-    
+
     &[data-is-color=amber] {
         .is-color-base(@m-amber);
     }
-    
+
     &[data-is-color=green] {
         .is-color-base(@m-green);
     }
