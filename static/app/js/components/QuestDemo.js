@@ -193,11 +193,11 @@ export default class QuestDemo extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            fail2: -50,
-            fail1: -25,
+            fail2: -75,
+            fail1: -50,
             fail: 0,
-            win: 25,
-            win1: 50,
+            win: 50,
+            win1: 75,
             win2: 200,  // do not change, used for calculation
             start: -100,
             end: 0
