@@ -106,7 +106,7 @@ class City(Model):
         self.stats.apply_buildings(self.buildings)
 
     def update_population(self, delta):
-        self.stats.population *= (1 + self.stats.population_growth * delta)
+        self.stats.population += self.stats.population_growth * delta
 
     def update_money(self, delta):
         stats = self.stats

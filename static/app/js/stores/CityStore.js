@@ -40,6 +40,7 @@ export default class CityStore extends Store {
     }
 
     _updateBuildProgress() {
+        // FIXME: Do not update whole city.
         if ( ! this.state.city) return;
 
         var buildings = this.state.city.get('buildings').map(function (building) {

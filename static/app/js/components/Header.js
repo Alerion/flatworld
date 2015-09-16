@@ -17,7 +17,7 @@ class Header extends React.Component {
                     <ul className="city-resources">
                         <OverlayTrigger placement='left'
                                 overlay={<Popover id="resources-population">
-                                    growth: {toString(city.stats.population_growth, 'percent')}
+                                    growth: {toString(city.stats.population_growth, 'int')}
                                 </Popover>}>
                             <li>
                                 <i className="zmdi zmdi-accounts zmdi-hc-lg"/>

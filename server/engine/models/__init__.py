@@ -14,7 +14,7 @@ __all__ = ['DEFAULT_WORLD_PARAMS', 'Building', 'World', 'Region', 'City']
 DEFAULT_WORLD_PARAMS = {
     # Population
     'start_population': 2000,
-    'base_population_growth': 0.05,
+    'base_population_growth': 20,
     # Money
     'start_money': 500,
     'base_income': 50,
