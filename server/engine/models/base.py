@@ -1,6 +1,5 @@
 """ Based on https://github.com/j4mie/micromodels """
 import collections
-import ujson
 
 from .fields import BaseField
 
@@ -64,20 +63,9 @@ class Model(object, metaclass=ModelBase):
 
     def __init__(self, data=None):
         super().__setattr__('_extra', {})
+        super().__setattr__('_initial_data', {})
         if data:
             self.set_data(data)
-
-    @classmethod
-    def from_dict(cls, D, is_json=False):
-        '''This factory for :class:`Model`
-        takes either a native Python dictionary or a JSON dictionary/object
-        if ``is_json`` is ``True``. The dictionary passed does not need to
-        contain all of the values that the Model declares.
-
-        '''
-        instance = cls()
-        instance.set_data(D, is_json=is_json)
-        return instance
 
     @classmethod
     def from_kwargs(cls, **kwargs):
@@ -90,13 +78,15 @@ class Model(object, metaclass=ModelBase):
         instance.set_data(kwargs)
         return instance
 
-    def set_data(self, data, is_json=False):
-        if is_json:
-            data = ujson.loads(data)
+    def set_data(self, data):
+        self._initial_data = data
         for name, field in self._clsfields.items():
             key = field.source or name
             if key in data:
                 setattr(self, name, data.get(key))
+
+    def reset(self):
+        self.set_data(self._initial_data)
 
     def __setattr__(self, key, value):
         if key in self._fields:
@@ -135,13 +125,6 @@ class Model(object, metaclass=ModelBase):
             return dict((key, getattr(self, key)) for key in self._fields.keys()
                         if hasattr(self, key))
 
-    def to_json(self):
-        '''Returns a representation of the model as a JSON string. This method
-        relies on the :meth:`~micromodels.Model.to_dict` method.
-
-        '''
-        return ujson.dumps(self.to_dict())
-
 
 class ModelsDict(collections.UserDict):
 
@@ -152,6 +135,3 @@ class ModelsDict(collections.UserDict):
             output[key] = item.to_dict(serial=serial)
 
         return output
-
-    def to_json(self):
-        return ujson.dumps(self.to_dict())

@@ -42,25 +42,9 @@ class CityStats(Model):
     pasive_income = fields.FloatField(improvable=True)
     tax = fields.FloatField(improvable=True)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._initial_data = None
-
-    def set_data(self, data, is_json=False):
-        if is_json:
-            data = ujson.loads(data)
-
-        self._initial_data = {}
-
-        for name, field in self._clsfields.items():
-            if field.improvable:
-                self._initial_data[name] = data[name]
-
-        super().set_data(data)
-
     def apply_buildings(self, city_buildings):
         # Reset improvable fields with default
-        self.set_data(self._initial_data)
+        self.reset()
 
         for city_building in city_buildings.values():
             for building_tier in city_building.tiers:

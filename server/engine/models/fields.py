@@ -206,7 +206,7 @@ class ModelField(WrappedObjectField):
         if isinstance(self.data, self._wrapped_class):
             obj = self.data
         else:
-            obj = self._wrapped_class.from_dict(self.data or {})
+            obj = self._wrapped_class(self.data or {})
 
         # Set the related object to the related field
         if self._related_name is not None:
@@ -254,7 +254,7 @@ class ModelCollectionField(WrappedObjectField):
     def to_python(self):
         object_list = []
         for item in self.data:
-            obj = self._wrapped_class.from_dict(item)
+            obj = self._wrapped_class(item)
             if self._related_name is not None:
                 setattr(obj, self._related_name, self._related_obj)
             object_list.append(obj)
@@ -298,7 +298,7 @@ class ModelDictCollectionField(WrappedObjectField):
     def to_python(self):
         object_dict = {}
         for key, item in self.data.items():
-            obj = self._wrapped_class.from_dict(item)
+            obj = self._wrapped_class(item)
             if self._related_name is not None:
                 setattr(obj, self._related_name, self._related_obj)
             object_dict[key] = obj

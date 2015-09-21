@@ -37,8 +37,8 @@ class BuildingTier(Model):
     properties = fields.JSONField()
     properties_description = fields.JSONField()
 
-    def set_data(self, data, is_json=False):
-        super().set_data(data, is_json)
+    def set_data(self, data):
+        super().set_data(data)
         self.properties_description = {}
         for key in self.properties.keys():
             self.properties_description[key] = properties_schema['properties'][key]['description']
