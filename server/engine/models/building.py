@@ -23,6 +23,18 @@ properties_schema = {
         'pasive_income': {
             'description': 'Flat income per day.',
             'type': 'number'
+        },
+        'iron_income': {
+            'description': 'Iron income per day.',
+            'type': 'number'
+        },
+        'stone_income': {
+            'description': 'Stone income per day.',
+            'type': 'number'
+        },
+        'wood_income': {
+            'description': 'Wood income per day.',
+            'type': 'number'
         }
     }
 }
@@ -34,6 +46,9 @@ class BuildingTier(Model):
     build_time = fields.IntegerField()
     cost_money = fields.IntegerField()
     cost_population = fields.IntegerField()
+    cost_iron = fields.IntegerField()
+    cost_stone = fields.IntegerField()
+    cost_wood = fields.IntegerField()
     properties = fields.JSONField()
     properties_description = fields.JSONField()
 

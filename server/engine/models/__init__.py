@@ -19,6 +19,13 @@ DEFAULT_WORLD_PARAMS = {
     'start_money': 500,
     'base_income': 50,
     'base_tax': 0.1,
+    # Resources
+    'base_iron_income': 50,
+    'base_stone_income': 50,
+    'base_wood_income': 50,
+    'start_iron': 100,
+    'start_stone': 100,
+    'start_wood': 100,
     # General
     'points': None,
     'seed': None,

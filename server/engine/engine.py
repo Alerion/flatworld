@@ -13,7 +13,10 @@ class WorldEngine:
         self.layers = [
             MoneyLayer(world),
             PopulationLayer(world),
-            BuildLayer(world)
+            IronLayer(world),
+            StoneLayer(world),
+            WoodLayer(world),
+            BuildLayer(world),
         ]
 
     @asyncio.coroutine
@@ -122,6 +125,36 @@ class MoneyLayer(SimulationLayer):
     def run(self, delta, elapsed):
         for city in self.world.cities.values():
             city.update_money(delta)
+
+        return self._check_notify(elapsed)
+
+
+class IronLayer(SimulationLayer):
+    notify_treshhold = 15
+
+    def run(self, delta, elapsed):
+        for city in self.world.cities.values():
+            city.update_iron(delta)
+
+        return self._check_notify(elapsed)
+
+
+class StoneLayer(SimulationLayer):
+    notify_treshhold = 15
+
+    def run(self, delta, elapsed):
+        for city in self.world.cities.values():
+            city.update_stone(delta)
+
+        return self._check_notify(elapsed)
+
+
+class WoodLayer(SimulationLayer):
+    notify_treshhold = 15
+
+    def run(self, delta, elapsed):
+        for city in self.world.cities.values():
+            city.update_wood(delta)
 
         return self._check_notify(elapsed)
 

@@ -22,6 +22,9 @@ class BuildingTier(models.Model):
     build_time = models.IntegerField(help_text='in seconds for default speed')
     cost_money = models.IntegerField()
     cost_population = models.IntegerField()
+    cost_iron = models.IntegerField()
+    cost_stone = models.IntegerField()
+    cost_wood = models.IntegerField()
     properties = JSONField(schema=properties_schema)
 
     class Meta:

@@ -5,7 +5,7 @@ from .models import Building, BuildingTier
 
 class BuildingTierInline(admin.StackedInline):
     model = BuildingTier
-    extra = 1
+    extra = 0
 
 
 class BuildingModelAdmin(admin.ModelAdmin):

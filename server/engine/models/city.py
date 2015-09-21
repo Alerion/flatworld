@@ -37,6 +37,13 @@ class CityStats(Model):
     pasive_income = fields.FloatField(improvable=True)
     tax = fields.FloatField(improvable=True)
 
+    iron = fields.FloatField()
+    iron_income = fields.FloatField(improvable=True)
+    stone = fields.FloatField()
+    stone_income = fields.FloatField(improvable=True)
+    wood = fields.FloatField()
+    wood_income = fields.FloatField(improvable=True)
+
     def apply_buildings(self, city_buildings):
         # Reset improvable fields with default
         self.reset()
@@ -77,6 +84,15 @@ class City(Model):
         stats = self.stats
         stats.money += (stats.pasive_income + stats.population * stats.tax) * delta
 
+    def update_iron(self, delta):
+        self.stats.iron += self.stats.iron_income * delta
+
+    def update_stone(self, delta):
+        self.stats.stone += self.stats.stone_income * delta
+
+    def update_wood(self, delta):
+        self.stats.wood += self.stats.wood_income * delta
+
     def update_build(self, delta):
         build_finished = False
 
@@ -109,8 +125,20 @@ class City(Model):
         if building_tier.cost_population > self.stats.population:
             raise BuildError(self.id, building.id, 'Not enough population.')
 
+        if building_tier.cost_iron > self.stats.iron:
+            raise BuildError(self.id, building.id, 'Not enough iron.')
+
+        if building_tier.cost_stone > self.stats.stone:
+            raise BuildError(self.id, building.id, 'Not enough stone.')
+
+        if building_tier.cost_wood > self.stats.wood:
+            raise BuildError(self.id, building.id, 'Not enough wood.')
+
         self.stats.money -= building_tier.cost_money
         self.stats.population -= building_tier.cost_population
+        self.stats.iron -= building_tier.cost_iron
+        self.stats.stone -= building_tier.cost_stone
+        self.stats.wood -= building_tier.cost_wood
 
         # TODO: Add resources check and consume
         city_building.start_build(building_tier)

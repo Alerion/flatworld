@@ -124,5 +124,15 @@ class City(models.Model):
             'population_growth': population_growth,
             'money': wparams['start_money'],
             'pasive_income': pasive_income,
-            'tax': wparams['base_tax']
+            'tax': wparams['base_tax'],
+            'iron': wparams['start_iron'],
+            'iron_income': wparams['base_iron_income'],
+            'stone': wparams['start_stone'],
+            'stone_income': wparams['base_stone_income'],
+            'wood': wparams['start_wood'],
+            'wood_income': wparams['base_wood_income'],
         }
+
+    def reset(self):
+        self.init_stats()
+        self.buildings = None

@@ -5,7 +5,13 @@ var statsDefault = {
     population_growth: null,
     money: null,
     pasive_income: null,
-    tax: null
+    tax: null,
+    iron: null,
+    iron_income: null,
+    stone: null,
+    stone_income: null,
+    wood: null,
+    wood_income: null,
 }
 
 class CityStats extends Immutable.Record(statsDefault) {

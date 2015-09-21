@@ -17,6 +17,7 @@ class Header extends React.Component {
                     <ul className="city-resources">
                         <OverlayTrigger placement='left'
                                 overlay={<Popover id="resources-population">
+                                    <strong>Population</strong><br/>
                                     growth: {toString(city.stats.population_growth, 'int')}
                                 </Popover>}>
                             <li>
@@ -26,11 +27,42 @@ class Header extends React.Component {
                         </OverlayTrigger>
                         <OverlayTrigger placement='left'
                                 overlay={<Popover id="resources-money">
+                                    <strong>Money</strong><br/>
                                     tax {toString(city.stats.tax, 'float')}, income: {toString(city.stats.pasive_income)}
                                 </Popover>}>
                             <li>
                                 <i className="zmdi zmdi-money zmdi-hc-lg"/>
                                 &nbsp;{toString(city.stats.money, 'int')}
+                            </li>
+                        </OverlayTrigger>
+                        <OverlayTrigger placement='left'
+                                overlay={<Popover id="resources-iron">
+                                    <strong>Iron</strong><br/>
+                                    income: {toString(city.stats.iron_income)}
+                                </Popover>}>
+                            <li>
+                                <i className="zmdi zmdi-widgets zmdi-hc-lg"/>
+                                &nbsp;{toString(city.stats.iron, 'int')}
+                            </li>
+                        </OverlayTrigger>
+                        <OverlayTrigger placement='left'
+                                overlay={<Popover id="resources-stone">
+                                    <strong>Stone</strong><br/>
+                                    income: {toString(city.stats.stone_income)}
+                                </Popover>}>
+                            <li>
+                                <i className="zmdi zmdi-view-module zmdi-hc-lg"/>
+                                &nbsp;{toString(city.stats.stone, 'int')}
+                            </li>
+                        </OverlayTrigger>
+                        <OverlayTrigger placement='left'
+                                overlay={<Popover id="resources-wood">
+                                    <strong>Wood</strong><br/>
+                                    income: {toString(city.stats.wood_income)}
+                                </Popover>}>
+                            <li>
+                                <i className="zmdi zmdi-view-headline zmdi-hc-lg"/>
+                                &nbsp;{toString(city.stats.wood, 'int')}
                             </li>
                         </OverlayTrigger>
                     </ul>

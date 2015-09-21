@@ -2,7 +2,6 @@ import time
 import asyncio
 import aiozmq.rpc
 import os
-import traceback
 from zmqrpc.translation_table import translation_table
 
 from engine.engine import WorldEngine

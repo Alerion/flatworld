@@ -78,6 +78,18 @@ class BuildingTierProperties extends React.Component {
                             <dt><i className="zmdi zmdi-accounts m-r-5"></i> Population</dt>
                             <dd>{toString(buildingTier.get('cost_population'))}</dd>
                         </dl>
+                        <dl className="dl-horizontal">
+                            <dt><i className="zmdi zmdi-widgets m-r-5"></i> Iron</dt>
+                            <dd>{toString(buildingTier.get('cost_iron'))}</dd>
+                        </dl>
+                        <dl className="dl-horizontal">
+                            <dt><i className="zmdi zmdi-view-module m-r-5"></i> Stone</dt>
+                            <dd>{toString(buildingTier.get('cost_stone'))}</dd>
+                        </dl>
+                        <dl className="dl-horizontal">
+                            <dt><i className="zmdi zmdi-view-headline m-r-5"></i> Wood</dt>
+                            <dd>{toString(buildingTier.get('cost_wood'))}</dd>
+                        </dl>
                         {properties}
                     </div>
                 </div>
@@ -170,12 +182,12 @@ class Buildings extends React.Component {
             var group = [];
             items.forEach(function(item, i) {
                 if (i % 3 === 0 && i !== 0) {
-                    content.push(<div key={content.length} className="row card-group">{group}</div>);
+                    content.push(<div key={content.length} className="row card-group m-25">{group}</div>);
                     group = [];
                 }
                 group.push(item);
             }.bind(this));
-            content.push(<div key={content.length} className="row card-group">{group}</div>);
+            content.push(<div key={content.length} className="row card-group m-25">{group}</div>);
         } else {
             content = 'Loading...';
         }

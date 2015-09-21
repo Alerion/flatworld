@@ -8,7 +8,7 @@ from zmqrpc.translation_table import translation_table
 
 from engine import models
 from engine.models.base import ModelsDict
-import pprint
+
 if os.environ['DB_PASS']:
     dsn = '''dbname={DB_NAME} user={DB_USER} password={DB_PASS}
  host={DB_PORT_5432_TCP_ADDR} port={DB_PORT_5432_TCP_PORT}'''
