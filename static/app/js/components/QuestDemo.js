@@ -1,5 +1,5 @@
 import React from 'react';
-import { uniqueId, max, min } from 'lodash';
+import { uniqueId, max, min, filter } from 'lodash';
 import { Grid, Row, Col } from 'react-bootstrap';
 
 
@@ -198,7 +198,6 @@ export default class QuestDemo extends React.Component {
             fail: 0,
             win: 50,
             win1: 75,
-            win2: 200,  // do not change, used for calculation
             start: -100,
             end: 0
         };
@@ -208,52 +207,49 @@ export default class QuestDemo extends React.Component {
         this.setState({[name]: value});
     }
 
-    getProbability(name) {
-        if (this.state[name] === null) {
-            return 0;
-        }
-
+    getProbabilities() {
         var items = ['fail2', 'fail1', 'fail', 'win', 'win1', 'win2'];
-        var start = -200;
-        var end = -200;
+        var ranges = {};
+        var last = null;
 
         for (let item of items) {
-            let value = this.state[item];
+            let start = null;
+            if (last !== null) {
+                start = last[1];
+            }
+            let end = this.state[item];
+            if (end === undefined) {
+                end = null;
+            }
+            last = [start, end];
+            ranges[item] = last;
+        }
 
-            if (item == name) {
-                end = value;
-                break;
-            } else if (value !== null) {
-                start = value;
+        var data = {}
+
+        for (let item of items) {
+            let start = ranges[item][0];
+            let end = ranges[item][1];
+
+            if (start === null && end === null) {
+                data[item] = 0;
+                continue;
+            } else if (start === null) {
+                start = -200;
+            } else if (end === null) {
+                end = 200;
+            }
+
+            if (start > this.state.end || end < this.state.start) {
+               data[item] = 0;
+            } else {
+                start = max([start, this.state.start]);
+                end = min([end, this.state.end]);
+                data[item] = end - start;
             }
         }
 
-        if (start > this.state.end || end < this.state.start) {
-            return 0;
-        }
-
-        start = max([start, this.state.start]);
-        end = min([end, this.state.end]);
-        return (end - start);
-    }
-
-    getProbabilities() {
-/*        console.log(
-            this.getProbability('fail2'),
-            this.getProbability('fail1'),
-            this.getProbability('fail'),
-            this.getProbability('win'),
-            this.getProbability('win1'),
-            this.getProbability('win2')
-        )*/
-        return {
-            fail2: this.getProbability('fail2'),
-            fail1: this.getProbability('fail1'),
-            fail: this.getProbability('fail'),
-            win: this.getProbability('win'),
-            win1: this.getProbability('win1'),
-            win2: this.getProbability('win2')
-        }
+        return data;
     }
 
     render() {
@@ -264,7 +260,7 @@ export default class QuestDemo extends React.Component {
                 </div>
 
                 <div className="card-body card-padding">
-                    <p className="f-500 c-black m-b-20">Output Value with tap and drag</p>
+                    <p className="f-500 c-black m-b-20">Change Output Value with tap and drag</p>
 
                     <div className="m-b-20 clearfix">
                         <Slider color="red" value={this.state.fail2} onChange={this.onValueChange.bind(this, 'fail2')}/>
