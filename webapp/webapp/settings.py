@@ -58,7 +58,8 @@ INSTALLED_APPS = (
     'accounts',
     'main',
     'world',
-    'building'
+    'building',
+    'units',
 )
 
 MIDDLEWARE_CLASSES = (
