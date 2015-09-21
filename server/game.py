@@ -9,14 +9,16 @@ from engine.engine import WorldEngine
 
 
 class ServerHandler(aiozmq.rpc.AttrHandler):
+    save_treshhold = 30  # seconds
 
-    def __init__(self, worlds, db, events):
+    def __init__(self, loop, db, worlds):
         super().__init__()
         self.worlds = worlds
         self._db = db
-        self._events = events
+        self._loop = loop
         self._last_time = time.time()
         self._tick_time = 1.
+        self._from_last_save = 0
 
     @asyncio.coroutine
     def run(self):
@@ -29,6 +31,13 @@ class ServerHandler(aiozmq.rpc.AttrHandler):
 
             for world_engine in self.worlds.values():
                 yield from world_engine.run(elapsed)
+
+            self._from_last_save += elapsed
+            if self._from_last_save > self.save_treshhold:
+                self._from_last_save = 0
+                for world_engine in self.worlds.values():
+                    world = world_engine.get_world()
+                    self._db.call.save_world(world)
 
             yield from asyncio.sleep(current + self._tick_time - time.time())
 
@@ -66,7 +75,7 @@ def main():
         world = loop.run_until_complete(db.call.get_world(item['id']))
         worlds[item['id']] = WorldEngine(loop, events, world)
 
-    server_handler = ServerHandler(worlds, db, events)
+    server_handler = ServerHandler(loop, db, worlds)
     server = aiozmq.rpc.serve_rpc(
         server_handler, bind='tcp://0.0.0.0:{}'.format(5200),
         translation_table=translation_table, loop=loop,

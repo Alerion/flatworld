@@ -1,5 +1,3 @@
-import ujson
-
 from . import fields
 from .base import Model
 from ..exceptions import BuildError
@@ -11,12 +9,9 @@ class CityBuilding(Model):
     build_progress = fields.IntegerField()
     building_id = fields.IntegerField()
 
-    def __init__(self, data):
-        super().__init__(data)
-        self.building = None
-
-    def set_building(self, building):
-        self.building = building
+    @property
+    def building(self):
+        return self.city.world.buildings[self.building_id]
 
     @property
     def tiers(self):
@@ -59,7 +54,7 @@ class City(Model):
     id = fields.IntegerField()
     capital = fields.BooleanField()
     coords = fields.JSONField()
-    buildings = fields.ModelDictCollectionField(CityBuilding)
+    buildings = fields.ModelDictCollectionField(CityBuilding, related_name='city')
     name = fields.CharField()
     stats = fields.ModelField(CityStats)
     region_id = fields.IntegerField()
@@ -70,21 +65,7 @@ class City(Model):
         super().__init__(data)
         self.world = world
         self.region = region
-        self._init_city_building()
         self._apply_buildings()
-
-    def _init_city_building(self):
-        for building_id, building in self.world.buildings.items():
-            if building_id not in self.buildings:
-                city_building = CityBuilding({
-                    'level': 0,
-                    'in_progress': False,
-                    'building_id': building_id,
-                    'build_progress': 0
-                })
-                self.buildings[building_id] = city_building
-            # FIXME: Weird initialization
-            self.buildings[building_id].set_building(building)
 
     def _apply_buildings(self):
         self.stats.apply_buildings(self.buildings)
@@ -134,5 +115,6 @@ class City(Model):
         # TODO: Add resources check and consume
         city_building.start_build(building_tier)
 
-    def to_dict(self, detailed=False, serial=True):
-        return super().to_dict(serial=serial)
+    def to_dict(self, detailed=False, **kwargs):
+        # detailed is for future to dump user city and other cities
+        return super().to_dict(**kwargs)

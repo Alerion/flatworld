@@ -79,14 +79,17 @@ class Model(object, metaclass=ModelBase):
         return instance
 
     def set_data(self, data):
-        self._initial_data = data
         for name, field in self._clsfields.items():
             key = field.source or name
             if key in data:
-                setattr(self, name, data.get(key))
+                value = data.get(key)
+                setattr(self, name, value)
+                if field.improvable:
+                    self._initial_data[name] = value
 
     def reset(self):
-        self.set_data(self._initial_data)
+        for name, value in self._initial_data.items():
+            setattr(self, name, value)
 
     def __setattr__(self, key, value):
         if key in self._fields:
@@ -111,7 +114,7 @@ class Model(object, metaclass=ModelBase):
         self._extra[key] = field
         setattr(self, key, value)
 
-    def to_dict(self, serial=True):
+    def to_dict(self, serial=True, with_initial=False):
         '''A dictionary representing the the data of the class is returned.
         Native Python objects will still exist in this dictionary (for example,
         a ``datetime`` object will be returned rather than a string)
@@ -119,11 +122,17 @@ class Model(object, metaclass=ModelBase):
 
         '''
         if serial:
-            return dict((key, self._fields[key].to_serial(getattr(self, key)))
-                        for key in self._fields.keys() if hasattr(self, key))
+            output = dict((key, self._fields[key].to_serial(getattr(self, key),
+                                                            with_initial=with_initial))
+                          for key in self._fields.keys() if hasattr(self, key))
         else:
-            return dict((key, getattr(self, key)) for key in self._fields.keys()
-                        if hasattr(self, key))
+            output = dict((key, getattr(self, key)) for key in self._fields.keys()
+                          if hasattr(self, key))
+
+        if with_initial:
+            output.update(self._initial_data)
+
+        return output
 
 
 class ModelsDict(collections.UserDict):

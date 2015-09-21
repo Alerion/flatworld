@@ -3,11 +3,12 @@ import aiozmq.rpc
 import asyncio
 import os
 import psycopg2
+from psycopg2.extras import Json
 from zmqrpc.translation_table import translation_table
 
 from engine import models
 from engine.models.base import ModelsDict
-
+import pprint
 if os.environ['DB_PASS']:
     dsn = '''dbname={DB_NAME} user={DB_USER} password={DB_PASS}
  host={DB_PORT_5432_TCP_ADDR} port={DB_PORT_5432_TCP_PORT}'''
@@ -73,6 +74,24 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
 
         for item in data:
             region = world.regions[item['region_id']]
+            item['buildings'] = item['buildings'] or {}
+
+            # fix buildings keys
+            new_buildings = {}
+            for key, value in item['buildings'].items():
+                new_buildings[int(key)] = value
+            item['buildings'] = new_buildings
+
+            # Fill building that does not exist. This may happen if new building was added
+            for building_id in world.buildings.keys():
+                if building_id not in item['buildings']:
+                    item['buildings'][building_id] = {
+                        'level': 0,
+                        'in_progress': False,
+                        'building_id': building_id,
+                        'build_progress': 0
+                    }
+
             city = models.City(item, world=world, region=region)
             region.cities[city.id] = city
             world.cities[city.id] = city
@@ -122,6 +141,16 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
             return {
                 'city_id': data['id']
             }
+
+    @aiozmq.rpc.method
+    @asyncio.coroutine
+    def save_world(self, world):
+        with (yield from self._pool.cursor()) as cursor:
+            for city in world.cities.values():
+                data = city.to_dict(with_initial=True)
+                yield from cursor.execute(
+                    'UPDATE world_city SET buildings=%s, stats=%s WHERE id=%s',
+                    (Json(data['buildings']), Json(data['stats']), city.id))
 
 
 def main():

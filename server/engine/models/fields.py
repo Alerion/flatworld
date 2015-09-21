@@ -25,7 +25,7 @@ class BaseField(object):
         '''
         return self.data
 
-    def to_serial(self, data):
+    def to_serial(self, data, **kwargs):
         '''Used to serialize forms back into JSON or other formats.
 
         This method is essentially the opposite of
@@ -124,7 +124,7 @@ class DateTimeField(BaseField):
         else:
             return datetime.datetime.strptime(self.data, self.format)
 
-    def to_serial(self, time_obj):
+    def to_serial(self, time_obj, **kwargs):
         if not self.serial_format:
             return time_obj.isoformat()
         return time_obj.strftime(self.serial_format)
@@ -214,8 +214,8 @@ class ModelField(WrappedObjectField):
 
         return obj
 
-    def to_serial(self, model_instance):
-        return model_instance.to_dict(serial=True)
+    def to_serial(self, model_instance, **kwargs):
+        return model_instance.to_dict(serial=True, **kwargs)
 
 
 class ModelCollectionField(WrappedObjectField):
@@ -261,8 +261,8 @@ class ModelCollectionField(WrappedObjectField):
 
         return object_list
 
-    def to_serial(self, model_instances):
-        return [instance.to_dict(serial=True) for instance in model_instances]
+    def to_serial(self, model_instances, **kwargs):
+        return [instance.to_dict(serial=True, **kwargs) for instance in model_instances]
 
 
 class ModelDictCollectionField(WrappedObjectField):
@@ -305,8 +305,10 @@ class ModelDictCollectionField(WrappedObjectField):
 
         return object_dict
 
-    def to_serial(self, model_instances):
-        return {item[0]: item[1].to_dict(serial=True) for item in model_instances.items()}
+    def to_serial(self, model_instances, **kwargs):
+        return {
+            item[0]: item[1].to_dict(serial=True, **kwargs) for item in model_instances.items()
+        }
 
 
 class FieldCollectionField(BaseField):
@@ -383,5 +385,5 @@ class FieldCollectionField(BaseField):
             return self._instance.to_python()
         return [convert(item) for item in self.data or []]
 
-    def to_serial(self, list_of_fields):
-        return [self._instance.to_serial(data) for data in list_of_fields]
+    def to_serial(self, list_of_fields, **kwargs):
+        return [self._instance.to_serial(data, **kwargs) for data in list_of_fields]
