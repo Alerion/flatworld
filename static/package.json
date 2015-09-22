@@ -9,6 +9,7 @@
     "browserify": "^11.0.1",
     "del": "^1.2.1",
     "eslint": "^1.1.0",
+    "eslint-plugin-react": "^3.4.2",
     "gulp": "^3.9.0",
     "gulp-bower": "0.0.10",
     "gulp-eslint": "^1.0.0",

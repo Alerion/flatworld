@@ -1,3 +1,4 @@
+'use strict';
 import msgpack from 'msgpack-js-browser';
 import Immutable from 'seamless-immutable';
 
@@ -33,7 +34,7 @@ export default class Rpc {
                 promise.resolve(response.value);
             } else {
                 if (response.event == 'exception' && this.onException) {
-                    this.onException(response)
+                    this.onException(response);
                 }
 
                 promise.reject({
@@ -87,7 +88,7 @@ export default class Rpc {
         // TOD: add subscribe on server to reduce network traffic
         var observers = this._observers.get(topic);
 
-        if ( ! observers) {
+        if (! observers) {
             this._observers.set(topic, [callback]);
         } else {
             observers.push(callback);

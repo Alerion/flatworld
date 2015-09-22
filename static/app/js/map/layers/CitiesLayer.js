@@ -1,11 +1,12 @@
+'use strict';
 import L from 'leaflet';
-import { values } from 'lodash';
+import _ from 'lodash';
 
 
 var BaseCitiesLayer = L.GeoJSON.extend({
     iconUrl: null,
 
-    initialize: function (geojson, options) {
+    initialize: function(geojson, options) {
         L.GeoJSON.prototype.initialize.call(this, geojson, options);
 
         this.world = null;
@@ -13,17 +14,17 @@ var BaseCitiesLayer = L.GeoJSON.extend({
         this.options.filter = this.filter.bind(this);
     },
 
-    setWorld: function (world) {
-        var init = ( ! this.world);
+    setWorld: function(world) {
+        var init = (! this.world);
         this.world = world;
         // Render region on first world load. Later we do not need re-render them,
         // because they really never change, just data.
         if (init) {
             var cities = [];
-            for (let region of values(world.regions)) {
-                for (let city of values(region.cities)) {
+            for (const region of _.values(world.regions)) {
+                for (const city of _.values(region.cities)) {
                     cities.push({
-                        type: "Feature",
+                        type: 'Feature',
                         properties: {
                             capital: city.capital,
                             userId: city.user_id,
@@ -31,7 +32,7 @@ var BaseCitiesLayer = L.GeoJSON.extend({
                             regionId: region.id
                         },
                         geometry: JSON.parse(city.coords)
-                    })
+                    });
                 }
             }
 
@@ -39,15 +40,15 @@ var BaseCitiesLayer = L.GeoJSON.extend({
         }
     },
 
-    getIcon: function (zoom) {
+    getIcon: function(zoom) {
         zoom = 0.6 + 0.9 * zoom;
         return L.icon({
             iconUrl: this.iconUrl,
             iconSize: [32 * zoom, 37 * zoom]
-        })
+        });
     },
 
-    pointToLayer: function (feature, latlng) {
+    pointToLayer: function(feature, latlng) {
         var cityId = feature.properties.cityId;
         var regionId = feature.properties.regionId;
         var city = this.world.regions[regionId].cities[cityId];
@@ -61,15 +62,15 @@ var BaseCitiesLayer = L.GeoJSON.extend({
         return marker;
     },
 
-    updateStyle: function () {
+    updateStyle: function() {
         var zoom = this._map.getPercentZoom();
         // Set what this.style returns.
-        this.eachLayer(function (layer) {
+        this.eachLayer(function(layer) {
             layer.setIcon(this.getIcon(zoom));
         }, this);
     },
 
-    filter: function (feature, layer) {
+    filter: function(feature, layer) {
         return true;
     }
 });
@@ -77,7 +78,7 @@ var BaseCitiesLayer = L.GeoJSON.extend({
 var CapitalsLayer = BaseCitiesLayer.extend({
     iconUrl: CONFIG.STATIC_URL + 'img/map/icons/purple/castle-2.png',
 
-    filter: function (feature, layer) {
+    filter: function(feature, layer) {
         return feature.properties.capital;
     }
 });
@@ -85,7 +86,7 @@ var CapitalsLayer = BaseCitiesLayer.extend({
 var CitiesLayer = BaseCitiesLayer.extend({
     iconUrl: CONFIG.STATIC_URL + 'img/map/icons/bluegray/smallcity.png',
 
-    filter: function (feature, layer) {
+    filter: function(feature, layer) {
         return ! feature.properties.capital && feature.properties.userId != CONFIG.USER_ID;
     }
 });
@@ -93,7 +94,7 @@ var CitiesLayer = BaseCitiesLayer.extend({
 var UserCityLayer = BaseCitiesLayer.extend({
     iconUrl: CONFIG.STATIC_URL + 'img/map/icons/deeporange/palace-2.png',
 
-    filter: function (feature, layer) {
+    filter: function(feature, layer) {
         return feature.properties.userId == CONFIG.USER_ID;
     }
 });

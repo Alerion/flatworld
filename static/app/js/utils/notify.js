@@ -1,10 +1,11 @@
+'use strict';
 import _ from 'lodash';
 
 
 export function notify(message, type) {
     $.growl({
         message: message
-    },{
+    }, {
         type: type,
         allow_dismiss: false,
         label: 'Cancel',
@@ -19,10 +20,10 @@ export function notify(message, type) {
             y: 85
         }
     });
-};
+}
 
 export function showErrors(error) {
-    for (let msg of _.values(error.messages)) {
+    for (const msg of _.values(error.messages)) {
         notify(msg, 'danger');
     }
 }

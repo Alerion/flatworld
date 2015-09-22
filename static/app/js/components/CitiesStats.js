@@ -1,3 +1,4 @@
+'use strict';
 import FluxComponent from 'flummox/component';
 import React from 'react';
 
@@ -13,12 +14,12 @@ class CitiesStats extends React.Component {
         if (world) {
             var rows = [];
 
-            for (let region of world.get('regions').values()) {
+            for (const region of world.get('regions').values()) {
                 rows.push(
                     <tr key={region.get('id')}><th>{region.get('name')}</th></tr>
                 );
 
-                for (let city of region.get('cities').values()) {
+                for (const city of region.get('cities').values()) {
                     rows.push(
                         <tr key={city.get('id')}>
                             <td>{city.get('name')}</td>
@@ -62,6 +63,11 @@ class CitiesStats extends React.Component {
         );
     }
 }
+
+CitiesStats.propTypes = {
+    world: React.PropTypes.object
+};
+
 
 export default class FluxWorldStats extends React.Component {
 

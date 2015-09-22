@@ -1,6 +1,7 @@
+'use strict';
 import { Store } from 'flummox';
 import Immutable from 'seamless-immutable';
-import { map, forIn, isEmpty } from 'lodash';
+import _ from 'lodash';
 
 
 export default class CityStore extends Store {
@@ -30,7 +31,7 @@ export default class CityStore extends Store {
     }
 
     getCity() {
-        if ( ! this.state.city && ! this._loadingInProgress) {
+        if (! this.state.city && ! this._loadingInProgress) {
             this.actions.getCity();
             return null;
         }
@@ -39,18 +40,20 @@ export default class CityStore extends Store {
     }
 
     _updateBuildProgress() {
-        if ( ! this.state.city) return;
+        if (! this.state.city) {
+            return;
+        }
 
         var updates = {};
-        forIn(this.state.city.buildings, function(building, id) {
+        _.forIn(this.state.city.buildings, function(building, id) {
             if (building.in_progress && building.build_progress > 0) {
                 updates[id] = {
                     build_progress: building.build_progress - 1
-                }
+                };
             }
         });
 
-        if ( ! isEmpty(updates)) {
+        if (! _.isEmpty(updates)) {
             var buildings = this.state.city.buildings.merge(updates, {deep: true});
             // FIXME: Do not update whole city.
             this.setState({

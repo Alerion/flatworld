@@ -1,3 +1,4 @@
+'use strict';
 import { Store } from 'flummox';
 import Immutable from 'seamless-immutable';
 
@@ -26,7 +27,7 @@ export default class BuildingsStore extends Store {
     }
 
     getBuildings() {
-        if ( ! this.state.buildings && ! this._loadingInProgress) {
+        if (! this.state.buildings && ! this._loadingInProgress) {
             this.actions.getBuildings();
             return null;
         }

@@ -1,9 +1,11 @@
+'use strict';
+import Flux from 'flummox';
 import FluxComponent from 'flummox/component';
 import React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
 import toString from '../utils/toString';
-import { capitalize, map } from 'lodash';
+import _ from 'lodash';
 import { confirm } from '../utils/alert';
 import { showErrors } from '../utils/notify';
 
@@ -31,25 +33,33 @@ class ProgressChart extends React.Component {
     render() {
         return (
             <div className="bgm-green btn-float">
-                <div ref="progressChart" className="easy-pie main-pie" data-percent={this.props.progress}>
+                <div className="easy-pie main-pie"
+                    data-percent={this.props.progress}
+                    ref="progressChart">
                     <div className="percent">{this.props.timeLeft}</div>
                 </div>
             </div>
-        )
+        );
     }
 }
+
+ProgressChart.propTypes = {
+    progress: React.PropTypes.number.isRequired,
+    timeLeft: React.PropTypes.number.isRequired
+};
 
 
 class BuildingTierProperties extends React.Component {
 
-    render () {
+    render() {
         var buildingTier = this.props.buildingTier;
 
-        var properties = map(buildingTier.properties, function(value, key) {
-            let info = buildingTier.properties_description[key];
+        var properties = _.map(buildingTier.properties, function(value, key) {
+            const info = buildingTier.properties_description[key];
 
             return (
-                <dl key={key} className="dl-horizontal">
+                <dl className="dl-horizontal"
+                    key={key}>
                     <dt><i className="zmdi zmdi-settings m-r-5"></i> {toString(key, 'key')}</dt>
                     <dd>
                         {value}
@@ -97,6 +107,10 @@ class BuildingTierProperties extends React.Component {
     }
 }
 
+BuildingTierProperties.propTypes = {
+    buildingTier: React.PropTypes.object.isRequired
+};
+
 
 class Building extends React.Component {
 
@@ -108,23 +122,26 @@ class Building extends React.Component {
         var buildButton;
         var progressChart;
         if (cityBuilding.in_progress) {
-            progressChart = <ProgressChart
-                progress={cityBuilding.build_progress / nextBuildingTier.build_time * 100}
-                timeLeft={cityBuilding.build_progress}
-            />
+            progressChart = (
+                <ProgressChart
+                    progress={cityBuilding.build_progress / nextBuildingTier.build_time * 100}
+                    timeLeft={cityBuilding.build_progress}
+                    />
+            );
         } else if (nextBuildingTier) {
             buildButton = (
-                <button onClick={this.onBuildClick.bind(this)} className="btn bgm-green btn-float waves-effect waves-effect waves-circle waves-float">
+                <button onClick={this.onBuildClick.bind(this)}
+                    className="btn bgm-green btn-float waves-effect waves-effect waves-circle waves-float">
                     <i className="zmdi zmdi-plus"></i>
                 </button>
-            )
+            );
         }
 
         var buildingTierProperties;
         if (nextBuildingTier) {
             buildingTierProperties = <BuildingTierProperties buildingTier={nextBuildingTier} />;
         } else {
-            buildingTierProperties = 'Building has max level.'
+            buildingTierProperties = 'Building has max level.';
         }
 
         return (
@@ -132,7 +149,7 @@ class Building extends React.Component {
                 <div className="card building">
                     <div className="card-header bgm-teal m-b-20">
                         <h2>
-                            {capitalize(building.name)} [{nextBuildingTier ? cityBuilding.level : 'MAX'}]
+                            {_.capitalize(building.name)} [{nextBuildingTier ? cityBuilding.level : 'MAX'}]
                             <small>{building.description}</small>
                         </h2>
                         {progressChart}
@@ -144,7 +161,7 @@ class Building extends React.Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 
     build() {
@@ -152,7 +169,7 @@ class Building extends React.Component {
     }
 
     onBuildClick() {
-        var name = capitalize(this.props.building.name);
+        var name = _.capitalize(this.props.building.name);
 
         confirm({
             title: `Do you wish to build ${name}?`,
@@ -160,6 +177,12 @@ class Building extends React.Component {
         }, this.build.bind(this));
     }
 }
+
+Building.propTypes = {
+    building: React.PropTypes.object.isRequired,
+    cityBuilding: React.PropTypes.object.isRequired,
+    flux: React.PropTypes.instanceOf(Flux).isRequired
+};
 
 
 class Buildings extends React.Component {
@@ -170,21 +193,37 @@ class Buildings extends React.Component {
         var content;
 
         if (buildings && city) {
-            var items = map(buildings, (building) => {
+            var items = _.map(buildings, (building) => {
                 var cityBuilding = city.buildings[building.id];
-                return <Building key={building.id} cityBuilding={cityBuilding} building={building} flux={this.props.flux} />;
+                return (
+                    <Building key={building.id}
+                        cityBuilding={cityBuilding}
+                        building={building}
+                        flux={this.props.flux}
+                        />
+                );
             });
 
-            var content = [];
+            content = [];
             var group = [];
             items.forEach(function(item, i) {
                 if (i % 3 === 0 && i !== 0) {
-                    content.push(<div key={content.length} className="row card-group m-25">{group}</div>);
+                    content.push(
+                        <div key={content.length}
+                            className="row card-group m-25">
+                            {group}
+                        </div>
+                    );
                     group = [];
                 }
                 group.push(item);
-            }.bind(this));
-            content.push(<div key={content.length} className="row card-group m-25">{group}</div>);
+            });
+            content.push(
+                <div
+                    key={content.length}
+                    className="row card-group m-25">
+                    {group}
+                </div>);
         } else {
             content = 'Loading...';
         }
@@ -200,6 +239,14 @@ class Buildings extends React.Component {
         );
     }
 }
+
+Buildings.propTypes = {
+    buildings: React.PropTypes.object,
+    city: React.PropTypes.object,
+    flux: React.PropTypes.instanceOf(Flux).isRequired
+};
+
+
 
 export default class FluxBuilding extends React.Component {
 

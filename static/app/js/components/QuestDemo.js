@@ -1,5 +1,6 @@
+'use strict';
 import React from 'react';
-import { uniqueId, max, min, filter } from 'lodash';
+import _ from 'lodash';
 import { Grid, Row, Col } from 'react-bootstrap';
 
 
@@ -20,7 +21,7 @@ class Slider extends React.Component {
             pips = {
                 mode: 'values',
                 values: [-100, -80, -60, -40, -20, 0, 20, 40, 60, 80, 100]
-            }
+            };
         }
 
         noUiSlider.create(slider, {
@@ -31,10 +32,10 @@ class Slider extends React.Component {
                 'max': 200,
             },
             format: {
-                to: function (value) {
+                to: function(value) {
                     return value;
                 },
-                from: function (value) {
+                from: function(value) {
                     return Number(value);
                 }
             },
@@ -50,20 +51,34 @@ class Slider extends React.Component {
     }
 
     render() {
-        var id = uniqueId('slider_');
+        var id = _.uniqueId('slider_');
         return (
             <Grid className="m-0 m-t-10">
                 <Row className="m-0">
-                    <Col xs={12} md={1}>
+                    <Col xs={12}
+                        md={1}>
                         <div className="toggle-switch">
-                            <input id={id} onChange={this.onChageActive.bind(this)} checked={this.state.active} type="checkbox" hidden="hidden"/>
-                            <label htmlFor={id} className="ts-helper"/>
+                            <input id={id}
+                                onChange={this.onChageActive.bind(this)}
+                                checked={this.state.active}
+                                type="checkbox"
+                                hidden="hidden"
+                                />
+                            <label htmlFor={id}
+                                className="ts-helper"
+                                />
                         </div>
                     </Col>
-                    <Col xs={12} md={10}>
-                        <div ref="slider" className="input-slider-values m-b-15" data-is-color={this.props.color}></div>
+                    <Col xs={12}
+                        md={10}>
+                        <div ref="slider"
+                            className="input-slider-values m-b-15"
+                            data-is-color={this.props.color}
+                            />
                     </Col>
-                    <Col xs={12} md={1} style={{marginTop: -9}}>
+                    <Col xs={12}
+                        md={1}
+                        style={{marginTop: -9}}>
                         <strong className="text-muted">{this.props.value}</strong>
                     </Col>
                 </Row>
@@ -82,6 +97,13 @@ class Slider extends React.Component {
     }
 }
 
+Slider.propTypes = {
+    color: React.PropTypes.string.isRequired,
+    onChange: React.PropTypes.func.isRequired,
+    pips: React.PropTypes.bool,
+    value: React.PropTypes.number
+};
+
 
 class ActiveRange extends React.Component {
 
@@ -95,13 +117,13 @@ class ActiveRange extends React.Component {
             behaviour: 'tap-drag-fixed',
             range: {
                 'min': -200,
-                'max': 200,
+                'max': 200
             },
             format: {
-                to: function (value) {
+                to: function(value) {
                     return value;
                 },
-                from: function (value) {
+                from: function(value) {
                     return Number(value);
                 }
             }
@@ -120,11 +142,18 @@ class ActiveRange extends React.Component {
         return (
             <Grid className="m-0 m-t-25">
                 <Row className="m-0 m-t-10">
-                    <Col xs={12} md={1}>&nbsp;</Col>
-                    <Col xs={12} md={10}>
-                        <div ref="slider" className="input-slider-values m-b-15" data-is-color={this.props.color}></div>
+                    <Col xs={12}
+                        md={1}
+                        />
+                    <Col xs={12}
+                        md={10}>
+                        <div ref="slider"
+                            className="input-slider-values m-b-15"
+                            />
                     </Col>
-                    <Col xs={12} md={1} style={{marginTop: -9}}>
+                    <Col xs={12}
+                        md={1}
+                        style={{marginTop: -9}}>
                         <strong className="text-muted">{this.props.start} : {this.props.end}</strong>
                     </Col>
                 </Row>
@@ -132,6 +161,13 @@ class ActiveRange extends React.Component {
         );
     }
 }
+
+ActiveRange.propTypes = {
+    end: React.PropTypes.number.isRequired,
+    onEndChange: React.PropTypes.func.isRequired,
+    onStartChange: React.PropTypes.func.isRequired,
+    start: React.PropTypes.number.isRequired,
+};
 
 
 class Chart extends React.Component {
@@ -155,7 +191,7 @@ class Chart extends React.Component {
                 container: '.flc-pie',
                 backgroundOpacity: 0.5,
                 noColumns: 0,
-                backgroundColor: "white",
+                backgroundColor: 'white',
                 lineWidth: 0
             }
         });
@@ -169,8 +205,10 @@ class Chart extends React.Component {
     render() {
         return (
             <div className="m-b-20 clearfix">
-                <div ref="chart" style={{height: 300}}></div>
-                <div className="flc-pie hidden-xs"></div>
+                <div ref="chart"
+                    style={{height: 300}}
+                    />
+                <div className="flc-pie hidden-xs"/>
             </div>
         );
     }
@@ -183,9 +221,18 @@ class Chart extends React.Component {
             {data: this.props.win, color: '#4caf50', label: 'win'},
             {data: this.props.win1, color: '#00bcd4', label: 'win1'},
             {data: this.props.win2, color: '#2196f3', label: 'win2'},
-        ]
+        ];
     }
 }
+
+Chart.propTypes = {
+    fail1: React.PropTypes.number.isRequired,
+    fail2: React.PropTypes.number.isRequired,
+    fail: React.PropTypes.number.isRequired,
+    win1: React.PropTypes.number.isRequired,
+    win2: React.PropTypes.number.isRequired,
+    win: React.PropTypes.number.isRequired,
+};
 
 
 export default class QuestDemo extends React.Component {
@@ -212,7 +259,7 @@ export default class QuestDemo extends React.Component {
         var ranges = {};
         var last = null;
 
-        for (let item of items) {
+        for (const item of items) {
             let start = null;
             if (last !== null) {
                 start = last[1];
@@ -225,9 +272,9 @@ export default class QuestDemo extends React.Component {
             ranges[item] = last;
         }
 
-        var data = {}
+        var data = {};
 
-        for (let item of items) {
+        for (const item of items) {
             let start = ranges[item][0];
             let end = ranges[item][1];
 
@@ -241,10 +288,10 @@ export default class QuestDemo extends React.Component {
             }
 
             if (start > this.state.end || end < this.state.start) {
-               data[item] = 0;
+                data[item] = 0;
             } else {
-                start = max([start, this.state.start]);
-                end = min([end, this.state.end]);
+                start = _.max([start, this.state.start]);
+                end = _.min([end, this.state.end]);
                 data[item] = end - start;
             }
         }
@@ -263,22 +310,43 @@ export default class QuestDemo extends React.Component {
                     <p className="f-500 c-black m-b-20">Change Output Value with tap and drag</p>
 
                     <div className="m-b-20 clearfix">
-                        <Slider color="red" value={this.state.fail2} onChange={this.onValueChange.bind(this, 'fail2')}/>
-                        <Slider color="amber" value={this.state.fail1} onChange={this.onValueChange.bind(this, 'fail1')}/>
-                        <Slider color="green" value={this.state.fail} onChange={this.onValueChange.bind(this, 'fail')}/>
-                        <Slider color="cyan" value={this.state.win} onChange={this.onValueChange.bind(this, 'win')}/>
-                        <Slider color="blue" value={this.state.win1} onChange={this.onValueChange.bind(this, 'win1')} pips={true}/>
+                        <Slider
+                            color="red"
+                            value={this.state.fail2}
+                            onChange={this.onValueChange.bind(this, 'fail2')}
+                            />
+                        <Slider
+                            color="amber"
+                            value={this.state.fail1}
+                            onChange={this.onValueChange.bind(this, 'fail1')}
+                            />
+                        <Slider
+                            color="green"
+                            value={this.state.fail}
+                            onChange={this.onValueChange.bind(this, 'fail')}
+                            />
+                        <Slider
+                            color="cyan"
+                            value={this.state.win}
+                            onChange={this.onValueChange.bind(this, 'win')}
+                            />
+                        <Slider
+                            color="blue"
+                            value={this.state.win1}
+                            onChange={this.onValueChange.bind(this, 'win1')}
+                            pips
+                            />
                         <ActiveRange
                             start={this.state.start}
                             end={this.state.end}
                             onStartChange={this.onValueChange.bind(this, 'start')}
                             onEndChange={this.onValueChange.bind(this, 'end')}
-                        />
+                            />
                     </div>
 
                     <Chart {...this.getProbabilities()}/>
                 </div>
             </div>
-        )
+        );
     }
 }

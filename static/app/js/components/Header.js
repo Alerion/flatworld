@@ -1,3 +1,4 @@
+'use strict';
 import FluxComponent from 'flummox/component';
 import React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
@@ -16,7 +17,7 @@ class Header extends React.Component {
                 <li>
                     <ul className="city-resources">
                         <OverlayTrigger placement='left'
-                                overlay={<Popover id="resources-population">
+                            overlay={<Popover id="resources-population">
                                     <strong>Population</strong><br/>
                                     growth: {toString(city.stats.population_growth, 'int')}
                                 </Popover>}>
@@ -26,7 +27,7 @@ class Header extends React.Component {
                             </li>
                         </OverlayTrigger>
                         <OverlayTrigger placement='left'
-                                overlay={<Popover id="resources-money">
+                            overlay={<Popover id="resources-money">
                                     <strong>Money</strong><br/>
                                     tax {toString(city.stats.tax, 'float')}, income: {toString(city.stats.pasive_income)}
                                 </Popover>}>
@@ -36,7 +37,7 @@ class Header extends React.Component {
                             </li>
                         </OverlayTrigger>
                         <OverlayTrigger placement='left'
-                                overlay={<Popover id="resources-iron">
+                            overlay={<Popover id="resources-iron">
                                     <strong>Iron</strong><br/>
                                     income: {toString(city.stats.iron_income)}
                                 </Popover>}>
@@ -46,7 +47,7 @@ class Header extends React.Component {
                             </li>
                         </OverlayTrigger>
                         <OverlayTrigger placement='left'
-                                overlay={<Popover id="resources-stone">
+                            overlay={<Popover id="resources-stone">
                                     <strong>Stone</strong><br/>
                                     income: {toString(city.stats.stone_income)}
                                 </Popover>}>
@@ -56,7 +57,7 @@ class Header extends React.Component {
                             </li>
                         </OverlayTrigger>
                         <OverlayTrigger placement='left'
-                                overlay={<Popover id="resources-wood">
+                            overlay={<Popover id="resources-wood">
                                     <strong>Wood</strong><br/>
                                     income: {toString(city.stats.wood_income)}
                                 </Popover>}>
@@ -67,13 +68,14 @@ class Header extends React.Component {
                         </OverlayTrigger>
                     </ul>
                 </li>
-            )
+            );
         }
 
         return (
             <header id="header">
                 <ul className="header-inner">
-                    <li id="menu-trigger" data-trigger="#sidebar">
+                    <li id="menu-trigger"
+                        data-trigger="#sidebar">
                         <div className="line-wrap">
                             <div className="line top"></div>
                             <div className="line center"></div>
@@ -92,9 +94,13 @@ class Header extends React.Component {
                     </li>
                 </ul>
             </header>
-        )
+        );
     }
 }
+
+Header.propTypes = {
+    city: React.PropTypes.object
+};
 
 
 export default class FluxHeader extends React.Component {

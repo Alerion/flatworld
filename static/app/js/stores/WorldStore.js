@@ -1,6 +1,7 @@
+'use strict';
 import { Store } from 'flummox';
 import Immutable from 'seamless-immutable';
-import { mapValues, values } from 'lodash';
+import _ from 'lodash';
 
 
 class Region {
@@ -12,7 +13,7 @@ class Region {
     _totalForCities(field) {
         var total = 0;
 
-        for (let city of values(this.cities)) {
+        for (const city of _.values(this.cities)) {
             total += city.stats[field];
         }
 
@@ -33,14 +34,14 @@ class World {
 
     constructor(obj) {
         Object.assign(this, obj);
-        this.regions = mapValues(this.regions, function(value) {
+        this.regions = _.mapValues(this.regions, function(value) {
             return Immutable(new Region(value), {prototype: Region.prototype});
         });
     }
 
     *getAllCities() {
-        for (let region of values(this.regions)) {
-            for (let city of values(region.cities)) {
+        for (const region of _.values(this.regions)) {
+            for (const city of _.values(region.cities)) {
                 yield city;
             }
         }
@@ -49,7 +50,7 @@ class World {
     _totalForCities(field) {
         var total = 0;
 
-        for (let city of this.getAllCities()) {
+        for (const city of this.getAllCities()) {
             total += city.stats[field];
         }
 
@@ -91,7 +92,7 @@ export default class WorldStore extends Store {
     }
 
     getWorld() {
-        if ( ! this.state.world && ! this._loadingInProgress) {
+        if (! this.state.world && ! this._loadingInProgress) {
             this.actions.getWorld();
             return null;
         }

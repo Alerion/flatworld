@@ -1,3 +1,4 @@
+'use strict';
 import FluxComponent from 'flummox/component';
 import React from 'react';
 
@@ -47,6 +48,11 @@ class WorldStats extends React.Component {
     }
 }
 
+WorldStats.propTypes = {
+    world: React.PropTypes.object
+};
+
+
 export default class FluxWorldStats extends React.Component {
 
     render() {
@@ -60,5 +66,4 @@ export default class FluxWorldStats extends React.Component {
             </FluxComponent>
         );
     }
-
 }

@@ -1,3 +1,4 @@
+'use strict';
 import { Flux } from 'flummox';
 
 import BuildingsActions from './actions/BuildingsActions';
@@ -9,8 +10,6 @@ import BuildingsStore from './stores/BuildingsStore';
 import CityStore from './stores/CityStore';
 import UnitsStore from './stores/UnitsStore';
 import WorldStore from './stores/WorldStore';
-
-import Rpc from './Rpc';
 
 
 export default class Application extends Flux {

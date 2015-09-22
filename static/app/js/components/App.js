@@ -1,5 +1,6 @@
+'use strict';
 import React from 'react';
-import {RouteHandler} from 'react-router';
+import { RouteHandler } from 'react-router';
 
 import Header from './Header';
 import Sidebar from './Sidebar';

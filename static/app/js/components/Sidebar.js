@@ -1,3 +1,4 @@
+'use strict';
 import React from 'react';
 import { Link } from 'react-router';
 
@@ -10,7 +11,9 @@ export default class Sidebar extends React.Component {
                     <div className="profile-menu">
                         <a href="">
                             <div className="profile-pic">
-                                <img src={CONFIG.USER_AVATAR} alt={CONFIG.USER_NAME}/>
+                                <img src={CONFIG.USER_AVATAR}
+                                    alt={CONFIG.USER_NAME}
+                                    />
                             </div>
 
                             <div className="profile-info">
@@ -38,28 +41,32 @@ export default class Sidebar extends React.Component {
 
                     <ul className="main-menu">
                         <li>
-                            <Link to="world" params={{worldId: CONFIG.WORLD_ID}}>
+                            <Link to="world"
+                                params={{worldId: CONFIG.WORLD_ID}}>
                                 <i className="zmdi zmdi-globe"/> Map
                             </Link>
                         </li>
                         <li>
-                            <Link to="building" params={{worldId: CONFIG.WORLD_ID}}>
+                            <Link to="building"
+                                params={{worldId: CONFIG.WORLD_ID}}>
                                 <i className="zmdi zmdi-city"/> Building
                             </Link>
                         </li>
                         <li>
-                            <Link to="units" params={{worldId: CONFIG.WORLD_ID}}>
+                            <Link to="units"
+                                params={{worldId: CONFIG.WORLD_ID}}>
                                 <i className="zmdi zmdi-shield-security"/> Units
                             </Link>
                         </li>
                         <li>
-                            <Link to="quest-demo" params={{worldId: CONFIG.WORLD_ID}}>
+                            <Link to="quest-demo"
+                                params={{worldId: CONFIG.WORLD_ID}}>
                                 <i className="zmdi zmdi-pin-drop"/> Quests Demo
                             </Link>
                         </li>
                     </ul>
                 </div>
             </aside>
-        )
+        );
     }
 }

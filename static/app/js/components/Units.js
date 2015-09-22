@@ -1,7 +1,6 @@
+'use strict';
 import FluxComponent from 'flummox/component';
 import React from 'react';
-
-import toString from '../utils/toString';
 
 
 class Units extends React.Component {

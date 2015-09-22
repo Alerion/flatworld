@@ -1,9 +1,10 @@
+'use strict';
 import FluxComponent from 'flummox/component';
 import React from 'react';
 
-import Application from './Application'
+import Application from './Application';
 import router from './router';
-import Rpc from './Rpc'
+import Rpc from './Rpc';
 import { notify } from './utils/notify';
 
 window.React = React; // For React Developer Tools
@@ -14,7 +15,7 @@ async function main() {
     console.log('Connectiong...', url);
     const rpc = new Rpc({
         url: url,
-        onException: function (response) {
+        onException: function(response) {
             notify(response.message, 'danger');
         }
     });
@@ -26,7 +27,7 @@ async function main() {
 
     const flux = new Application(rpc);
 
-    router.run(function (Handler, state) {
+    router.run(function(Handler, state) {
         React.render(
             <FluxComponent flux={flux}>
                 <Handler {...state.params} />

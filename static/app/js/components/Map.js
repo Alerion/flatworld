@@ -1,3 +1,4 @@
+'use strict';
 import FluxComponent from 'flummox/component';
 import React from 'react';
 import Map from '../map/Map';
@@ -34,12 +35,19 @@ class MapComponent extends React.Component {
         return (
             <div className="card">
                 <div className="card-body">
-                    <div ref="map" className="map" style={{height: 840}}></div>
+                    <div ref="map"
+                        className="map"
+                        style={{height: 840}}
+                        />
                 </div>
             </div>
         );
     }
 }
+
+MapComponent.propTypes = {
+    world: React.PropTypes.object
+};
 
 // TODO: This part is similar for many components.
 export default class FluxMapComponent extends React.Component {
