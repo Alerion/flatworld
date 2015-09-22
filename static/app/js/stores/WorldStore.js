@@ -5,17 +5,17 @@ import World from '../models/World';
 
 export default class WorldStore extends Store {
 
-    constructor({ worldActions }) {
+    constructor({ actions }) {
         super();
 
-        this.worldActions = worldActions;
-        this.registerAsync(worldActions.getWorld, this.startWorldLoading, this.updateWorld);
-        this.register(worldActions.updateWorld, this.updateWorld);
+        this.actions = actions;
+        this.registerAsync(actions.getWorld, this.startLoading, this.updateWorld);
+        this.register(actions.updateWorld, this.updateWorld);
         this.state = {};
         this._loadingInProgress = false;
     }
 
-    startWorldLoading() {
+    startLoading() {
         this._loadingInProgress = true;
     }
 
@@ -28,7 +28,7 @@ export default class WorldStore extends Store {
 
     getWorld() {
         if ( ! this.state.world && ! this._loadingInProgress) {
-            this.worldActions.getWorld();
+            this.actions.getWorld();
             return null;
         }
 

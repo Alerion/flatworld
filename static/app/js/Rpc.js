@@ -3,8 +3,9 @@ import Immutable from 'immutable';
 
 export default class Rpc {
 
-    constructor(url) {
-        this.url = url;
+    constructor(options) {
+        this.url = options.url;
+        this.onException = options.onException;
         this._socket = null;
         this._requests = new Map();
         this._observers = new Map();
@@ -31,6 +32,10 @@ export default class Rpc {
             if (response.event == 'success') {
                 promise.resolve(response.value);
             } else {
+                if (response.event == 'exception' && this.onException) {
+                    this.onException(response)
+                }
+
                 promise.reject({
                     messages: Immutable.fromJS(response.message),
                     type: response.event

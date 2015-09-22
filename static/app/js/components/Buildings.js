@@ -3,7 +3,7 @@ import React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 
 import toString from '../utils/toString';
-import { capitalize } from 'lodash/string';
+import { capitalize, map } from 'lodash';
 import { confirm } from '../utils/alert';
 import { showErrors } from '../utils/notify';
 
@@ -44,12 +44,11 @@ class BuildingTierProperties extends React.Component {
 
     render () {
         var buildingTier = this.props.buildingTier;
-        var properties = [];
 
-        for (let [key, value] of buildingTier.get('properties')) {
-            let info = buildingTier.get('properties_description').get(key);
+        var properties = map(buildingTier.properties, function(value, key) {
+            let info = buildingTier.properties_description[key];
 
-            properties.push(
+            return (
                 <dl key={key} className="dl-horizontal">
                     <dt><i className="zmdi zmdi-settings m-r-5"></i> {toString(key, 'key')}</dt>
                     <dd>
@@ -60,7 +59,7 @@ class BuildingTierProperties extends React.Component {
                     </dd>
                 </dl>
             );
-        }
+        });
 
         return (
             <div className="pmb-block">
@@ -68,27 +67,27 @@ class BuildingTierProperties extends React.Component {
                     <div className="pmbb-view">
                         <dl className="dl-horizontal">
                             <dt><i className="zmdi zmdi-alarm m-r-5"></i> Сonstruction time</dt>
-                            <dd>{toString(buildingTier.get('build_time'), 'time')}</dd>
+                            <dd>{toString(buildingTier.build_time, 'time')}</dd>
                         </dl>
                         <dl className="dl-horizontal">
                             <dt><i className="zmdi zmdi-money m-r-5"></i> Money</dt>
-                            <dd>{toString(buildingTier.get('cost_money'))}</dd>
+                            <dd>{toString(buildingTier.cost_money)}</dd>
                         </dl>
                         <dl className="dl-horizontal">
                             <dt><i className="zmdi zmdi-accounts m-r-5"></i> Population</dt>
-                            <dd>{toString(buildingTier.get('cost_population'))}</dd>
+                            <dd>{toString(buildingTier.cost_population)}</dd>
                         </dl>
                         <dl className="dl-horizontal">
                             <dt><i className="zmdi zmdi-widgets m-r-5"></i> Iron</dt>
-                            <dd>{toString(buildingTier.get('cost_iron'))}</dd>
+                            <dd>{toString(buildingTier.cost_iron)}</dd>
                         </dl>
                         <dl className="dl-horizontal">
                             <dt><i className="zmdi zmdi-view-module m-r-5"></i> Stone</dt>
-                            <dd>{toString(buildingTier.get('cost_stone'))}</dd>
+                            <dd>{toString(buildingTier.cost_stone)}</dd>
                         </dl>
                         <dl className="dl-horizontal">
                             <dt><i className="zmdi zmdi-view-headline m-r-5"></i> Wood</dt>
-                            <dd>{toString(buildingTier.get('cost_wood'))}</dd>
+                            <dd>{toString(buildingTier.cost_wood)}</dd>
                         </dl>
                         {properties}
                     </div>
@@ -104,14 +103,14 @@ class Building extends React.Component {
     render() {
         var building = this.props.building;
         var cityBuilding = this.props.cityBuilding;
-        var nextBuildingTier = building.get('tiers').get(String(cityBuilding.get('level') + 1));
+        var nextBuildingTier = building.tiers[cityBuilding.level + 1];
 
         var buildButton;
         var progressChart;
-        if (cityBuilding.get('in_progress')) {
+        if (cityBuilding.in_progress) {
             progressChart = <ProgressChart
-                progress={cityBuilding.get('build_progress') / nextBuildingTier.get('build_time') * 100}
-                timeLeft={cityBuilding.get('build_progress')}
+                progress={cityBuilding.build_progress / nextBuildingTier.build_time * 100}
+                timeLeft={cityBuilding.build_progress}
             />
         } else if (nextBuildingTier) {
             buildButton = (
@@ -133,8 +132,8 @@ class Building extends React.Component {
                 <div className="card building">
                     <div className="card-header bgm-teal m-b-20">
                         <h2>
-                            {capitalize(building.get('name'))} [{nextBuildingTier ? cityBuilding.get('level') : 'MAX'}]
-                            <small>{building.get('description')}</small>
+                            {capitalize(building.name)} [{nextBuildingTier ? cityBuilding.level : 'MAX'}]
+                            <small>{building.description}</small>
                         </h2>
                         {progressChart}
                         {buildButton}
@@ -149,11 +148,11 @@ class Building extends React.Component {
     }
 
     build() {
-        this.props.flux.getActions('cityActions').build(this.props.building.get('id')).catch(showErrors);
+        this.props.flux.getActions('cityActions').build(this.props.building.id).catch(showErrors);
     }
 
     onBuildClick() {
-        var name = capitalize(this.props.building.get('name'));
+        var name = capitalize(this.props.building.name);
 
         confirm({
             title: `Do you wish to build ${name}?`,
@@ -171,12 +170,10 @@ class Buildings extends React.Component {
         var content;
 
         if (buildings && city) {
-            let items = [];
-
-            for (let building of buildings.values()) {
-                let cityBuilding = city.get('buildings').get(String(building.get('id')));
-                items.push(<Building key={building.get('id')} cityBuilding={cityBuilding} building={building} flux={this.props.flux} />);
-            }
+            var items = map(buildings, (building) => {
+                var cityBuilding = city.buildings[building.id];
+                return <Building key={building.id} cityBuilding={cityBuilding} building={building} flux={this.props.flux} />;
+            });
 
             var content = [];
             var group = [];

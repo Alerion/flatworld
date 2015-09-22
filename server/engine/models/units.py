@@ -2,7 +2,7 @@ from .base import Model
 from . import fields
 
 
-class Type(Model):
+class UnitType(Model):
     id = fields.IntegerField()
     name = fields.CharField()
 
@@ -11,7 +11,7 @@ class Unit(Model):
     id = fields.IntegerField()
     name = fields.CharField()
     description = fields.CharField()
-    type = fields.ModelField(Type)
+    type = fields.ModelField(UnitType)
     parent_id = fields.IntegerField()
     attack = fields.IntegerField()
     defence = fields.IntegerField()

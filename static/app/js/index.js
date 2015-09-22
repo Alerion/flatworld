@@ -4,6 +4,7 @@ import React from 'react';
 import Application from './Application'
 import router from './router';
 import Rpc from './Rpc'
+import { notify } from './utils/notify';
 
 window.React = React; // For React Developer Tools
 
@@ -11,7 +12,12 @@ window.React = React; // For React Developer Tools
 async function main() {
     const url = `ws://${CONFIG.FRONTEND_ADDR}:${CONFIG.FRONTEND_PORT}?world_id=${CONFIG.WORLD_ID}`;
     console.log('Connectiong...', url);
-    const rpc = new Rpc(url);
+    const rpc = new Rpc({
+        url: url,
+        onException: function (response) {
+            notify(response.message, 'danger');
+        }
+    });
     await rpc.connect();
     console.log('Connected');
 

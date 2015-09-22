@@ -109,6 +109,9 @@ class WebsocketRpc(WebSocketServerProtocol):
                         self.send_success(data, func(*args))
                 except (RequestError, RpcRequestError) as error:
                     self.send_error(data, error)
+                except:
+                    self.send_exception(data, 'Server error')
+                    raise
 
     def check_args(self, func, args):
         # TODO: Add validation like here

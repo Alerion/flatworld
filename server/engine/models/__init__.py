@@ -6,8 +6,9 @@ from .base import Model
 
 from .building import Building
 from .city import City
+from .units import UnitType, Unit
 
-__all__ = ['DEFAULT_WORLD_PARAMS', 'Building', 'World', 'Region', 'City']
+__all__ = ['DEFAULT_WORLD_PARAMS', 'Building', 'World', 'Region', 'City', 'UnitType', 'Unit']
 
 # FIXME: WORLD_PARAMS is used in generate_world command. Not sure this is the best place,
 # because requires to add the main folder to python paths.
@@ -54,6 +55,7 @@ class World(Model):
         self.regions = {}
         self.cities = {}
         self.buildings = {}
+        self.units = {}
 
     def to_dict(self, serial=True):
         output = super().to_dict(serial)

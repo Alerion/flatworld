@@ -34,6 +34,7 @@
     "react-bootstrap": "^0.25.1",
     "react-router": "^0.13.3",
     "regenerator": "^0.8.36",
+    "seamless-immutable": "^3.0.0",
     "source-map": "^0.4.4"
   }
 }

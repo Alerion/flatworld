@@ -48,8 +48,13 @@ export default class Sidebar extends React.Component {
                             </Link>
                         </li>
                         <li>
+                            <Link to="units" params={{worldId: CONFIG.WORLD_ID}}>
+                                <i className="zmdi zmdi-shield-security"/> Units
+                            </Link>
+                        </li>
+                        <li>
                             <Link to="quest-demo" params={{worldId: CONFIG.WORLD_ID}}>
-                                <i className="zmdi zmdi-city"/> Quests Demo
+                                <i className="zmdi zmdi-pin-drop"/> Quests Demo
                             </Link>
                         </li>
                     </ul>

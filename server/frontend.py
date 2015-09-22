@@ -66,6 +66,12 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
 
     @websocket.rpc.method
     @asyncio.coroutine
+    def get_units(self):
+        units = yield from self._db.call.get_units()
+        return units.to_dict()
+
+    @websocket.rpc.method
+    @asyncio.coroutine
     def get_buildings(self):
         buildings = yield from self._db.call.get_buildings()
         return buildings.to_dict()

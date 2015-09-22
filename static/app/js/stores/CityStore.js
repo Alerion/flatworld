@@ -1,18 +1,17 @@
 import {Store} from 'flummox';
-import Immutable from 'immutable';
-
-import City from '../models/City';
+import Immutable from 'seamless-immutable';
+import { map, forIn, isEmpty } from 'lodash';
 
 
 export default class CityStore extends Store {
 
-    constructor({ cityActions }) {
+    constructor({ actions }) {
         super();
 
-        this.cityActions = cityActions;
-        this.registerAsync(cityActions.getCity, this.startCityLoading, this.updateCity);
-        this.register(cityActions.build, this.updateCity);
-        this.register(cityActions.updateCity, this.updateCity);
+        this.actions = actions;
+        this.registerAsync(actions.getCity, this.startLoading, this.updateCity);
+        this.register(actions.build, this.updateCity);
+        this.register(actions.updateCity, this.updateCity);
         this.state = {};
         this._loadingInProgress = false;
 
@@ -25,14 +24,14 @@ export default class CityStore extends Store {
 
     updateCity(obj) {
         this.setState({
-            city: City.fromJS(obj)
+            city: Immutable(obj)
         });
         this._loadingInProgress = false;
     }
 
     getCity() {
         if ( ! this.state.city && ! this._loadingInProgress) {
-            this.cityActions.getCity();
+            this.actions.getCity();
             return null;
         }
 
@@ -40,18 +39,23 @@ export default class CityStore extends Store {
     }
 
     _updateBuildProgress() {
-        // FIXME: Do not update whole city.
         if ( ! this.state.city) return;
 
-        var buildings = this.state.city.get('buildings').map(function (building) {
-            if (building.get('in_progress') && building.get('build_progress') > 0) {
-                return building.set('build_progress', building.get('build_progress') - 1);
+        var updates = {};
+        forIn(this.state.city.buildings, function(building, id) {
+            if (building.in_progress && building.build_progress > 0) {
+                updates[id] = {
+                    build_progress: building.build_progress - 1
+                }
             }
-            return building;
         });
 
-        this.setState({
-            city: this.state.city.set('buildings', buildings)
-        });
+        if ( ! isEmpty(updates)) {
+            var buildings = this.state.city.buildings.merge(updates, {deep: true});
+            // FIXME: Do not update whole city.
+            this.setState({
+                city: this.state.city.merge({buildings: buildings})
+            });
+        }
     }
 }

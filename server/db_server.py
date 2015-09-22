@@ -35,6 +35,8 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
         world = models.World(data)
         buildings = yield from self.get_buildings()
         world.buildings = buildings
+        units = yield from self.get_units()
+        world.units = units
         return world
 
     @asyncio.coroutine
@@ -131,6 +133,25 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
                 buildings[row['id']] = models.Building(row)
 
             return buildings
+
+    @aiozmq.rpc.method
+    @asyncio.coroutine
+    def get_units(self):
+        with (yield from self._pool.cursor()) as cursor:
+            yield from cursor.execute('SELECT * FROM units_type')
+            data = yield from cursor.fetchall()
+            unit_types = {}
+            for row in data:
+                unit_types[row['id']] = row
+
+            yield from cursor.execute('SELECT * FROM units_unit')
+            data = yield from cursor.fetchall()
+            units = ModelsDict()
+            for row in data:
+                row['type'] = unit_types[row['type_id']]
+                units[row['id']] = models.Unit(row)
+
+            return units
 
     @aiozmq.rpc.method
     @asyncio.coroutine
