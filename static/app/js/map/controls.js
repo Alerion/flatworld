@@ -30,7 +30,7 @@ var RegionInfoPanel = InfoPanel.extend({
 
     renderObject: function (region) {
         return React.renderToStaticMarkup(<div>
-            <b>{region.get('name')}</b><br/>
+            <b>{region.name}</b><br/>
             Population: {toString(region.totalPopulation())}<br/>
             Money: {toString(region.totalMoney())}<br/>
         </div>);

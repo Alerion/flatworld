@@ -23,7 +23,6 @@
     "babel-core": "^5.8.22",
     "babel-runtime": "^5.8.20",
     "flummox": "^3.5.2",
-    "immutable": "^3.7.4",
     "jquery": "^2.1.4",
     "leaflet": "^0.7.3",
     "less-plugin-npm-import": "^2.1.0",

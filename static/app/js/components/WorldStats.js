@@ -3,7 +3,7 @@ import React from 'react';
 
 import toString from '../utils/toString';
 
-
+// FIXME: use new World object
 class WorldStats extends React.Component {
 
     render() {

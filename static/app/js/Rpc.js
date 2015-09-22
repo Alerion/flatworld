@@ -1,5 +1,5 @@
 import msgpack from 'msgpack-js-browser';
-import Immutable from 'immutable';
+import Immutable from 'seamless-immutable';
 
 export default class Rpc {
 
@@ -37,7 +37,7 @@ export default class Rpc {
                 }
 
                 promise.reject({
-                    messages: Immutable.fromJS(response.message),
+                    messages: Immutable(response.message),
                     type: response.event
                 });
             }

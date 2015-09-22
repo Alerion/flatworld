@@ -1,4 +1,4 @@
-import {Store} from 'flummox';
+import { Store } from 'flummox';
 import Immutable from 'seamless-immutable';
 import { map, forIn, isEmpty } from 'lodash';
 

@@ -1,4 +1,6 @@
 import L from 'leaflet';
+import { map } from 'lodash';
+
 
 // FIXME: We need better way to get style for zoom level, and better way to update them.
 var STYLE_DEFAULT = function (zoom) {
@@ -39,15 +41,15 @@ var RegionsLayer = L.GeoJSON.extend({
         // Render region on first world load. Later we do not need re-render them,
         // because they really never change, just data.
         if ( ! this.world) {
-            var regions = world.get('regions').map(item => {
+            var regions = map(world.regions, (item) => {
                 return {
                     type: "Feature",
                     properties: {
-                        regionId: String(item.get('id'))
+                        regionId: item.id
                     },
-                    geometry: JSON.parse(item.get('geom'))
+                    geometry: JSON.parse(item.geom)
                 }
-            }).toArray();
+            });
 
             this.addData(regions);
         }
@@ -77,7 +79,7 @@ var RegionsLayer = L.GeoJSON.extend({
         }
 
         var regionId = layer.feature.properties.regionId;
-        this.infoPanel.show(this.world.get('regions').get(regionId));
+        this.infoPanel.show(this.world.regions[regionId]);
     },
 
     onMouseout: function (event) {

@@ -1,4 +1,6 @@
 import L from 'leaflet';
+import { values } from 'lodash';
+
 
 var BaseCitiesLayer = L.GeoJSON.extend({
     iconUrl: null,
@@ -18,17 +20,17 @@ var BaseCitiesLayer = L.GeoJSON.extend({
         // because they really never change, just data.
         if (init) {
             var cities = [];
-            for (let region of world.get('regions').values()) {
-                for (let city of region.get('cities').values()) {
+            for (let region of values(world.regions)) {
+                for (let city of values(region.cities)) {
                     cities.push({
                         type: "Feature",
                         properties: {
-                            capital: city.get('capital'),
-                            userId: city.get('user_id'),
-                            cityId: String(city.get('id')),
-                            regionId: String(region.get('id'))
+                            capital: city.capital,
+                            userId: city.user_id,
+                            cityId: city.id,
+                            regionId: region.id
                         },
-                        geometry: JSON.parse(city.get('coords'))
+                        geometry: JSON.parse(city.coords)
                     })
                 }
             }
@@ -48,12 +50,12 @@ var BaseCitiesLayer = L.GeoJSON.extend({
     pointToLayer: function (feature, latlng) {
         var cityId = feature.properties.cityId;
         var regionId = feature.properties.regionId;
-        var city = this.world.get('regions').get(regionId).get('cities').get(cityId);
+        var city = this.world.regions[regionId].cities[cityId];
 
         // FIXME: Add popup with details on click
         var marker = L.marker(latlng, {
             icon: this.getIcon(this._map.getPercentZoom()),
-            title: city.get('name')
+            title: city.name
         });
 
         return marker;

@@ -1,3 +1,6 @@
+import _ from 'lodash';
+
+
 export function notify(message, type) {
     $.growl({
         message: message
@@ -19,7 +22,7 @@ export function notify(message, type) {
 };
 
 export function showErrors(error) {
-    for (let msg of error.messages.values()) {
+    for (let msg of _.values(error.messages)) {
         notify(msg, 'danger');
     }
 }
