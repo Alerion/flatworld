@@ -19,7 +19,7 @@ export default class CityStore extends Store {
         setInterval(this._updateBuildProgress.bind(this), 1000);
     }
 
-    startCityLoading() {
+    startLoading() {
         this._loadingInProgress = true;
     }
 

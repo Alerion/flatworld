@@ -56,13 +56,13 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
         neighbors_data = yield from cursor.fetchall()
 
         regions = {}
-        for item in data:
-            region = models.Region(item, world=world)
+        for row in data:
+            region = models.Region(row, world=world)
             regions[region.id] = region
 
-        for item in neighbors_data:
-            for neighbor_id in item['neighbors']:
-                regions[item['region_id']].neighbors[neighbor_id] = regions[neighbor_id]
+        for row in neighbors_data:
+            for neighbor_id in row['neighbors']:
+                regions[row['region_id']].neighbors[neighbor_id] = regions[neighbor_id]
 
         world.regions = regions
 
@@ -74,17 +74,17 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
         yield from cursor.execute(query, (world.id,))
         data = yield from cursor.fetchall()
 
-        for item in data:
+        for row in data:
             # Load buildings
-            item['buildings'] = item['buildings'] or {}
+            row['buildings'] = row['buildings'] or {}
 
             # fix buildings keys
-            item['buildings'] = {int(key): value for (key, value) in item['buildings'].items()}
+            row['buildings'] = {int(key): value for (key, value) in row['buildings'].items()}
 
             # Fill building that does not exist. This may happen if new building was added
             for building_id in world.buildings.keys():
-                if building_id not in item['buildings']:
-                    item['buildings'][building_id] = {
+                if building_id not in row['buildings']:
+                    row['buildings'][building_id] = {
                         'level': 0,
                         'in_progress': False,
                         'building_id': building_id,
@@ -92,24 +92,51 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
                     }
 
             # Load units
-            item['units'] = item['units'] or {}
+            row['units'] = row['units'] or {}
 
             # fix units keys
-            item['units'] = {int(key): value for (key, value) in item['units'].items()}
+            row['units'] = {int(key): value for (key, value) in row['units'].items()}
 
             # Fill units that does not exist. This may happen if new unit was added
             for unit_id in world.units.keys():
-                if unit_id not in item['units']:
-                    item['units'][unit_id] = {
+                if unit_id not in row['units']:
+                    row['units'][unit_id] = {
                         'number': 0,
                         'queue': 0,
                         'unit_id': unit_id
                     }
 
-            region = world.regions[item['region_id']]
-            city = models.City(item, world=world, region=region)
+            region = world.regions[row['region_id']]
+            city = models.City(row, world=world, region=region)
             region.cities[city.id] = city
             world.cities[city.id] = city
+
+    def _load_quests(self, world, cursor):
+        query = '''
+        SELECT
+            q.*,
+            ARRAY(
+                SELECT qc.city_id FROM events_quest_cities qc WHERE qc.quest_id=q.id
+            ) AS cities,
+            ARRAY(
+                SELECT qr.region_id FROM events_quest_regions qr WHERE qr.quest_id=q.id
+            ) AS regions
+        FROM events_quest q
+        WHERE q.finished IS NULL AND q.world_id=%s
+        '''
+        # FIXME: Should we load all participations for event's quests?
+        participation_query = '''
+        SELECT * FROM events_participation WHERE quest_id=%s AND finished IS NULL
+        '''
+
+        yield from cursor.execute(query, (world.id,))
+        data = yield from cursor.fetchall()
+
+        for row in data:
+            quest = models.Quest(row)
+            world.quests[quest.id] = quest
+            # yield from cursor.execute(participation_query, (quest.id,))
+            # participation_data = yield from cursor.fetchall()
 
     @aiozmq.rpc.method
     @asyncio.coroutine
@@ -118,6 +145,7 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
             world = yield from self._load_world(world_id, cursor)
             yield from self._load_regions(world, cursor)
             yield from self._load_cities(world, cursor)
+            yield from self._load_quests(world, cursor)
             return world
 
     @aiozmq.rpc.method

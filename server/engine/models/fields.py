@@ -125,6 +125,8 @@ class DateTimeField(BaseField):
             return datetime.datetime.strptime(self.data, self.format)
 
     def to_serial(self, time_obj, **kwargs):
+        if time_obj is None:
+            return time_obj
         if not self.serial_format:
             return time_obj.isoformat()
         return time_obj.strftime(self.serial_format)

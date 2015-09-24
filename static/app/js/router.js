@@ -20,6 +20,11 @@ var routes = (
             handler={require('./components/Units')}
             />
         <Router.Route
+            name="quests"
+            path="/world/:worldId/quests/"
+            handler={require('./components/Quests')}
+            />
+        <Router.Route
             name="quest-demo"
             path="/world/:worldId/quest-demo/"
             handler={require('./components/QuestDemo')}

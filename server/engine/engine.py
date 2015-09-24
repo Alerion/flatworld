@@ -1,6 +1,7 @@
 import asyncio
 
 from .exceptions import CityDoesNotExist, BuildingDoesNotExist
+from .models.base import ModelsDict
 
 
 class WorldEngine:
@@ -45,10 +46,19 @@ class WorldEngine:
             raise CityDoesNotExist(city_id)
         return city
 
+    def get_quests(self, city_id):
+        city = self.get_city(city_id)
+        quests = ModelsDict()
+
+        for quest_id, quest in self.world.quests.items():
+            if (not quest.cities and not quest.regions) or \
+                    city.id in quest.cities or city.region_id in quest.regions:
+                quests[quest_id] = quest
+
+        return quests
+
     def build(self, city_id, building_id):
-        city = self.world.cities.get(city_id)
-        if not city:
-            raise CityDoesNotExist(city_id)
+        city = self.get_city(city_id)
 
         building = self.world.buildings.get(building_id)
         if not building:

@@ -1,6 +1,7 @@
 'use strict';
-import numeral from 'numeral';
 import _ from 'lodash';
+import moment from 'moment';
+import numeral from 'numeral';
 
 
 export default function toString(value, format) {
@@ -21,6 +22,8 @@ export default function toString(value, format) {
         return numeral(value).format('00:00:00');
     case 'key':
         return _.capitalize(_.startCase(value).toLowerCase());
+    case 'fromDate':
+        return moment(value).fromNow();
     default:
         return value;
     }

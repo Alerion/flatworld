@@ -60,6 +60,7 @@ INSTALLED_APPS = (
     'world',
     'building',
     'units',
+    'events',
 )
 
 MIDDLEWARE_CLASSES = (

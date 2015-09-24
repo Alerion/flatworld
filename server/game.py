@@ -52,6 +52,10 @@ class ServerHandler(aiozmq.rpc.AttrHandler):
     def get_city(self, world_id: int, *args, **kwargs):
         return self.worlds[world_id].get_city(*args, **kwargs)
 
+    @aiozmq.rpc.method
+    def get_quests(self, world_id: int, *args, **kwargs):
+        return self.worlds[world_id].get_quests(*args, **kwargs)
+
 
 def main():
     loop = asyncio.get_event_loop()

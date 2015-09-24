@@ -19,43 +19,43 @@ class UnitProperties extends React.Component {
             <div className="pmbb-body">
                 <div className="pmbb-view">
                     <dl className="dl-horizontal">
-                        <dt><i className="zmdi zmdi-label m-r-5"></i> Type</dt>
+                        <dt><i className="zmdi zmdi-label m-r-5"/> Type</dt>
                         <dd>{unit.type.name}</dd>
                     </dl>
                     <dl className="dl-horizontal">
-                        <dt><i className="zmdi zmdi-upload m-r-5"></i> Upgrade to</dt>
+                        <dt><i className="zmdi zmdi-upload m-r-5"/> Upgrade to</dt>
                         <dd>{_.pluck(upgradeableTo, 'name').join(', ')}</dd>
                     </dl>
                     <dl className="dl-horizontal">
-                        <dt><i className="zmdi zmdi-fire m-r-5"></i> Attack</dt>
+                        <dt><i className="zmdi zmdi-fire m-r-5"/> Attack</dt>
                         <dd>{unit.attack}</dd>
                     </dl>
                     <dl className="dl-horizontal">
-                        <dt><i className="zmdi zmdi-shield-check m-r-5"></i> Defence</dt>
+                        <dt><i className="zmdi zmdi-shield-check m-r-5"/> Defence</dt>
                         <dd>{unit.defence}</dd>
                     </dl>
                     <dl className="dl-horizontal">
-                        <dt><i className="zmdi zmdi-alarm m-r-5"></i> Train time</dt>
+                        <dt><i className="zmdi zmdi-alarm m-r-5"/> Train time</dt>
                         <dd>{toString(unit.train_time, 'time')}</dd>
                     </dl>
                     <dl className="dl-horizontal">
-                        <dt><i className="zmdi zmdi-money m-r-5"></i> Money</dt>
+                        <dt><i className="zmdi zmdi-money m-r-5"/> Money</dt>
                         <dd>{toString(unit.cost_money)}</dd>
                     </dl>
                     <dl className="dl-horizontal">
-                        <dt><i className="zmdi zmdi-accounts m-r-5"></i> Population</dt>
+                        <dt><i className="zmdi zmdi-accounts m-r-5"/> Population</dt>
                         <dd>{toString(unit.cost_population)}</dd>
                     </dl>
                     <dl className="dl-horizontal">
-                        <dt><i className="zmdi zmdi-widgets m-r-5"></i> Iron</dt>
+                        <dt><i className="zmdi zmdi-widgets m-r-5"/> Iron</dt>
                         <dd>{toString(unit.cost_iron)}</dd>
                     </dl>
                     <dl className="dl-horizontal">
-                        <dt><i className="zmdi zmdi-view-module m-r-5"></i> Stone</dt>
+                        <dt><i className="zmdi zmdi-view-module m-r-5"/> Stone</dt>
                         <dd>{toString(unit.cost_stone)}</dd>
                     </dl>
                     <dl className="dl-horizontal">
-                        <dt><i className="zmdi zmdi-view-headline m-r-5"></i> Wood</dt>
+                        <dt><i className="zmdi zmdi-view-headline m-r-5"/> Wood</dt>
                         <dd>{toString(unit.cost_wood)}</dd>
                     </dl>
                 </div>
@@ -87,7 +87,7 @@ class Unit extends React.Component {
                         </h2>
                         <button onClick={this.onTrainClick.bind(this)}
                             className="btn bgm-lightgreen btn-float waves-effect waves-effect waves-circle waves-float">
-                            <i className="zmdi zmdi-plus"></i>
+                            <i className="zmdi zmdi-plus"/>
                         </button>
                     </div>
 
@@ -156,7 +156,7 @@ class Units extends React.Component {
                 if (i % 3 === 0 && i !== 0) {
                     content.push(
                         <div key={content.length}
-                            className="row card-group m-25">
+                            className="row card-group">
                             {group}
                         </div>
                     );
@@ -167,17 +167,13 @@ class Units extends React.Component {
             content.push(
                 <div
                     key={content.length}
-                    className="row card-group m-25">
+                    className="row card-group">
                     {group}
                 </div>);
         }
 
         return (
             <div>
-                <div className="block-header">
-                    <h2>Units</h2>
-                </div>
-
                 {content}
             </div>
         );

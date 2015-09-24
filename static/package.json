@@ -29,6 +29,7 @@
     "leaflet": "^0.7.3",
     "less-plugin-npm-import": "^2.1.0",
     "lodash": "^3.10.1",
+    "moment": "^2.10.6",
     "msgpack-js-browser": "^0.1.4",
     "numeral": "^1.5.3",
     "react": "^0.13.3",

@@ -19,7 +19,7 @@ export default class Sidebar extends React.Component {
                             <div className="profile-info">
                                 {CONFIG.USER_NAME}
 
-                                <i className="zmdi zmdi-arrow-drop-down"></i>
+                                <i className="zmdi zmdi-caret-down"></i>
                             </div>
                         </a>
 
@@ -59,9 +59,15 @@ export default class Sidebar extends React.Component {
                             </Link>
                         </li>
                         <li>
+                            <Link to="quests"
+                                params={{worldId: CONFIG.WORLD_ID}}>
+                                <i className="zmdi zmdi-pin-drop"/> Quests
+                            </Link>
+                        </li>
+                        <li>
                             <Link to="quest-demo"
                                 params={{worldId: CONFIG.WORLD_ID}}>
-                                <i className="zmdi zmdi-pin-drop"/> Quests Demo
+                                <i className="zmdi zmdi-toys"/> Quests Demo
                             </Link>
                         </li>
                     </ul>

@@ -78,6 +78,12 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
 
     @websocket.rpc.method
     @asyncio.coroutine
+    def get_quests(self):
+        quests = yield from self._game.call.get_quests(self.world_id, self.city_id)
+        return quests.to_dict()
+
+    @websocket.rpc.method
+    @asyncio.coroutine
     def build(self, building_id):
         city = yield from self._game.call.build(self.world_id, self.city_id, building_id)
         return city.to_dict(detailed=True)

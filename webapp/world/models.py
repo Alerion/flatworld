@@ -92,6 +92,9 @@ class Region(models.Model):
     neighbors = models.ManyToManyField('self')
     world = models.ForeignKey(World)
 
+    class Meta:
+        ordering = ('name',)
+
     def __str__(self):
         return self.name
 
@@ -111,6 +114,7 @@ class City(models.Model):
 
     class Meta:
         unique_together = ('user', 'world')
+        ordering = ('name',)
         verbose_name_plural = 'cities'
 
     def __str__(self):
