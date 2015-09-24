@@ -1,206 +1,206 @@
 [
 {
+    "model": "building.building",
     "pk": 1,
-    "model": "building.building",
     "fields": {
-        "description": "Town hall is cool. Build it!",
-        "name": "town hall"
+        "name": "town hall",
+        "description": "Town hall is cool. Build it!"
     }
 },
 {
+    "model": "building.building",
     "pk": 2,
-    "model": "building.building",
     "fields": {
-        "description": "You can keep some stuff here.",
-        "name": "storehouse"
+        "name": "storehouse",
+        "description": "You can keep some stuff here."
     }
 },
 {
+    "model": "building.building",
     "pk": 3,
-    "model": "building.building",
     "fields": {
-        "description": "Boost your economy like a pro!",
-        "name": "market"
+        "name": "market",
+        "description": "Boost your economy like a pro!"
     }
 },
 {
+    "model": "building.building",
     "pk": 4,
-    "model": "building.building",
     "fields": {
-        "description": "We cut woods here.",
-        "name": "sawmill"
+        "name": "sawmill",
+        "description": "We cut woods here."
     }
 },
 {
+    "model": "building.building",
     "pk": 5,
-    "model": "building.building",
     "fields": {
-        "description": "Stone is here!",
-        "name": "quarry"
+        "name": "quarry",
+        "description": "Stone is here!"
     }
 },
 {
+    "model": "building.building",
     "pk": 6,
-    "model": "building.building",
     "fields": {
-        "description": "Do you wish some iron?",
-        "name": "mine"
+        "name": "mine",
+        "description": "Do you wish some iron?"
     }
 },
 {
+    "model": "building.buildingtier",
     "pk": 1,
-    "model": "building.buildingtier",
     "fields": {
-        "properties": {
-            "tax": 0.01,
-            "population_growth": 0.02
-        },
-        "build_time": 300,
-        "building": 1,
-        "cost_iron": 0,
         "cost_population": 50,
+        "properties": {
+            "tax": 0.01,
+            "population_growth": 0.02
+        },
         "cost_wood": 20,
+        "building": 1,
         "cost_stone": 20,
-        "level": 1,
-        "cost_money": 500
+        "build_time": 300,
+        "cost_iron": 0,
+        "cost_money": 500,
+        "level": 1
     }
 },
 {
+    "model": "building.buildingtier",
     "pk": 2,
-    "model": "building.buildingtier",
     "fields": {
+        "cost_population": 30,
         "properties": {
             "tax": 0.01,
             "population_growth": 0.02
         },
-        "build_time": 600,
-        "building": 1,
-        "cost_iron": 10,
-        "cost_population": 30,
         "cost_wood": 30,
+        "building": 1,
         "cost_stone": 30,
-        "level": 2,
-        "cost_money": 700
+        "build_time": 600,
+        "cost_iron": 10,
+        "cost_money": 700,
+        "level": 2
     }
 },
 {
-    "pk": 3,
     "model": "building.buildingtier",
+    "pk": 3,
     "fields": {
+        "cost_population": 30,
         "properties": {
             "tax": 0.01,
             "population_growth": 0.02
         },
-        "build_time": 900,
-        "building": 1,
-        "cost_iron": 15,
-        "cost_population": 30,
         "cost_wood": 40,
+        "building": 1,
         "cost_stone": 40,
-        "level": 3,
-        "cost_money": 900
+        "build_time": 900,
+        "cost_iron": 15,
+        "cost_money": 900,
+        "level": 3
     }
 },
 {
-    "pk": 4,
     "model": "building.buildingtier",
+    "pk": 4,
     "fields": {
+        "cost_population": 0,
         "properties": {
             "pasive_income": 0.1
         },
-        "build_time": 400,
-        "building": 2,
-        "cost_iron": 5,
-        "cost_population": 0,
         "cost_wood": 10,
+        "building": 2,
         "cost_stone": 10,
-        "level": 1,
-        "cost_money": 10
+        "build_time": 400,
+        "cost_iron": 5,
+        "cost_money": 10,
+        "level": 1
     }
 },
 {
-    "pk": 5,
     "model": "building.buildingtier",
+    "pk": 5,
     "fields": {
+        "cost_population": 0,
         "properties": {
             "pasive_income": 10
         },
-        "build_time": 30,
-        "building": 3,
-        "cost_iron": 0,
-        "cost_population": 0,
         "cost_wood": 5,
+        "building": 3,
         "cost_stone": 5,
-        "level": 1,
-        "cost_money": 100
+        "build_time": 30,
+        "cost_iron": 0,
+        "cost_money": 100,
+        "level": 1
     }
 },
 {
-    "pk": 6,
     "model": "building.buildingtier",
+    "pk": 6,
     "fields": {
+        "cost_population": 0,
         "properties": {
             "pasive_income": 15
         },
-        "build_time": 60,
-        "building": 3,
-        "cost_iron": 0,
-        "cost_population": 0,
         "cost_wood": 10,
+        "building": 3,
         "cost_stone": 10,
-        "level": 2,
-        "cost_money": 200
+        "build_time": 60,
+        "cost_iron": 0,
+        "cost_money": 200,
+        "level": 2
     }
 },
 {
-    "pk": 7,
     "model": "building.buildingtier",
+    "pk": 7,
     "fields": {
+        "cost_population": 0,
         "properties": {
             "wood_income": 10
         },
-        "build_time": 120,
-        "building": 4,
-        "cost_iron": 0,
-        "cost_population": 0,
         "cost_wood": 0,
+        "building": 4,
         "cost_stone": 10,
-        "level": 1,
-        "cost_money": 50
+        "build_time": 120,
+        "cost_iron": 0,
+        "cost_money": 50,
+        "level": 1
     }
 },
 {
-    "pk": 8,
     "model": "building.buildingtier",
+    "pk": 8,
     "fields": {
+        "cost_population": 0,
         "properties": {
             "stone_income": 10
         },
-        "build_time": 120,
-        "building": 5,
-        "cost_iron": 0,
-        "cost_population": 0,
         "cost_wood": 10,
+        "building": 5,
         "cost_stone": 0,
-        "level": 1,
-        "cost_money": 50
+        "build_time": 120,
+        "cost_iron": 0,
+        "cost_money": 50,
+        "level": 1
     }
 },
 {
-    "pk": 9,
     "model": "building.buildingtier",
+    "pk": 9,
     "fields": {
+        "cost_population": 0,
         "properties": {
             "iron_income": 5
         },
-        "build_time": 120,
-        "building": 6,
-        "cost_iron": 0,
-        "cost_population": 0,
         "cost_wood": 5,
+        "building": 6,
         "cost_stone": 5,
-        "level": 1,
-        "cost_money": 50
+        "build_time": 120,
+        "cost_iron": 0,
+        "cost_money": 50,
+        "level": 1
     }
 }
 ]

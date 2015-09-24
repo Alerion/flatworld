@@ -13,6 +13,7 @@ class Unit(Model):
     description = fields.CharField()
     type = fields.ModelField(UnitType)
     parent_id = fields.IntegerField()
+    upgradeable_to = fields.FieldCollectionField(fields.IntegerField())
     attack = fields.IntegerField()
     defence = fields.IntegerField()
     properties = fields.JSONField()

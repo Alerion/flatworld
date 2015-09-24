@@ -29,6 +29,16 @@ class CityBuilding(Model):
         self.level += 1
 
 
+class CityUnit(Model):
+    number = fields.IntegerField()
+    queue = fields.IntegerField()
+    unit_id = fields.IntegerField()
+
+    @property
+    def unit(self):
+        return self.city.world.units[self.unit_id]
+
+
 class CityStats(Model):
     population = fields.FloatField()
     money = fields.FloatField()
@@ -59,14 +69,15 @@ class CityStats(Model):
 
 class City(Model):
     id = fields.IntegerField()
+    buildings = fields.ModelDictCollectionField(CityBuilding, related_name='city')
     capital = fields.BooleanField()
     coords = fields.JSONField()
-    buildings = fields.ModelDictCollectionField(CityBuilding, related_name='city')
     name = fields.CharField()
-    stats = fields.ModelField(CityStats)
     region_id = fields.IntegerField()
-    world_id = fields.IntegerField()
+    stats = fields.ModelField(CityStats)
+    units = fields.ModelDictCollectionField(CityUnit, related_name='city')
     user_id = fields.IntegerField()
+    world_id = fields.IntegerField()
 
     def __init__(self, data, world, region):
         super().__init__(data)

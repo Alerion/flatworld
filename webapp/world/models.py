@@ -107,6 +107,7 @@ class City(models.Model):
     world = models.ForeignKey(World)
     stats = JSONField()
     buildings = JSONField(blank=True, null=True)
+    units = JSONField(blank=True, null=True)
 
     class Meta:
         unique_together = ('user', 'world')

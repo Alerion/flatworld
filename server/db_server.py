@@ -75,14 +75,11 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
         data = yield from cursor.fetchall()
 
         for item in data:
-            region = world.regions[item['region_id']]
+            # Load buildings
             item['buildings'] = item['buildings'] or {}
 
             # fix buildings keys
-            new_buildings = {}
-            for key, value in item['buildings'].items():
-                new_buildings[int(key)] = value
-            item['buildings'] = new_buildings
+            item['buildings'] = {int(key): value for (key, value) in item['buildings'].items()}
 
             # Fill building that does not exist. This may happen if new building was added
             for building_id in world.buildings.keys():
@@ -94,6 +91,22 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
                         'build_progress': 0
                     }
 
+            # Load units
+            item['units'] = item['units'] or {}
+
+            # fix units keys
+            item['units'] = {int(key): value for (key, value) in item['units'].items()}
+
+            # Fill units that does not exist. This may happen if new unit was added
+            for unit_id in world.units.keys():
+                if unit_id not in item['units']:
+                    item['units'][unit_id] = {
+                        'number': 0,
+                        'queue': 0,
+                        'unit_id': unit_id
+                    }
+
+            region = world.regions[item['region_id']]
             city = models.City(item, world=world, region=region)
             region.cities[city.id] = city
             world.cities[city.id] = city
@@ -146,10 +159,16 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
 
             yield from cursor.execute('SELECT * FROM units_unit')
             data = yield from cursor.fetchall()
+
             units = ModelsDict()
             for row in data:
+                row['upgradeable_to'] = []
                 row['type'] = unit_types[row['type_id']]
                 units[row['id']] = models.Unit(row)
+
+            for unit in units.values():
+                if unit.parent_id:
+                    units[unit.parent_id].upgradeable_to.append(unit.id)
 
             return units
 

@@ -3,50 +3,12 @@ import Flux from 'flummox';
 import FluxComponent from 'flummox/component';
 import React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
+import _ from 'lodash';
 
 import toString from '../utils/toString';
-import _ from 'lodash';
 import { confirm } from '../utils/alert';
 import { showErrors } from '../utils/notify';
-
-
-class ProgressChart extends React.Component {
-
-    componentDidMount() {
-        $(React.findDOMNode(this.refs.progressChart)).easyPieChart({
-            trackColor: false,
-            scaleColor: false,
-            barColor: 'rgba(255,255,255,0.7)',
-            lineWidth: 5,
-            lineCap: 'butt',
-            size: 50,
-            animate: false
-        });
-    }
-
-    componentDidUpdate() {
-        $(React.findDOMNode(this.refs.progressChart))
-            .data('easyPieChart')
-            .update(this.props.progress);
-    }
-
-    render() {
-        return (
-            <div className="bgm-green btn-float">
-                <div className="easy-pie main-pie"
-                    data-percent={this.props.progress}
-                    ref="progressChart">
-                    <div className="percent">{this.props.timeLeft}</div>
-                </div>
-            </div>
-        );
-    }
-}
-
-ProgressChart.propTypes = {
-    progress: React.PropTypes.number.isRequired,
-    timeLeft: React.PropTypes.number.isRequired
-};
+import ProgressChart from './ProgressChart';
 
 
 class BuildingTierProperties extends React.Component {
@@ -125,7 +87,7 @@ class Building extends React.Component {
             progressChart = (
                 <ProgressChart
                     progress={cityBuilding.build_progress / nextBuildingTier.build_time * 100}
-                    timeLeft={cityBuilding.build_progress}
+                    value={cityBuilding.build_progress}
                     />
             );
         } else if (nextBuildingTier) {
@@ -190,7 +152,7 @@ class Buildings extends React.Component {
     render() {
         var buildings = this.props.buildings;
         var city = this.props.city;
-        var content;
+        var content = 'Loading...';
 
         if (buildings && city) {
             var items = _.map(buildings, (building) => {
@@ -224,8 +186,6 @@ class Buildings extends React.Component {
                     className="row card-group m-25">
                     {group}
                 </div>);
-        } else {
-            content = 'Loading...';
         }
 
         return (

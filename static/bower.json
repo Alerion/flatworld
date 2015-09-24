@@ -22,13 +22,13 @@
     "weather-icons": "~2.0.4",
     "material-shadows": "~2.0.1",
     "waves": "~0.7.2",
-    "bootstrap-sweetalert": "~0.4.5",
     "animate.css": "~3.4.0",
     "moment": "~2.10.6",
     "jquery.nicescroll": "~3.6.0",
     "remarkable-bootstrap-notify": "~2.0.1",
     "jquery.easy-pie-chart": "~2.1.6",
     "nouislider": "~8.0.2",
-    "flot-charts": "*"
+    "flot-charts": "*",
+    "sweetalert2": "~0.2.2"
   }
 }

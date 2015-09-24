@@ -1,243 +1,262 @@
 [
 {
-    "pk": 1,
     "fields": {
-        "name": "infantry",
-        "properties": {}
+        "properties": {},
+        "name": "infantry"
     },
-    "model": "units.type"
+    "model": "units.type",
+    "pk": 1
 },
 {
-    "pk": 2,
     "fields": {
-        "name": "cavalry",
-        "properties": {}
+        "properties": {},
+        "name": "cavalry"
     },
-    "model": "units.type"
+    "model": "units.type",
+    "pk": 2
 },
 {
-    "pk": 3,
     "fields": {
-        "name": "artillery",
-        "properties": {}
+        "properties": {},
+        "name": "artillery"
     },
-    "model": "units.type"
+    "model": "units.type",
+    "pk": 3
 },
 {
-    "pk": 4,
     "fields": {
-        "name": "ranged",
-        "properties": {}
+        "properties": {},
+        "name": "ranged"
     },
-    "model": "units.type"
+    "model": "units.type",
+    "pk": 4
 },
 {
-    "pk": 1,
     "fields": {
+        "cost_stone": 0,
         "defence": 5,
-        "cost_population": 1,
+        "cost_iron": 0,
+        "properties": {},
+        "name": "archer",
+        "description": "The Archer is the earliest ranged unit, armed with the first simple bows. ",
         "attack": 7,
         "type": 4,
-        "cost_money": 10,
-        "cost_stone": 0,
-        "cost_iron": 0,
-        "description": "The Archer is the earliest ranged unit, armed with the first simple bows. ",
-        "train_time": 60,
-        "name": "archer",
-        "properties": {},
+        "parent": null,
         "cost_wood": 0,
-        "parent": null
+        "cost_population": 1,
+        "cost_money": 10,
+        "train_time": 60
     },
-    "model": "units.unit"
+    "model": "units.unit",
+    "pk": 1
 },
 {
-    "pk": 2,
     "fields": {
+        "cost_stone": 0,
         "defence": 7,
-        "cost_population": 1,
+        "cost_iron": 1,
+        "properties": {},
+        "name": "bowman",
+        "description": "",
         "attack": 10,
         "type": 4,
-        "cost_money": 20,
-        "cost_stone": 0,
-        "cost_iron": 1,
-        "description": "",
-        "train_time": 90,
-        "name": "bowman",
-        "properties": {},
+        "parent": 1,
         "cost_wood": 0,
-        "parent": 1
+        "cost_population": 1,
+        "cost_money": 20,
+        "train_time": 90
     },
-    "model": "units.unit"
+    "model": "units.unit",
+    "pk": 2
 },
 {
-    "pk": 3,
     "fields": {
+        "cost_stone": 0,
         "defence": 6,
-        "cost_population": 1,
+        "cost_iron": 1,
+        "properties": {},
+        "name": "longbowman",
+        "description": "",
         "attack": 11,
         "type": 4,
-        "cost_money": 21,
-        "cost_stone": 0,
-        "cost_iron": 1,
-        "description": "",
-        "train_time": 90,
-        "name": "longbowman",
-        "properties": {},
+        "parent": 1,
         "cost_wood": 0,
-        "parent": 1
+        "cost_population": 1,
+        "cost_money": 21,
+        "train_time": 90
     },
-    "model": "units.unit"
+    "model": "units.unit",
+    "pk": 3
 },
 {
-    "pk": 4,
     "fields": {
+        "cost_stone": 0,
         "defence": 7,
-        "cost_population": 1,
+        "cost_iron": 0,
+        "properties": {},
+        "name": "warrior",
+        "description": "The Warrior is the earliest combat unit available without any technological research. Armed with simple weapons like clubs and maces.",
         "attack": 5,
         "type": 1,
-        "cost_money": 10,
-        "cost_stone": 0,
-        "cost_iron": 0,
-        "description": "The Warrior is the earliest combat unit available without any technological research. Armed with simple weapons like clubs and maces.",
-        "train_time": 50,
-        "name": "warrior",
-        "properties": {},
+        "parent": null,
         "cost_wood": 0,
-        "parent": null
+        "cost_population": 1,
+        "cost_money": 10,
+        "train_time": 50
     },
-    "model": "units.unit"
+    "model": "units.unit",
+    "pk": 4
 },
 {
-    "pk": 5,
     "fields": {
+        "cost_stone": 0,
         "defence": 10,
-        "cost_population": 1,
+        "cost_iron": 1,
+        "properties": {},
+        "name": "swordsman",
+        "description": "Strong, front-line unit of the Classical Era. Replaces the Warrior.",
         "attack": 8,
         "type": 1,
-        "cost_money": 25,
-        "cost_stone": 0,
-        "cost_iron": 1,
-        "description": "Strong, front-line unit of the Classical Era. Replaces the Warrior.",
-        "train_time": 90,
-        "name": "swordsman",
-        "properties": {},
+        "parent": 4,
         "cost_wood": 0,
-        "parent": 4
+        "cost_population": 1,
+        "cost_money": 25,
+        "train_time": 90
     },
-    "model": "units.unit"
+    "model": "units.unit",
+    "pk": 5
 },
 {
-    "pk": 6,
     "fields": {
+        "cost_stone": 0,
         "defence": 13,
-        "cost_population": 1,
+        "cost_iron": 1,
+        "properties": {},
+        "name": "longswordsman",
+        "description": "Medieval Era front-line unit.",
         "attack": 10,
         "type": 1,
-        "cost_money": 35,
-        "cost_stone": 0,
-        "cost_iron": 1,
-        "description": "Medieval Era front-line unit.",
-        "train_time": 120,
-        "name": "longswordsman",
-        "properties": {},
+        "parent": 5,
         "cost_wood": 1,
-        "parent": 5
+        "cost_population": 1,
+        "cost_money": 35,
+        "train_time": 120
     },
-    "model": "units.unit"
+    "model": "units.unit",
+    "pk": 6
 },
 {
-    "pk": 7,
     "fields": {
+        "cost_stone": 0,
         "defence": 8,
-        "cost_population": 1,
+        "cost_iron": 1,
+        "properties": {},
+        "name": "horseman",
+        "description": "",
         "attack": 8,
         "type": 2,
-        "cost_money": 30,
-        "cost_stone": 0,
-        "cost_iron": 1,
-        "description": "",
-        "train_time": 120,
-        "name": "horseman",
-        "properties": {},
+        "parent": null,
         "cost_wood": 0,
-        "parent": null
+        "cost_population": 1,
+        "cost_money": 30,
+        "train_time": 120
     },
-    "model": "units.unit"
+    "model": "units.unit",
+    "pk": 7
 },
 {
-    "pk": 8,
     "fields": {
+        "cost_stone": 0,
         "defence": 12,
-        "cost_population": 1,
+        "cost_iron": 2,
+        "properties": {},
+        "name": "knight",
+        "description": "",
         "attack": 12,
         "type": 2,
-        "cost_money": 50,
-        "cost_stone": 0,
-        "cost_iron": 2,
-        "description": "",
-        "train_time": 200,
-        "name": "knight",
-        "properties": {},
+        "parent": 7,
         "cost_wood": 0,
-        "parent": 7
+        "cost_population": 1,
+        "cost_money": 50,
+        "train_time": 200
     },
-    "model": "units.unit"
+    "model": "units.unit",
+    "pk": 8
 },
 {
-    "pk": 9,
     "fields": {
+        "cost_stone": 0,
         "defence": 15,
-        "cost_population": 2,
+        "cost_iron": 3,
+        "properties": {},
+        "name": "lancer",
+        "description": "",
         "attack": 15,
         "type": 2,
-        "cost_money": 75,
-        "cost_stone": 0,
-        "cost_iron": 3,
-        "description": "",
-        "train_time": 300,
-        "name": "lancer",
-        "properties": {},
+        "parent": 8,
         "cost_wood": 0,
-        "parent": 8
+        "cost_population": 2,
+        "cost_money": 75,
+        "train_time": 300
     },
-    "model": "units.unit"
+    "model": "units.unit",
+    "pk": 9
 },
 {
-    "pk": 10,
     "fields": {
+        "cost_stone": 1,
         "defence": 7,
-        "cost_population": 3,
+        "cost_iron": 1,
+        "properties": {},
+        "name": "ballista",
+        "description": "",
         "attack": 8,
         "type": 3,
-        "cost_money": 40,
-        "cost_stone": 1,
-        "cost_iron": 1,
-        "description": "",
-        "train_time": 100,
-        "name": "ballista",
-        "properties": {},
+        "parent": null,
         "cost_wood": 1,
-        "parent": null
+        "cost_population": 3,
+        "cost_money": 40,
+        "train_time": 100
     },
-    "model": "units.unit"
+    "model": "units.unit",
+    "pk": 10
 },
 {
-    "pk": 11,
     "fields": {
+        "cost_stone": 2,
         "defence": 9,
-        "cost_population": 5,
+        "cost_iron": 2,
+        "properties": {},
+        "name": "trebuchet",
+        "description": "",
         "attack": 12,
         "type": 3,
-        "cost_money": 60,
-        "cost_stone": 2,
-        "cost_iron": 2,
-        "description": "",
-        "train_time": 210,
-        "name": "trebuchet",
-        "properties": {},
+        "parent": 10,
         "cost_wood": 2,
-        "parent": 10
+        "cost_population": 5,
+        "cost_money": 60,
+        "train_time": 210
     },
-    "model": "units.unit"
+    "model": "units.unit",
+    "pk": 11
+},
+{
+    "fields": {
+        "cost_stone": 2,
+        "defence": 11,
+        "cost_iron": 4,
+        "properties": {},
+        "name": "cannon",
+        "description": "",
+        "attack": 15,
+        "type": 3,
+        "parent": 11,
+        "cost_wood": 3,
+        "cost_population": 7,
+        "cost_money": 100,
+        "train_time": 300
+    },
+    "model": "units.unit",
+    "pk": 12
 }
 ]
