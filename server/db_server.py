@@ -75,6 +75,9 @@ class DBServerHandler(aiozmq.rpc.AttrHandler):
         data = yield from cursor.fetchall()
 
         for row in data:
+            # Load active quest
+            row['active_quests'] = {}
+
             # Load buildings
             row['buildings'] = row['buildings'] or {}
 

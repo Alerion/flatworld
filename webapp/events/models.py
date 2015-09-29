@@ -36,6 +36,7 @@ class Participation(models.Model):
     city = models.ForeignKey('world.City')
     joined = models.DateTimeField()
     finished = models.DateTimeField(blank=True, null=True)
+    closed = models.DateTimeField(blank=True, null=True)
     outfit = JSONField(blank=True)
-    result_roll = models.PositiveIntegerField(blank=True, null=True)
+    result_roll = models.FloatField(blank=True, null=True)
     loot = JSONField(blank=True)

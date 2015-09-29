@@ -1,0 +1,114 @@
+[
+{
+    "pk": 1,
+    "model": "events.quest",
+    "fields": {
+        "cities": [],
+        "repeatable": false,
+        "name": "Kill dragon",
+        "regions": [],
+        "description": "The dangerous dragon invades our land",
+        "duration": 30,
+        "required": false,
+        "world": 37,
+        "last_till": null,
+        "roll_width": 100,
+        "finished": null,
+        "requirements": {},
+        "start_position": -50,
+        "created": "2015-09-24T08:30:50Z",
+        "results": [
+            {
+                "roll_point": null,
+                "type": "win",
+                "reward": {
+                    "money": 10
+                }
+            },
+            {
+                "roll_point": 0,
+                "type": "fail",
+                "reward": {
+                    "money": -10
+                }
+            }
+        ]
+    }
+},
+{
+    "pk": 2,
+    "model": "events.quest",
+    "fields": {
+        "cities": [],
+        "repeatable": true,
+        "name": "Fuck trolls",
+        "regions": [
+            547
+        ],
+        "description": "",
+        "duration": 300,
+        "required": false,
+        "world": 37,
+        "last_till": "2015-11-01T00:00:00Z",
+        "roll_width": 100,
+        "finished": null,
+        "requirements": {},
+        "start_position": -50,
+        "created": "2015-09-24T13:15:45Z",
+        "results": [
+            {
+                "roll_point": null,
+                "type": "win",
+                "reward": {
+                    "money": 10
+                }
+            },
+            {
+                "roll_point": 0,
+                "type": "fail",
+                "reward": {
+                    "money": -10
+                }
+            }
+        ]
+    }
+},
+{
+    "pk": 3,
+    "model": "events.quest",
+    "fields": {
+        "cities": [
+            3196
+        ],
+        "repeatable": false,
+        "name": "Free your mine",
+        "regions": [],
+        "description": "Wild orcs captured your mine.",
+        "duration": 120,
+        "required": true,
+        "world": 37,
+        "last_till": null,
+        "roll_width": 100,
+        "finished": null,
+        "requirements": {},
+        "start_position": -50,
+        "created": "2015-09-24T13:18:04Z",
+        "results": [
+            {
+                "roll_point": null,
+                "type": "win",
+                "reward": {
+                    "money": 10
+                }
+            },
+            {
+                "roll_point": 0,
+                "type": "fail",
+                "reward": {
+                    "money": -10
+                }
+            }
+        ]
+    }
+}
+]

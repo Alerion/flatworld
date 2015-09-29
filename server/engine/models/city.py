@@ -1,6 +1,40 @@
+from random import random
+from datetime import datetime, timezone
+
 from . import fields
 from .base import Model
-from ..exceptions import BuildError
+from ..exceptions import BuildError, QuestError
+
+
+class ActiveQuest(Model):
+    id = fields.IntegerField()
+    quest_id = fields.IntegerField()
+    joined = fields.DateTimeField()
+    finished = fields.DateTimeField()
+    closed = fields.DateTimeField()
+    outfit = fields.JSONField()
+    result_roll = fields.FloatField()
+    loot = fields.JSONField()
+    progress = fields.IntegerField()
+
+    def finish(self):
+        self.finished = datetime.now(timezone.utc)
+        self.result_roll = random() * 100
+        self.loot = {}
+        self.progress = 0
+
+    @classmethod
+    def start(cls, quest):
+        return cls({
+            'quest_id': quest.id,
+            'joined': datetime.now(timezone.utc),
+            'outfit': {},
+            'progress': quest.duration,
+            'finished': None,
+            'closed': None,
+            'result_roll': None,
+            'loot': None
+        })
 
 
 class CityBuilding(Model):
@@ -69,6 +103,7 @@ class CityStats(Model):
 
 class City(Model):
     id = fields.IntegerField()
+    active_quests = fields.ModelDictCollectionField(ActiveQuest, related_name='city')
     buildings = fields.ModelDictCollectionField(CityBuilding, related_name='city')
     capital = fields.BooleanField()
     coords = fields.JSONField()
@@ -151,8 +186,29 @@ class City(Model):
         self.stats.stone -= building_tier.cost_stone
         self.stats.wood -= building_tier.cost_wood
 
-        # TODO: Add resources check and consume
         city_building.start_build(building_tier)
+
+    def start_quest(self, quest):
+        # Check here that quest is not started and that city has enough resources.
+        # Does not check availability.
+        active_quest = self.active_quests.get(quest.id)
+
+        if active_quest and not active_quest.closed:
+            raise QuestError(self.id, quest.id, 'Quest already in progress.')
+
+        self.active_quests[quest.id] = ActiveQuest.start(quest)
+
+    def update_quests(self, delta):
+        quest_finished = False
+
+        for active_quest in self.active_quests.values():
+            if not active_quest.finished:
+                active_quest.progress -= delta
+                if active_quest.progress <= 0:
+                    active_quest.finish()
+                    quest_finished = True
+
+        return quest_finished
 
     def to_dict(self, detailed=False, **kwargs):
         # detailed is for future to dump user city and other cities

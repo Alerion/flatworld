@@ -23,6 +23,11 @@ export function notify(message, type) {
 }
 
 export function showErrors(error) {
+    // Exceptions are displayed with global callback.
+    if (error.type == 'exception') {
+        return;
+    }
+
     for (const msg of _.values(error.messages)) {
         notify(msg, 'danger');
     }

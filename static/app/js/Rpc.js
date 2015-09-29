@@ -2,6 +2,7 @@
 import msgpack from 'msgpack-js-browser';
 import Immutable from 'seamless-immutable';
 
+
 export default class Rpc {
 
     constructor(options) {

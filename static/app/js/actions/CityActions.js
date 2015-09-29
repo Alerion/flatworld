@@ -20,4 +20,8 @@ export default class CityActions extends Actions {
     build(buildingId) {
         return this.rpc.call('build', buildingId);
     }
+
+    startQuest(questId) {
+        return this.rpc.call('start_quest', questId);
+    }
 }

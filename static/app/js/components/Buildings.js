@@ -1,9 +1,9 @@
 'use strict';
+import _ from 'lodash';
 import Flux from 'flummox';
 import FluxComponent from 'flummox/component';
 import React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
-import _ from 'lodash';
 
 import toString from '../utils/toString';
 import { confirm } from '../utils/alert';

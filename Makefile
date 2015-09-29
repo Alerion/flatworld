@@ -23,6 +23,9 @@ savedata:
 	python3 ./webapp/manage.py dumpdata --indent=4 building	> webapp/fixtures/building.json
 	python3 ./webapp/manage.py dumpdata --indent=4 units > webapp/fixtures/units.json
 
+savequests:
+	python3 ./webapp/manage.py dumpdata --indent=4 events.Quest > webapp/fixtures/quests.json
+
 # target: startwebapp - Start dev-server.
 startwebapp: migrate
 	python3 -u ./webapp/manage.py runserver 0.0.0.0:8000

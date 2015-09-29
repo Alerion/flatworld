@@ -1,6 +1,7 @@
 import asyncio
+from datetime import datetime, timezone
 
-from .exceptions import CityDoesNotExist, BuildingDoesNotExist
+from .exceptions import CityDoesNotExist, BuildingDoesNotExist, QuestDoesNotExist
 from .models.base import ModelsDict
 
 
@@ -18,6 +19,7 @@ class WorldEngine:
             StoneLayer(world),
             WoodLayer(world),
             BuildLayer(world),
+            QuestsLayer(world),
         ]
 
     @asyncio.coroutine
@@ -46,6 +48,17 @@ class WorldEngine:
             raise CityDoesNotExist(city_id)
         return city
 
+    def get_building(self, building_id):
+        building = self.world.buildings.get(building_id)
+        if not building:
+            raise BuildingDoesNotExist(building_id)
+        return building
+
+    def build(self, city_id, building_id):
+        city = self.get_city(city_id)
+        city.build(self.get_building(building_id))
+        return city
+
     def get_quests(self, city_id):
         city = self.get_city(city_id)
         quests = ModelsDict()
@@ -57,14 +70,28 @@ class WorldEngine:
 
         return quests
 
-    def build(self, city_id, building_id):
+    def get_quest(self, quest_id):
+        quest = self.world.quests.get(quest_id)
+        if not quest:
+            raise QuestDoesNotExist(quest_id)
+        return quest
+
+    def get_quest_for_city(self, city_id, quest_id):
+        quests = self.get_quests(city_id)
+        quest = quests.get(quest_id)
+        if not quest:
+            raise QuestDoesNotExist(quest_id, city_id)
+        return quest
+
+    def start_quest(self, city_id, quest_id):
+        # Check here that quest is available for city.
         city = self.get_city(city_id)
+        quest = self.get_quest_for_city(city_id, quest_id)
 
-        building = self.world.buildings.get(building_id)
-        if not building:
-            raise BuildingDoesNotExist(building_id)
+        if quest.finished or (quest.last_till and datetime.now(timezone.utc) >= quest.last_till):
+            raise QuestDoesNotExist(quest_id, city_id)
 
-        city.build(building)
+        city.start_quest(quest)
         return city
 
     def _update_world(self):
@@ -178,6 +205,20 @@ class BuildLayer(SimulationLayer):
         for city in self.world.cities.values():
             build_finished = city.update_build(delta)
             if build_finished:
+                notify.append(city.id)
+
+        return bool(notify)
+
+
+class QuestsLayer(SimulationLayer):
+    notify_treshhold = None
+
+    def run(self, delta, elapsed):
+        notify = []
+
+        for city in self.world.cities.values():
+            quest_finished = city.update_quests(delta)
+            if quest_finished:
                 notify.append(city.id)
 
         return bool(notify)

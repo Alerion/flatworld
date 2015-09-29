@@ -24,7 +24,7 @@ export default class ProgressChart extends React.Component {
 
     render() {
         return (
-            <div className="bgm-green btn-float">
+            <div className="bgm-green btn-float progress-chart">
                 <div className="easy-pie main-pie"
                     data-percent={this.props.progress}
                     ref="progressChart">
