@@ -23,6 +23,9 @@ class ActiveQuest(Model):
         self.loot = {}
         self.progress = 0
 
+    def close(self):
+        self.closed = datetime.now(timezone.utc)
+
     @classmethod
     def start(cls, quest):
         return cls({
@@ -197,6 +200,18 @@ class City(Model):
             raise QuestError(self.id, quest.id, 'Quest already in progress.')
 
         self.active_quests[quest.id] = ActiveQuest.start(quest)
+
+    def close_quest(self, quest):
+        active_quest = self.active_quests.get(quest.id)
+
+        if not active_quest or not active_quest.finished:
+            raise QuestError(self.id, quest.id, 'Quest is not finished.')
+
+        if active_quest.closed:
+            raise QuestError(self.id, quest.id, 'Quest already closed.')
+
+        active_quest.close()
+        self.active_quests.pop(quest.id)
 
     def update_quests(self, delta):
         quest_finished = False

@@ -46,7 +46,7 @@
             547
         ],
         "description": "",
-        "duration": 300,
+        "duration": 10,
         "required": false,
         "world": 37,
         "last_till": "2015-11-01T00:00:00Z",

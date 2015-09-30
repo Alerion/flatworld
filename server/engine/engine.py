@@ -94,6 +94,13 @@ class WorldEngine:
         city.start_quest(quest)
         return city
 
+    def close_quest(self, city_id, quest_id):
+        # Check here that quest is available for city.
+        city = self.get_city(city_id)
+        quest = self.get_quest_for_city(city_id, quest_id)
+        city.close_quest(quest)
+        return city
+
     def _update_world(self):
         return self._events.publish('updates:world:{}'.format(self.world.id)) \
             .update_world(self.world)

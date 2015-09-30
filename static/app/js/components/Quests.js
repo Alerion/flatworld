@@ -62,12 +62,23 @@ class Quest extends React.Component {
 
         var selectButton;
         if (activeQuest) {
-            selectButton = (
-                <ProgressChart
-                    progress={activeQuest.progress / quest.duration * 100}
-                    value={activeQuest.progress}
-                    />
-            );
+            if (activeQuest.finished) {
+                selectButton = (
+                    <button onClick={this.props.onQuestClose}
+                        className="btn bgm-blue btn-float waves-effect waves-effect waves-circle waves-float">
+                        <i className="zmdi zmdi-check"/>
+                    </button>
+                );
+            } else if (activeQuest.closed) {
+                // Wait until quest is removed from state
+            } else {
+                selectButton = (
+                    <ProgressChart
+                        progress={activeQuest.progress / quest.duration * 100}
+                        value={activeQuest.progress}
+                        />
+                );
+            }
         } else {
             selectButton = (
                 <button onClick={this.props.onQuestSelect}
@@ -104,7 +115,8 @@ class Quest extends React.Component {
 Quest.propTypes = {
     quest: React.PropTypes.object.isRequired,
     activeQuest: React.PropTypes.object,
-    onQuestSelect: React.PropTypes.func.isRequired
+    onQuestSelect: React.PropTypes.func.isRequired,
+    onQuestClose: React.PropTypes.func.isRequired
 };
 
 
@@ -140,6 +152,7 @@ class Quests extends React.Component {
                         quest={quest}
                         activeQuest={activeQuest}
                         onQuestSelect={this.showQuest.bind(this, quest.id)}
+                        onQuestClose={this.closeQuest.bind(this, quest.id)}
                         />
                 );
             });
@@ -175,6 +188,10 @@ class Quests extends React.Component {
     startQuest(questId) {
         this.props.flux.getActions('cityActions').startQuest(questId).catch(showErrors);
         this.hideQuest();
+    }
+
+    closeQuest(questId) {
+        this.props.flux.getActions('cityActions').closeQuest(questId).catch(showErrors);
     }
 }
 

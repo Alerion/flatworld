@@ -60,6 +60,10 @@ class ServerHandler(aiozmq.rpc.AttrHandler):
     def start_quest(self, world_id: int, *args, **kwargs):
         return self.worlds[world_id].start_quest(*args, **kwargs)
 
+    @aiozmq.rpc.method
+    def close_quest(self, world_id: int, *args, **kwargs):
+        return self.worlds[world_id].close_quest(*args, **kwargs)
+
 
 def main():
     loop = asyncio.get_event_loop()

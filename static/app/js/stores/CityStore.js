@@ -13,6 +13,7 @@ export default class CityStore extends Store {
         this.registerAsync(actions.getCity, this.startLoading, this.updateCity);
         this.register(actions.build, this.updateCity);
         this.register(actions.startQuest, this.updateCity);
+        this.register(actions.closeQuest, this.updateCity);
         this.register(actions.updateCity, this.updateCity);
         this.state = {};
         this._loadingInProgress = false;
