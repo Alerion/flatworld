@@ -18,6 +18,7 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
         self._db = db
         self._game = game
         self._pubsub = None
+        self._city_pubsub = None
 
     def onConnect(self, request):
         try:
@@ -36,10 +37,16 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
             translation_table=translation_table,
             connect=os.environ['PROXY_PORT_5101_TCP'])
 
+        self._city_pubsub = yield from aiozmq.rpc.serve_pubsub(
+            self, subscribe='updates:city:%s' % self.city_id,
+            translation_table=translation_table,
+            connect=os.environ['PROXY_PORT_5101_TCP'])
+
     def connection_lost(self, exc):
         self._db = None
         self._game = None
         self._pubsub.close()
+        self._city_pubsub.close()
         super().connection_lost(exc)
 
     # events handlers methods
@@ -48,6 +55,10 @@ class FrontendHandler(websocket.rpc.WebsocketRpc, aiozmq.rpc.AttrHandler):
         city = world.cities.get(self.city_id)
         self.publish('update:city', city.to_dict(detailed=True))
         self.publish('update:world', world.to_dict())
+
+    @aiozmq.rpc.method
+    def update_quests(self, quests):
+        self.publish('update:quests', quests.to_dict())
 
     # web socker RPC
     # FIXME: Filter private fields

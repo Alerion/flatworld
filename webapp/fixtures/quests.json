@@ -84,7 +84,7 @@
         "name": "Free your mine",
         "regions": [],
         "description": "Wild orcs captured your mine.",
-        "duration": 120,
+        "duration": 20,
         "required": true,
         "world": 37,
         "last_till": null,

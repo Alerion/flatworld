@@ -59,6 +59,9 @@ class World(Model):
         # FIXME: Do not send full information about every city
         return output
 
+    def cleanup_quest(self, quest):
+        self.quests.pop(quest.id)
+
 
 class Region(Model):
     id = fields.IntegerField()

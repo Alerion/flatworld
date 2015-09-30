@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from . import fields
 from .base import Model
 
@@ -33,3 +35,15 @@ class Quest(Model):
     # If these are blank, any one can join this quest
     cities = fields.FieldCollectionField(fields.IntegerField())
     regions = fields.FieldCollectionField(fields.IntegerField())
+
+    def is_private_for_city(self, city):
+        if len(self.cities) != 1:
+            return False
+
+        if self.regions:
+            return False
+
+        return self.cities[0] == city.id
+
+    def finish(self):
+        self.finished = datetime.now(timezone.utc)

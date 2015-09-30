@@ -66,6 +66,7 @@ class WorldEngine:
         for quest_id, quest in self.world.quests.items():
             if (not quest.cities and not quest.regions) or \
                     city.id in quest.cities or city.region_id in quest.regions:
+                # FIXME: Filter out completed and not repeatable quests
                 quests[quest_id] = quest
 
         return quests
@@ -84,7 +85,9 @@ class WorldEngine:
         return quest
 
     def start_quest(self, city_id, quest_id):
-        # Check here that quest is available for city.
+        """
+        Check here that quest is available for city.
+        """
         city = self.get_city(city_id)
         quest = self.get_quest_for_city(city_id, quest_id)
 
@@ -95,11 +98,37 @@ class WorldEngine:
         return city
 
     def close_quest(self, city_id, quest_id):
-        # Check here that quest is available for city.
+        """
+        Check here that quest is available for city.
+        """
         city = self.get_city(city_id)
         quest = self.get_quest_for_city(city_id, quest_id)
         city.close_quest(quest)
+        self._check_closed_quest(quest, city)
         return city
+
+    def _check_closed_quest(self, quest, city):
+        """
+        Check if we can cleanup closed quest.
+        """
+        # FIXME: Save cleaned quests to DB
+        # User can repeat quest, just clean active_quest
+        if quest.repeatable:
+            city.cleanup_active_quest(quest)
+            return
+
+        # Quest exists only for this city, we can cleanup this quest
+        if quest.is_private_for_city(city):
+            quest.finish()
+            city.cleanup_active_quest(quest)
+            self.world.cleanup_quest(quest)
+            self._loop.call_soon(self._update_quests, city)
+            return
+
+    def _update_quests(self, city):
+        quests = self.get_quests(city.id)
+        return self._events.publish('updates:city:{}'.format(city.id)) \
+            .update_quests(quests)
 
     def _update_world(self):
         return self._events.publish('updates:world:{}'.format(self.world.id)) \

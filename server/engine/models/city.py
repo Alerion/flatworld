@@ -192,11 +192,13 @@ class City(Model):
         city_building.start_build(building_tier)
 
     def start_quest(self, quest):
-        # Check here that quest is not started and that city has enough resources.
-        # Does not check availability.
+        """
+        Check here that quest is not started and that city has enough resources.
+        Does not check availability.
+        """
         active_quest = self.active_quests.get(quest.id)
 
-        if active_quest and not active_quest.closed:
+        if active_quest and not (active_quest.closed and quest.repeatable):
             raise QuestError(self.id, quest.id, 'Quest already in progress.')
 
         self.active_quests[quest.id] = ActiveQuest.start(quest)
@@ -211,7 +213,6 @@ class City(Model):
             raise QuestError(self.id, quest.id, 'Quest already closed.')
 
         active_quest.close()
-        self.active_quests.pop(quest.id)
 
     def update_quests(self, delta):
         quest_finished = False
@@ -224,6 +225,10 @@ class City(Model):
                     quest_finished = True
 
         return quest_finished
+
+    def cleanup_active_quest(self, quest):
+        if quest.id in self.active_quests:
+            del self.active_quests[quest.id]
 
     def to_dict(self, detailed=False, **kwargs):
         # detailed is for future to dump user city and other cities

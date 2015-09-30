@@ -62,22 +62,29 @@ class Quest extends React.Component {
 
         var selectButton;
         if (activeQuest) {
-            if (activeQuest.finished) {
+            if (activeQuest.finished && ! activeQuest.closed) {
                 selectButton = (
                     <button onClick={this.props.onQuestClose}
                         className="btn bgm-blue btn-float waves-effect waves-effect waves-circle waves-float">
                         <i className="zmdi zmdi-check"/>
                     </button>
                 );
-            } else if (activeQuest.closed) {
-                // Wait until quest is removed from state
-            } else {
+            } else if (activeQuest.closed && quest.repeatable) {
+                selectButton = (
+                    <button onClick={this.props.onQuestSelect}
+                        className="btn bgm-green btn-float waves-effect waves-effect waves-circle waves-float">
+                        <i className="zmdi zmdi-directions-run"/>
+                    </button>
+                );
+            } else if (! activeQuest.finished) {
                 selectButton = (
                     <ProgressChart
                         progress={activeQuest.progress / quest.duration * 100}
                         value={activeQuest.progress}
                         />
                 );
+            } else {
+                // Wait until quest is removed from state
             }
         } else {
             selectButton = (
