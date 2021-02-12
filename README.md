@@ -1,3 +1,5 @@
+Online browser strategy game
+
 # Installation
 
 Create config with env variables from template:
