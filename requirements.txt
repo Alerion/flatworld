@@ -3,7 +3,7 @@ aiozmq==0.7.0
 autobahn[asyncio,accelerate]==0.10.5
 django==1.8.4
 msgpack-python==0.4.6
-ujson==1.33
+ujson==5.4.0
 psycopg2==2.6.1
 numpy
 scipy
